@@ -1,19 +1,39 @@
-#include "Ads1115.h"
-#include "Bmp180.h"
+#include "ActiveObject.h"
+#include "ThreadPool.h"
+#include "KegaratorSamplingTasks.h"
+#include "TcpServer/TcpServer.h"
+#include "TcpServer/WebSocketConnection.h"
+#include "ConnectionHandler.h"
 
-#include <iostream>
-#include <thread>
+#include <boost/asio.hpp>
+
+KegaratorSamplingTasks & KegaratorSamplingTasks::getInstance()
+{
+  static KegaratorSamplingTasks wKegaratorSamplingTasks;
+  return wKegaratorSamplingTasks;
+}
 
 int main(int argc, char *argv[])
 {
-  Ads1115 mAds1115("/dev/i2c-1");
+  DataActiveObject< KegaratorMetrics > wKegaratorMetrics = KegaratorMetrics();
+
+  boost::asio::io_service wIoService;
+  auto wWebSocketServer = createTcpServer< WebSocketConnection >(wIoService, ConnectionHandler(wKegaratorMetrics.getConstInternal()), 8000);
+
+  ThreadPool wThreadPool(KegaratorSamplingTasks::getInstance().size());
+  auto wKegaratorMetricsThread = std::thread([&]() { wKegaratorMetrics.run(); });
   
   while (true)
   {
-    int16_t wRawValue = mAds1115.read();
-    std::cout << wRawValue << std::endl;
+    for (auto &&wSamplingTask : KegaratorSamplingTasks::getInstance())
+    {
+      wThreadPool.enqueue([&]() { wSamplingTask(wKegaratorMetrics); });
+    }
     std::this_thread::sleep_for(std::chrono::seconds(1));
   }
+
+  wKegaratorMetrics.stop();
+  wKegaratorMetricsThread.join();
 
   return 0;
 }

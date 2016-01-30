@@ -26,7 +26,18 @@ public:
   {
   }
   
-  std::tuple< double, int32_t > getTemperature()
+  struct TemperaturePressureFactor
+  {
+    TemperaturePressureFactor(double iTemperature, int32_t iPressureFactor)
+      : mTemperature(iTemperature)
+      , mPressureFactor(iPressureFactor)
+    {
+    }
+    double mTemperature;
+    int32_t mPressureFactor;
+  };
+  
+  TemperaturePressureFactor getTemperature() const
   {
     uint16_t ut = readUT();
 
@@ -37,11 +48,12 @@ public:
     x2 = wDivisor != 0 ? (static_cast< int32_t >(mc) << 11)/wDivisor : 0;
     b5 = x1 + x2;
 
-    return std::make_tuple(static_cast< double >((b5 + 8) >> 4) / 10.0, b5);
+    return TemperaturePressureFactor(static_cast< double >((b5 + 8) >> 4) / 10.0, b5);
   }
   
-  double getPressure(int32_t b5)
+  double getPressure(int32_t iPressureFactor) const
   {
+    auto &&b5 = iPressureFactor;
     uint32_t up = readUP();
     int32_t x1, x2, x3, b3, b6, p;
     uint32_t b4, b7;
@@ -81,7 +93,7 @@ public:
   }
 
 private:
-  uint16_t readUT()
+  uint16_t readUT() const
   {
     // Write 0x2E into Register 0xF4
     // This requests a temperature reading
@@ -94,7 +106,7 @@ private:
     return (mDevice.readByte(0xF6) << 8) | mDevice.readByte(0xF7);
   }
 
-  uint32_t readUP()
+  uint32_t readUP() const
   {
     // Write 0x34+(OSS<<6) into register 0xF4
     // Request a pressure reading w/ oversampling setting

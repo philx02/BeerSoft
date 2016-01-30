@@ -8,10 +8,23 @@ INCLUDE_DIRECTORIES(
 SET(${this_target}_HEADER_FILES
   src/Ads1115.h
   src/Bmp180.h
+  src/ActiveObject.h
+  src/ThreadPool.h
+  src/SamplingTasksRegistrar.h
+  src/KegaratorMetrics.h
+  src/KegaratorSamplingTasks.h
+  src/IObserver.h
+  src/Subject.h
+  src/TcpServer/ISender.h
+  src/TcpServer/TcpServer.h
+  src/TcpServer/TcpConnection.h
+  src/TcpServer/WebSocketConnection.h
+  src/ConnectionHandler.h
 )
 
 SET( ${this_target}_SOURCE_FILES
   src/main.cpp
+  src/PressureAndTemperatureSampling.cpp
 ) 
 
 #SET_SOURCE_FILES_PROPERTIES(${this_target}_HEADER_FILES

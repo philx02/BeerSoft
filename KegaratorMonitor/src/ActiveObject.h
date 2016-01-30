@@ -35,11 +35,11 @@ public:
 
 private:
   typedef std::deque< std::pair< bool, Function > > WorkQueue;
-  WorkQueue mWorkQueue;
-  std::mutex mQueueMutex;
-  std::condition_variable mWorkSignal;
+  mutable WorkQueue mWorkQueue;
+  mutable std::mutex mQueueMutex;
+  mutable std::condition_variable mWorkSignal;
 
-  void doPush(bool iTerminate, const Function &iFunction)
+  void doPush(bool iTerminate, const Function &iFunction) const
   {
     {
       std::lock_guard< std::mutex > wLock(mQueueMutex);
@@ -76,7 +76,7 @@ public:
 
   inline void dataPush(const std::function< void (T &) > &iFunction)
   {
-    push([=]() {iFunction(mInternal); });
+    push([=]() { iFunction(mInternal); });
   }
 
   const T & getConstInternal() const
