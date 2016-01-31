@@ -11,8 +11,10 @@ SET(${this_target}_HEADER_FILES
   src/ActiveObject.h
   src/ThreadPool.h
   src/SamplingTasksRegistrar.h
+  src/InterruptTasksRegistrar.h
   src/KegaratorMetrics.h
   src/KegaratorSamplingTasks.h
+  src/KegaratorInterruptTasks.h
   src/IObserver.h
   src/Subject.h
   src/TcpServer/ISender.h
@@ -20,11 +22,13 @@ SET(${this_target}_HEADER_FILES
   src/TcpServer/TcpConnection.h
   src/TcpServer/WebSocketConnection.h
   src/ConnectionHandler.h
+  src/Operations.h
 )
 
 SET( ${this_target}_SOURCE_FILES
   src/main.cpp
   src/PressureAndTemperatureSampling.cpp
+  src/FlowMeterSensing.cpp
 ) 
 
 #SET_SOURCE_FILES_PROPERTIES(${this_target}_HEADER_FILES

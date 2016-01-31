@@ -1,6 +1,7 @@
 #include "ActiveObject.h"
 #include "ThreadPool.h"
 #include "KegaratorSamplingTasks.h"
+#include "KegaratorInterruptTasks.h"
 #include "TcpServer/TcpServer.h"
 #include "TcpServer/WebSocketConnection.h"
 #include "ConnectionHandler.h"
@@ -13,6 +14,12 @@ KegaratorSamplingTasks & KegaratorSamplingTasks::getInstance()
   return wKegaratorSamplingTasks;
 }
 
+KegaratorInterruptTasks & KegaratorInterruptTasks::getInstance()
+{
+  static KegaratorInterruptTasks wKegaratorInterruptTasks;
+  return wKegaratorInterruptTasks;
+}
+
 int main(int argc, char *argv[])
 {
   DataActiveObject< KegaratorMetrics > wKegaratorMetrics = KegaratorMetrics();
@@ -22,6 +29,12 @@ int main(int argc, char *argv[])
 
   ThreadPool wThreadPool(KegaratorSamplingTasks::getInstance().size());
   auto wKegaratorMetricsThread = std::thread([&]() { wKegaratorMetrics.run(); });
+
+  std::vector< std::thread > wInterruptThreads;
+  for (auto &&wInterruptTask : KegaratorInterruptTasks::getInstance())
+  {
+    wInterruptThreads.emplace_back([&]() { wInterruptTask(wKegaratorMetrics); });
+  }
   
   while (true)
   {
@@ -34,6 +47,11 @@ int main(int argc, char *argv[])
 
   wKegaratorMetrics.stop();
   wKegaratorMetricsThread.join();
+
+  for (auto &&wInterruptThread : wInterruptThreads)
+  {
+    wInterruptThread.join();
+  }
 
   return 0;
 }
