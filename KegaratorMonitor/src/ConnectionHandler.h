@@ -29,11 +29,20 @@ public:
 
   void update(const KegaratorMetrics &iMetrics)
   {
+    auto wSender = mSender.lock();
+    if (wSender != nullptr)
+    {
+      wSender->send(mKegaratorMetrics.dataString());
+    }
   }
 
 private:
   void handleMessage(const std::string &iPayload)
   {
+    if (iPayload == "get_status")
+    {
+      update(mKegaratorMetrics);
+    }
   }
 
   std::weak_ptr< ISender > mSender;

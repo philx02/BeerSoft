@@ -1,7 +1,11 @@
 #pragma once
 
-#ifdef InterIntegratedCircuit_EXPORTS
-#define INTERINTEGRATEDCIRCUIT_LIB __declspec(dllexport)
+#ifdef WIN32
+  #ifdef InterIntegratedCircuit_EXPORTS
+    #define INTERINTEGRATEDCIRCUIT_LIB __declspec(dllexport)
+  #else
+    #define INTERINTEGRATEDCIRCUIT_LIB __declspec(dllimport)
+  #endif
 #else
-#define INTERINTEGRATEDCIRCUIT_LIB __declspec(dllimport)
+  #define INTERINTEGRATEDCIRCUIT_LIB
 #endif

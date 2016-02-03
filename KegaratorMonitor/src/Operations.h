@@ -38,12 +38,14 @@ bool readGpio(pollfd &ioPollFd, int iGpioFd)
 
 #else
 
+typedef int pollfd;
+
 int openGpio(const char *)
 {
   return 0;
 }
 
-int openSwitchListener(int)
+pollfd openSwitchListener(int)
 {
   return 0;
 }

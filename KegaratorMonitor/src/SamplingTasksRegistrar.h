@@ -18,12 +18,12 @@ public:
 
   inline typename std::vector< std::function< Signature > >::const_iterator begin()
   {
-    return std::cbegin(mSamplingTasks);
+    return std::begin(mSamplingTasks);
   }
   
   inline typename std::vector< std::function< Signature > >::const_iterator end()
   {
-    return std::cend(mSamplingTasks);
+    return std::end(mSamplingTasks);
   }
 
   inline typename SamplingTasks::size_type size()
