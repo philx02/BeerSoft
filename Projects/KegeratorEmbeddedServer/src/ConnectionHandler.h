@@ -1,7 +1,7 @@
 #pragma once
 
 #include "TcpServer/ISender.h"
-#include "KegaratorMetrics.h"
+#include "KegeratorMetrics.h"
 
 class ConnectionHandler : public IObserver< KegaratorMetrics >
 {

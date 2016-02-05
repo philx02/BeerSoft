@@ -1,5 +1,5 @@
 #include "Bmp180.h"
-#include "KegaratorSamplingTasks.h"
+#include "KegeratorSamplingTasks.h"
 
 class PressureAndTemperatureSampling
 {

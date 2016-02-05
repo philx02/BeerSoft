@@ -1,11 +1,11 @@
 #include "ActiveObject.h"
 #include "ThreadPool.h"
-#include "KegaratorSamplingTasks.h"
-#include "KegaratorInterruptTasks.h"
+#include "KegeratorSamplingTasks.h"
+#include "KegeratorInterruptTasks.h"
 #include "TcpServer/TcpServer.h"
 #include "TcpServer/WebSocketConnection.h"
 #include "ConnectionHandler.h"
-#include "KegaratorMetrics.h"
+#include "KegeratorMetrics.h"
 
 #include <boost/asio.hpp>
 

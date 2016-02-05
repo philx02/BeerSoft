@@ -2,7 +2,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
  
 #The name of our project, this correspond to the solution in Visual Studio
-PROJECT(BeerSoft)
+PROJECT(FermentationMonitor)
 
 MESSAGE(STATUS "CMAKE_FIND_ROOT_PATH is: " ${CMAKE_FIND_ROOT_PATH})
 
@@ -28,7 +28,7 @@ SET(Boost_USE_STATIC_LIBS ON)
 FIND_PACKAGE(Boost 1.55.0 REQUIRED system date_time regex)
 MESSAGE(STATUS "Boost_LIBRARY_DIRS is: " ${Boost_LIBRARY_DIRS})
 
-SET(Internal_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+SET(Internal_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
@@ -49,8 +49,7 @@ ENDIF()
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
 #subdirectory to traverse to find other CMakelists (for each projects)
-ADD_SUBDIRECTORY(InterIntegratedCircuit InterIntegratedCircuit)
-ADD_SUBDIRECTORY(FermentationMonitor FermentationMonitor)
-ADD_SUBDIRECTORY(KegaratorMonitor KegaratorMonitor)
+ADD_SUBDIRECTORY(../Projects/InterIntegratedCircuit InterIntegratedCircuit)
+ADD_SUBDIRECTORY(../Projects/FermenationEmbeddedServer FermenationEmbeddedServer)
 
 
