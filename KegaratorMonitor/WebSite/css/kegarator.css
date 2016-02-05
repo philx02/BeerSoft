@@ -1,0 +1,50 @@
+.text_data {
+  font-family: "Trebuchet MS";
+}
+
+.temperature {
+  font-size: 300px;
+  text-align: right;
+  vertical-align: top;
+}
+
+.pressure {
+  font-size: 100px;
+  text-align: right;
+  vertical-align: top;
+}
+
+.degree_c {
+  font-size: 60px;
+  vertical-align: top;
+  padding-top: 60px;
+}
+
+.kpa {
+  font-size: 40px;
+  vertical-align: top;
+  padding-top: 20px;
+}
+
+.parent {
+  position: relative;
+}
+
+.kegs {
+  padding-left: 60px;
+}
+
+.keg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.beer_level {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: -1;
+}
