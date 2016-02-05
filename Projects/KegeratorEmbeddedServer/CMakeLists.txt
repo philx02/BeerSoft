@@ -1,4 +1,4 @@
-SET(this_target KegaratorMonitor)
+SET(this_target KegeratorEmbeddedServer)
 
 INCLUDE_DIRECTORIES(
   ${Boost_INCLUDE_DIRS}
@@ -12,9 +12,9 @@ SET(${this_target}_HEADER_FILES
   src/ThreadPool.h
   src/SamplingTasksRegistrar.h
   src/InterruptTasksRegistrar.h
-  src/KegaratorMetrics.h
-  src/KegaratorSamplingTasks.h
-  src/KegaratorInterruptTasks.h
+  src/KegeratorMetrics.h
+  src/KegeratorSamplingTasks.h
+  src/KegeratorInterruptTasks.h
   src/IObserver.h
   src/Subject.h
   src/TcpServer/ISender.h
@@ -30,14 +30,12 @@ SET( ${this_target}_SOURCE_FILES
   src/PressureAndTemperatureSampling.cpp
   src/FlowMeterSensing.cpp
 ) 
-
-#SET_SOURCE_FILES_PROPERTIES(${this_target}_HEADER_FILES
-#                            PROPERTIES HEADER_FILE_ONLY TRUE)
  
 LIST(APPEND ${this_target}_SOURCE_FILES ${${this_target}_HEADER_FILES})
 
 add_executable(${this_target} ${${this_target}_SOURCE_FILES})
-target_link_libraries(KegaratorMonitor ${Boost_LIBRARIES})
-target_link_libraries(KegaratorMonitor InterIntegratedCircuit)
+target_link_libraries(KegeratorEmbeddedServer ${Boost_LIBRARIES})
+target_link_libraries(KegeratorEmbeddedServer InterIntegratedCircuit)
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+target_link_libraries(KegeratorEmbeddedServer pthread)
 ENDIF()

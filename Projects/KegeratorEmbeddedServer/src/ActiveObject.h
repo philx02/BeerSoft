@@ -74,6 +74,11 @@ public:
   {
   }
 
+  DataActiveObject(DataActiveObject< T > &&iDataActiveObject)
+    : mInternal(std::move(iDataActiveObject.mInternal))
+  {
+  }
+
   inline void dataPush(const std::function< void (T &) > &iFunction)
   {
     push([=]() { iFunction(mInternal); });

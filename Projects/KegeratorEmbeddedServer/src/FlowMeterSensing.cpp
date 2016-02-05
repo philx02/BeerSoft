@@ -1,5 +1,5 @@
 #include "Operations.h"
-#include "KegaratorInterruptTasks.h"
+#include "KegeratorInterruptTasks.h"
 
 class FlowMeterSensing
 {
@@ -27,9 +27,9 @@ public:
 
 private:
   int mGpioFd;
-  int mPollFd;
+  pollfd mPollFd;
   size_t mKegIndex;
 };
 
-static FlowMeterSensing sFlowMeterSensingKeg0("/dev/i2c-1", 0);
-static FlowMeterSensing sFlowMeterSensingKeg1("/dev/i2c-1", 1);
+static FlowMeterSensing sFlowMeterSensingKeg0(std::getenv("FLOW_METER_0_GPIO_PATH"), 0);
+static FlowMeterSensing sFlowMeterSensingKeg1(std::getenv("FLOW_METER_1_GPIO_PATH"), 1);

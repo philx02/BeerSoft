@@ -18,12 +18,12 @@ public:
 
   inline typename std::vector< std::function< Signature > >::const_iterator begin()
   {
-    return std::cbegin(mInterruptTasks);
+    return std::begin(mInterruptTasks);
   }
   
   inline typename std::vector< std::function< Signature > >::const_iterator end()
   {
-    return std::cend(mInterruptTasks);
+    return std::end(mInterruptTasks);
   }
 
   inline typename InterruptTasks::size_type size()

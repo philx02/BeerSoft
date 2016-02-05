@@ -2,6 +2,7 @@
 
 #include "Subject.h"
 #include <cassert>
+#include <string>
 
 class KegaratorMetrics : public Subject< KegaratorMetrics >
 {
@@ -49,6 +50,11 @@ public:
   const Data &getData() const
   {
     return mData;
+  }
+
+  const std::string dataString() const
+  {
+    return std::to_string(mData.mTemperature) + "," + std::to_string(mData.mAmbientPressure) + "," + std::to_string(mData.mKegsTotalPulses[0]) + "," + std::to_string(mData.mKegsTotalPulses[1]);
   }
 
 private:
