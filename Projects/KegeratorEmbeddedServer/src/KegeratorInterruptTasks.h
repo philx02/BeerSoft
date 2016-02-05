@@ -2,6 +2,6 @@
 
 #include "InterruptTasksRegistrar.h"
 #include "ActiveObject.h"
-#include "KegaratorMetrics.h"
+#include "KegeratorMetrics.h"
 
 typedef InterruptTasksRegistrar< void (DataActiveObject< KegaratorMetrics > &) > KegaratorInterruptTasks;

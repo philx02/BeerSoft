@@ -15,8 +15,8 @@ public:
   }
 
 private:
-  template< template< class > class ConnectionType, class PayloadHandler >
-  friend TcpServer< ConnectionType, PayloadHandler > createTcpServer(boost::asio::io_service &, const PayloadHandler &, unsigned short);
+  template< template< class > class _ConnectionType, class _PayloadHandler >
+  friend TcpServer< _ConnectionType, _PayloadHandler > createTcpServer(boost::asio::io_service &, const _PayloadHandler &, unsigned short);
 
   TcpServer(boost::asio::io_service &iIoService, const PayloadHandler &iPayloadHandler, unsigned short iPort)
     : mAcceptor(iIoService, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), iPort))

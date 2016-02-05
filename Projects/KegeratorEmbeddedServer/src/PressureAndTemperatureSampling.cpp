@@ -1,5 +1,5 @@
 #include "Bmp180.h"
-#include "KegaratorSamplingTasks.h"
+#include "KegeratorSamplingTasks.h"
 
 class PressureAndTemperatureSampling
 {
@@ -39,4 +39,4 @@ private:
   Bmp180 mBmp180;
 };
 
-static PressureAndTemperatureSampling sPressureAndTemperatureSampling("/dev/i2c-1");
+static PressureAndTemperatureSampling sPressureAndTemperatureSampling(std::getenv("I2C_BUS_PATH"));
