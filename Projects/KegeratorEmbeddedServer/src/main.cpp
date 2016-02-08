@@ -34,10 +34,11 @@ public:
 
 int main(int argc, char *argv[])
 {
-  DataActiveObject< KegaratorMetrics > wKegaratorMetrics = KegaratorMetrics();
+
+  DataActiveObject< KegaratorMetrics > wKegaratorMetrics =KegaratorMetrics();
 
   ConsoleOutput wConsoleOutput;
-  wKegaratorMetrics.getConstInternal().attach(&wConsoleOutput);
+  //wKegaratorMetrics.getConstInternal().attach(&wConsoleOutput);
 
   boost::asio::io_service wIoService;
   auto wWebSocketServer = createTcpServer< WebSocketConnection >(wIoService, ConnectionHandler(wKegaratorMetrics.getConstInternal()), 8000);
