@@ -4,9 +4,20 @@
 #include <cassert>
 #include <string>
 
+#include <boost/noncopyable.hpp>
+
 class KegaratorMetrics : public Subject< KegaratorMetrics >
 {
 public:
+  KegaratorMetrics()
+  {
+  }
+
+  KegaratorMetrics(KegaratorMetrics &&iKegaratorMetrics)
+    : mData(std::move(iKegaratorMetrics.mData))
+  {
+  }
+
   void setTemperature(double iTemperature)
   {
     if (iTemperature != mData.mTemperature)

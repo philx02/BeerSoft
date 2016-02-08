@@ -38,6 +38,8 @@ bool readGpio(pollfd &ioPollFd, int iGpioFd)
 
 #else
 
+#include <iostream>
+
 typedef int pollfd;
 
 int openGpio(const char *)
@@ -53,9 +55,12 @@ pollfd openSwitchListener(int)
 template< typename T >
 bool readGpio(T, int)
 {
-  static bool wValue = false;
-  wValue = !wValue;
-  return wValue;
+  std::string wLine;
+  std::getline(std::cin, wLine);
+  return wLine == "1";
+  //static bool wValue = false;
+  //wValue = !wValue;
+  //return wValue;
 }
 
 #endif

@@ -12,6 +12,12 @@ public:
     mKegaratorMetrics.attach(this);
   }
 
+  ConnectionHandler(const ConnectionHandler &iConnectionHandler)
+    : mKegaratorMetrics(iConnectionHandler.mKegaratorMetrics)
+  {
+    mKegaratorMetrics.attach(this);
+  }
+
   ~ConnectionHandler()
   {
     mKegaratorMetrics.detach(this);
