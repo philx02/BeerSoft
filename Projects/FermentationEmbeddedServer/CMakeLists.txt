@@ -1,4 +1,4 @@
-SET(this_target FermenationEmbeddedServer)
+SET(this_target FermentationEmbeddedServer)
 
 INCLUDE_DIRECTORIES(
   ${Boost_INCLUDE_DIRS}

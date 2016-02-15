@@ -50,6 +50,6 @@ SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
 #subdirectory to traverse to find other CMakelists (for each projects)
 ADD_SUBDIRECTORY(../Projects/InterIntegratedCircuit InterIntegratedCircuit)
-ADD_SUBDIRECTORY(../Projects/FermenationEmbeddedServer FermenationEmbeddedServer)
+ADD_SUBDIRECTORY(../Projects/FermentationEmbeddedServer FermentationEmbeddedServer)
 
 
