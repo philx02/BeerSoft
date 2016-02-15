@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-  Ads1115 mAds1115("/dev/i2c-1");
+  Ads1115 mAds1115(argc == 2 ? argv[1] : "/dev/i2c-1");
   
   while (true)
   {
