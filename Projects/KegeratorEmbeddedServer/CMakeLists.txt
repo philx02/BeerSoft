@@ -28,6 +28,7 @@ SET(${this_target}_HEADER_FILES
 SET( ${this_target}_SOURCE_FILES
   src/main.cpp
   src/PressureAndTemperatureSampling.cpp
+  src/Co2MassSampling.cpp
   src/FlowMeterSensing.cpp
 ) 
  

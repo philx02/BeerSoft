@@ -66,6 +66,15 @@ public:
     }
   }
 
+  void setCo2MassIndex(size_t iCo2MassIndex)
+  {
+    if (iCo2MassIndex != mData.mCo2MassIndex)
+    {
+      mData.mCo2MassIndex = iCo2MassIndex;
+      Subject< KegaratorMetrics >::notify(*this);
+    }
+  }
+
   void pulseKeg(size_t iKegIndex)
   {
     assert(iKegIndex < NUMBER_OF_KEGS);
@@ -99,7 +108,7 @@ public:
 
     std::atomic< double > mTemperature;
     std::atomic< double > mAmbientPressure;
-    std::atomic< size_t > mMassIndexOfCo2;
+    std::atomic< size_t > mCo2MassIndex;
     std::array< std::atomic< size_t >, NUMBER_OF_KEGS > mKegsActualPulses;
   };
 
@@ -110,7 +119,7 @@ public:
 
   const std::string dataString() const
   {
-    auto wCo2Ratio = mData.mMassIndexOfCo2 < mCo2TankFullMassIndex ? static_cast< double >(mData.mMassIndexOfCo2 - mCo2TankEmptyMassIndex) / static_cast< double >(mCo2TankFullMassIndex - mCo2TankEmptyMassIndex) : 1.0;
+    auto wCo2Ratio = mData.mCo2MassIndex < mCo2TankFullMassIndex ? static_cast< double >(mData.mCo2MassIndex - mCo2TankEmptyMassIndex) / static_cast< double >(mCo2TankFullMassIndex - mCo2TankEmptyMassIndex) : 1.0;
     auto wKeg0Ratio = mData.mKegsActualPulses[0] < mFullKegTotalPulses ? static_cast< double >(mFullKegTotalPulses - mData.mKegsActualPulses[0]) / static_cast< double >(mFullKegTotalPulses) : 0.0;
     auto wKeg1Ratio = mData.mKegsActualPulses[1] < mFullKegTotalPulses ? static_cast< double >(mFullKegTotalPulses - mData.mKegsActualPulses[1]) / static_cast< double >(mFullKegTotalPulses) : 0.0;
     return    std::to_string(mData.mTemperature)
