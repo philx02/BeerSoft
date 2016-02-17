@@ -35,7 +35,7 @@ public:
 int main(int argc, char *argv[])
 {
 
-  DataActiveObject< KegaratorMetrics > wKegaratorMetrics =KegaratorMetrics();
+  DataActiveObject< KegaratorMetrics > wKegaratorMetrics = KegaratorMetrics(argc == 2 ? argv[1] : "");
 
   ConsoleOutput wConsoleOutput;
   //wKegaratorMetrics.getConstInternal().attach(&wConsoleOutput);
