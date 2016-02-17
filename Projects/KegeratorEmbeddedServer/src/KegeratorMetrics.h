@@ -19,9 +19,9 @@ public:
   {
     auto wRetrievePulses = [&](size_t wKegId, const char *iFilename)
     {
-      mKegsActualPulsesFiles[wKegId].open((iDataFolder / iFilename).c_str());
+      mKegsActualPulsesFiles[wKegId].reset(new std::fstream((iDataFolder / iFilename).c_str()));
       size_t wRetrievedPulses;
-      mKegsActualPulsesFiles[wKegId] >> wRetrievedPulses;
+      *mKegsActualPulsesFiles[wKegId] >> wRetrievedPulses;
       mData.mKegsActualPulses[wKegId].store(wRetrievedPulses);
     };
     wRetrievePulses(0, "Keg0Pulses.txt");
@@ -78,7 +78,9 @@ public:
   void pulseKeg(size_t iKegIndex)
   {
     assert(iKegIndex < NUMBER_OF_KEGS);
-    ++mData.mKegsActualPulses[iKegIndex];
+    mKegsActualPulsesFiles[iKegIndex]->seekp(0);
+    *mKegsActualPulsesFiles[iKegIndex] << ++mData.mKegsActualPulses[iKegIndex];
+    mKegsActualPulsesFiles[iKegIndex]->flush();
     Subject< KegaratorMetrics >::notify(*this);
   }
 
@@ -134,5 +136,5 @@ private:
   size_t mCo2TankEmptyMassIndex;
   size_t mCo2TankFullMassIndex;
   size_t mFullKegTotalPulses;
-  std::array< std::fstream, NUMBER_OF_KEGS > mKegsActualPulsesFiles;
+  std::array< std::unique_ptr< std::fstream >, NUMBER_OF_KEGS > mKegsActualPulsesFiles;
 };
