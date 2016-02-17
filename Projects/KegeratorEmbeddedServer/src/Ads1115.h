@@ -10,7 +10,7 @@ public:
   {
   }
 
-  uint16_t read()
+  uint16_t read() const
   {
     mDevice.writeWord(0x01, 0x838B);
     uint16_t wResult = mDevice.readWord(0x00);
