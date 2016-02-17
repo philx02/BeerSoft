@@ -46,6 +46,13 @@
   left: 0px;
 }
 
+#co2_level {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: -1;
+}
+
 .beer_level {
   position: absolute;
   top: 0px;
