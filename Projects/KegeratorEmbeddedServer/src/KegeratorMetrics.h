@@ -101,6 +101,7 @@ public:
     Data(const Data &iData)
       : mTemperature(iData.mTemperature.load())
       , mAmbientPressure(iData.mAmbientPressure.load())
+      , mCo2MassIndex(iData.mCo2MassIndex.load())
     {
       for (auto wKegPulsesIndex = 0u; wKegPulsesIndex < mKegsActualPulses.size(); ++wKegPulsesIndex)
       {
