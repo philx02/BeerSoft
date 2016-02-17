@@ -15,8 +15,10 @@
 
   function connect()
   {
-    //drawKegLevel(0, 0.3, 'yellow');
-    //drawKegLevel(1, 0.7, 'brown');
+    drawKegLevel(0, 0.3, 'yellow');
+    drawKegLevel(1, 0.7, 'brown');
+    drawCo2Level(.39);
+    temperature_data.innerHTML = 4.2;
     try
     {
       wWebSocket = new WebSocket(QueryString.server);
@@ -43,6 +45,32 @@
 
     var pressure_data = document.getElementById("pressure_data");
     pressure_data.innerHTML = (Number(wSplit[1])/1000).toFixed(1);
+    
+    drawCo2Level(Number(wSplit[2]));
+    drawKegLevel(0, Number(wSplit[3]), wSplit[4]);
+    drawKegLevel(1, Number(wSplit[5]), wSplit[6]);
+  }
+
+  function drawCo2Level(level_pct)
+  {
+    var canvas = document.getElementById('co2_level');
+    var context = canvas.getContext('2d');
+    context.beginPath();
+    var level_px = 149 * level_pct;
+    context.rect(9, 10, level_px, 40);
+    if (level_pct < 0.15)
+    {
+      context.fillStyle = 'red';
+    }
+    else if (level_pct < 0.4)
+    {
+      context.fillStyle = 'orange';
+    }
+    else
+    {
+      context.fillStyle = 'green';
+    }
+    context.fill();
   }
 
   function drawKegLevel(keg_id, level_pct, color)
@@ -67,8 +95,12 @@
           <td class="degree_c">&deg;C</td>
         </tr>
         <tr>
-          <td id="pressure_data" class="pressure"></td>
-          <td class="kpa">kPa</td>
+          <td colspan="2">
+            <div class="parent">
+              <img src="Co2TankEmpty.png" width="200"/>
+              <canvas id="co2_level"></canvas>
+            </div>
+          </td>
         </tr>
       </table>
     </td>
@@ -76,14 +108,14 @@
     <td class="keg_left">
       <div class="parent">
         <img src="KegEmpty.png" height="280" />
-        <!--<canvas id="beer_level_keg_0" class="beer_level"></canvas>-->
+        <canvas id="beer_level_keg_0" class="beer_level"></canvas>
       </div>
     </td>
 
     <td class="keg_right">
       <div class="parent">
         <img src="KegEmpty.png" height="280" />
-        <!--<canvas id="beer_level_keg_1" class="beer_level"></canvas>-->
+        <canvas id="beer_level_keg_1" class="beer_level"></canvas>
       </div>
     </td>
 
