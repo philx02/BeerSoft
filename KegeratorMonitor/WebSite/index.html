@@ -15,8 +15,8 @@
 
   function connect()
   {
-    drawKegLevel(0, 0.3, 'yellow');
-    drawKegLevel(1, 0.7, 'brown');
+    //drawKegLevel(0, 0.3, 'yellow');
+    //drawKegLevel(1, 0.7, 'brown');
     try
     {
       wWebSocket = new WebSocket(QueryString.server);
@@ -42,7 +42,7 @@
     temperature_data.innerHTML = Number(wSplit[0]).toFixed(1);
 
     var pressure_data = document.getElementById("pressure_data");
-    pressure_data.innerHTML = (Number(wSplit[1])/1000).toFixed(3);
+    pressure_data.innerHTML = (Number(wSplit[1])/1000).toFixed(1);
   }
 
   function drawKegLevel(keg_id, level_pct, color)
@@ -73,18 +73,17 @@
       </table>
     </td>
 
-    <td class="kegs">
+    <td class="keg_left">
       <div class="parent">
-
-        <img src="KegEmpty.png" />
-        <canvas id="beer_level_keg_0" width="198" height="581" class="beer_level"></canvas>
+        <img src="KegEmpty.png" height="280" />
+        <!--<canvas id="beer_level_keg_0" class="beer_level"></canvas>-->
       </div>
     </td>
 
-    <td>
+    <td class="keg_right">
       <div class="parent">
-        <img src="KegEmpty.png" />
-        <canvas id="beer_level_keg_1" width="198" height="581" class="beer_level"></canvas>
+        <img src="KegEmpty.png" height="280" />
+        <!--<canvas id="beer_level_keg_1" class="beer_level"></canvas>-->
       </div>
     </td>
 
