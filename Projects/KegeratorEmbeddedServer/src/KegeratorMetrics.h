@@ -28,7 +28,7 @@ public:
     wRetrievePulses(1, "Keg1Pulses.txt");
     auto wRetrieveValue = [&](const char *iFilename) -> size_t
     {
-      std::ifstream wFile(iFilename);
+      std::ifstream wFile((iDataFolder / iFilename).c_str());
       size_t wValue;
       wFile >> wValue;
       return wValue;
