@@ -15,9 +15,9 @@
 
   function connect()
   {
-    drawKegLevel(0, 0.3, 'yellow');
-    drawKegLevel(1, 0.7, 'brown');
-    drawCo2Level(.39);
+    //drawKegLevel(0, 0.3, 'yellow');
+    //drawKegLevel(1, 0.7, 'brown');
+    //drawCo2Level(.39);
     temperature_data.innerHTML = 4.2;
     try
     {
@@ -38,17 +38,18 @@
 
   function parseMessage(evt)
   {
+    console.log(evt.data);
     var wSplit = evt.data.split(",");
 
-    var temperature_data = document.getElementById("temperature_data");
-    temperature_data.innerHTML = Number(wSplit[0]).toFixed(1);
+    //var temperature_data = document.getElementById("temperature_data");
+    //temperature_data.innerHTML = Number(wSplit[0]).toFixed(1);
 
-    var pressure_data = document.getElementById("pressure_data");
-    pressure_data.innerHTML = (Number(wSplit[1])/1000).toFixed(1);
+    //var pressure_data = document.getElementById("pressure_data");
+    //pressure_data.innerHTML = (Number(wSplit[1])/1000).toFixed(1);
     
     drawCo2Level(Number(wSplit[2]));
-    drawKegLevel(0, Number(wSplit[3]), wSplit[4]);
-    drawKegLevel(1, Number(wSplit[5]), wSplit[6]);
+    drawKegLevel(1, Number(wSplit[3]), 'black');
+    //drawKegLevel(0, Number(wSplit[4]), 'blue');
   }
 
   function drawCo2Level(level_pct)
@@ -56,6 +57,7 @@
     var canvas = document.getElementById('co2_level');
     var context = canvas.getContext('2d');
     context.beginPath();
+    context.clearRect(0, 0, canvas.width, canvas.height);
     var level_px = 149 * level_pct;
     context.rect(9, 10, level_px, 40);
     if (level_pct < 0.15)
@@ -77,9 +79,10 @@
   {
     var canvas = document.getElementById('beer_level_keg_' + keg_id);
     var context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
     context.beginPath();
-    var level_px = -420 * level_pct + 522;
-    context.rect(25, level_px, 150, 522 - level_px);
+    var level_px = -203 * level_pct + 252;
+    context.rect(20, level_px, 55, 260 - level_px);
     context.fillStyle = color;
     context.fill();
   }
@@ -108,14 +111,14 @@
     <td class="keg_left">
       <div class="parent">
         <img src="KegEmpty.png" height="280" />
-        <canvas id="beer_level_keg_0" class="beer_level"></canvas>
+        <canvas id="beer_level_keg_0" class="beer_level" height="280"></canvas>
       </div>
     </td>
 
     <td class="keg_right">
       <div class="parent">
         <img src="KegEmpty.png" height="280" />
-        <canvas id="beer_level_keg_1" class="beer_level"></canvas>
+        <canvas id="beer_level_keg_1" class="beer_level" height="280"></canvas>
       </div>
     </td>
 
