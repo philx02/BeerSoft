@@ -19,7 +19,8 @@ public:
 
   void addSample(double iValue)
   {
-    mActualValue.store((iValue - mActualValue.load()) * mFactor);
+    auto wActualValue = mActualValue.load();
+    mActualValue.store(wActualValue + (iValue - wActualValue) * mFactor);
   }
 
   double getActualValue() const
