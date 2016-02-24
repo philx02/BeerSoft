@@ -23,6 +23,7 @@ SET(${this_target}_HEADER_FILES
   src/TcpServer/WebSocketConnection.h
   src/ConnectionHandler.h
   src/Operations.h
+  src/FilteredValue.h
 )
 
 SET( ${this_target}_SOURCE_FILES

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Subject.h"
+#include "FilteredValue.h"
+
 #include <cassert>
 #include <string>
 #include <atomic>
@@ -50,29 +52,20 @@ public:
 
   void setTemperature(double iTemperature)
   {
-    if (iTemperature != mData.mTemperature)
-    {
-      mData.mTemperature = iTemperature;
-      Subject< KegaratorMetrics >::notify(*this);
-    }
+    mData.mTemperature.addSample(iTemperature);
+    Subject< KegaratorMetrics >::notify(*this);
   }
   
   void setAmbientPressure(double iPressure)
   {
-    if (iPressure != mData.mAmbientPressure)
-    {
-      mData.mAmbientPressure = iPressure;
-      Subject< KegaratorMetrics >::notify(*this);
-    }
+    mData.mAmbientPressure.addSample(iPressure);
+    Subject< KegaratorMetrics >::notify(*this);
   }
 
   void setCo2MassIndex(size_t iCo2MassIndex)
   {
-    if (iCo2MassIndex != mData.mCo2MassIndex)
-    {
-      mData.mCo2MassIndex = iCo2MassIndex;
-      Subject< KegaratorMetrics >::notify(*this);
-    }
+    mData.mCo2MassIndex.addSample(iCo2MassIndex);
+    Subject< KegaratorMetrics >::notify(*this);
   }
 
   void pulseKeg(size_t iKegIndex)
@@ -89,8 +82,9 @@ public:
   struct Data
   {
     Data()
-      : mTemperature(0)
-      , mAmbientPressure(0)
+      : mTemperature(0, 0.4)
+      , mAmbientPressure(0, 0.4)
+      , mCo2MassIndex(0, 0.4)
     {
       for (auto &&wKegPulses : mKegsActualPulses)
       {
@@ -99,9 +93,9 @@ public:
     }
 
     Data(const Data &iData)
-      : mTemperature(iData.mTemperature.load())
-      , mAmbientPressure(iData.mAmbientPressure.load())
-      , mCo2MassIndex(iData.mCo2MassIndex.load())
+      : mTemperature(iData.mTemperature)
+      , mAmbientPressure(iData.mAmbientPressure)
+      , mCo2MassIndex(iData.mCo2MassIndex)
     {
       for (auto wKegPulsesIndex = 0u; wKegPulsesIndex < mKegsActualPulses.size(); ++wKegPulsesIndex)
       {
@@ -109,9 +103,9 @@ public:
       }
     }
 
-    std::atomic< double > mTemperature;
-    std::atomic< double > mAmbientPressure;
-    std::atomic< size_t > mCo2MassIndex;
+    FilteredValue mTemperature;
+    FilteredValue mAmbientPressure;
+    FilteredValue mCo2MassIndex;
     std::array< std::atomic< size_t >, NUMBER_OF_KEGS > mKegsActualPulses;
   };
 
@@ -122,11 +116,11 @@ public:
 
   const std::string dataString() const
   {
-    auto wCo2Ratio = mData.mCo2MassIndex < mCo2TankFullMassIndex ? static_cast< double >(mData.mCo2MassIndex - mCo2TankEmptyMassIndex) / static_cast< double >(mCo2TankFullMassIndex - mCo2TankEmptyMassIndex) : 1.0;
+    auto wCo2Ratio = mData.mCo2MassIndex.getActualValue() < mCo2TankFullMassIndex ? static_cast< double >(mData.mCo2MassIndex.getActualValue() - mCo2TankEmptyMassIndex) / static_cast< double >(mCo2TankFullMassIndex - mCo2TankEmptyMassIndex) : 1.0;
     auto wKeg0Ratio = mData.mKegsActualPulses[0] < mFullKegTotalPulses ? static_cast< double >(mFullKegTotalPulses - mData.mKegsActualPulses[0]) / static_cast< double >(mFullKegTotalPulses) : 0.0;
     auto wKeg1Ratio = mData.mKegsActualPulses[1] < mFullKegTotalPulses ? static_cast< double >(mFullKegTotalPulses - mData.mKegsActualPulses[1]) / static_cast< double >(mFullKegTotalPulses) : 0.0;
-    return    std::to_string(mData.mTemperature)
-      + "," + std::to_string(mData.mAmbientPressure)
+    return    std::to_string(mData.mTemperature.getActualValue())
+      + "," + std::to_string(mData.mAmbientPressure.getActualValue())
       + "," + std::to_string(wCo2Ratio)
       + "," + std::to_string(wKeg0Ratio)
       + "," + std::to_string(wKeg1Ratio);
@@ -134,6 +128,7 @@ public:
 
 private:
   Data mData;
+
   size_t mCo2TankEmptyMassIndex;
   size_t mCo2TankFullMassIndex;
   size_t mFullKegTotalPulses;
