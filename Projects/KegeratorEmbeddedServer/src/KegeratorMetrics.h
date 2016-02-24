@@ -82,9 +82,9 @@ public:
   struct Data
   {
     Data()
-      : mTemperature(0, 0.4)
-      , mAmbientPressure(0, 0.4)
-      , mCo2MassIndex(0, 0.4)
+      : mTemperature(0, 0.1)
+      , mAmbientPressure(0, 0.1)
+      , mCo2MassIndex(0, 0.1)
     {
       for (auto &&wKegPulses : mKegsActualPulses)
       {
