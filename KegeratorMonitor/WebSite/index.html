@@ -18,7 +18,7 @@
     //drawKegLevel(0, 0.3, 'yellow');
     //drawKegLevel(1, 0.7, 'brown');
     //drawCo2Level(.39);
-    temperature_data.innerHTML = 4.2;
+    //temperature_data.innerHTML = 4.2;
     try
     {
       wWebSocket = new WebSocket(QueryString.server);
@@ -41,8 +41,8 @@
     console.log(evt.data);
     var wSplit = evt.data.split(",");
 
-    //var temperature_data = document.getElementById("temperature_data");
-    //temperature_data.innerHTML = Number(wSplit[0]).toFixed(1);
+    var temperature_data = document.getElementById("temperature_data");
+    temperature_data.innerHTML = Number(wSplit[0]).toFixed(1);
 
     //var pressure_data = document.getElementById("pressure_data");
     //pressure_data.innerHTML = (Number(wSplit[1])/1000).toFixed(1);
