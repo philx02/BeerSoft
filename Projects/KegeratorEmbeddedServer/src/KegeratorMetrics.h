@@ -14,10 +14,10 @@
 
 namespace bfs = boost::filesystem;
 
-class KegaratorMetrics : public Subject< KegaratorMetrics >
+class KegeratorMetrics : public Subject< KegeratorMetrics >
 {
 public:
-  KegaratorMetrics(const bfs::path &iDataFolder)
+  KegeratorMetrics(const bfs::path &iDataFolder)
   {
     auto wRetrievePulses = [&](size_t wKegId, const char *iFilename)
     {
@@ -40,32 +40,32 @@ public:
     mFullKegTotalPulses = wRetrieveValue("FullKegTotalPulses.txt");
   }
 
-  KegaratorMetrics(KegaratorMetrics &&iKegaratorMetrics)
-    : mData(std::move(iKegaratorMetrics.mData))
-    , mCo2TankEmptyMassIndex(std::move(iKegaratorMetrics.mCo2TankEmptyMassIndex))
-    , mCo2TankFullMassIndex(std::move(iKegaratorMetrics.mCo2TankFullMassIndex))
-    , mFullKegTotalPulses(std::move(iKegaratorMetrics.mFullKegTotalPulses))
+  KegeratorMetrics(KegeratorMetrics &&iKegeratorMetrics)
+    : mData(std::move(iKegeratorMetrics.mData))
+    , mCo2TankEmptyMassIndex(std::move(iKegeratorMetrics.mCo2TankEmptyMassIndex))
+    , mCo2TankFullMassIndex(std::move(iKegeratorMetrics.mCo2TankFullMassIndex))
+    , mFullKegTotalPulses(std::move(iKegeratorMetrics.mFullKegTotalPulses))
   {
-    mKegsActualPulsesFiles[0] = std::move(iKegaratorMetrics.mKegsActualPulsesFiles[0]);
-    mKegsActualPulsesFiles[1] = std::move(iKegaratorMetrics.mKegsActualPulsesFiles[1]);
+    mKegsActualPulsesFiles[0] = std::move(iKegeratorMetrics.mKegsActualPulsesFiles[0]);
+    mKegsActualPulsesFiles[1] = std::move(iKegeratorMetrics.mKegsActualPulsesFiles[1]);
   }
 
   void setTemperature(double iTemperature)
   {
     mData.mTemperature.addSample(iTemperature);
-    Subject< KegaratorMetrics >::notify(*this);
+    Subject< KegeratorMetrics >::notify(*this);
   }
   
   void setAmbientPressure(double iPressure)
   {
     mData.mAmbientPressure.addSample(iPressure);
-    Subject< KegaratorMetrics >::notify(*this);
+    Subject< KegeratorMetrics >::notify(*this);
   }
 
   void setCo2MassIndex(size_t iCo2MassIndex)
   {
     mData.mCo2MassIndex.addSample(iCo2MassIndex);
-    Subject< KegaratorMetrics >::notify(*this);
+    Subject< KegeratorMetrics >::notify(*this);
   }
 
   void pulseKeg(size_t iKegIndex)
@@ -74,7 +74,7 @@ public:
     mKegsActualPulsesFiles[iKegIndex]->seekp(0);
     *mKegsActualPulsesFiles[iKegIndex] << ++mData.mKegsActualPulses[iKegIndex];
     mKegsActualPulsesFiles[iKegIndex]->flush();
-    Subject< KegaratorMetrics >::notify(*this);
+    Subject< KegeratorMetrics >::notify(*this);
   }
 
   const static size_t NUMBER_OF_KEGS = 2;

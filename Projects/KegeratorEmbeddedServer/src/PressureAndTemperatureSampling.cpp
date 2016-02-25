@@ -7,10 +7,10 @@ public:
   PressureAndTemperatureSampling(const char *iDevicePath)
     : mBmp180(iDevicePath)
   {
-    KegaratorSamplingTasks::getInstance().addSamplingTask([&](DataActiveObject< KegaratorMetrics > &iKegaratorMetrics)
+    KegeratorSamplingTasks::getInstance().addSamplingTask([&](DataActiveObject< KegeratorMetrics > &iKegeratorMetrics)
     {
       auto wData = samplePressureAndTemperature(mBmp180);
-      iKegaratorMetrics.dataPush([&](KegaratorMetrics &iMetrics)
+      iKegeratorMetrics.dataPush([&](KegeratorMetrics &iMetrics)
       {
         iMetrics.setAmbientPressure(wData.mPressure);
         iMetrics.setTemperature(wData.mTemperature);

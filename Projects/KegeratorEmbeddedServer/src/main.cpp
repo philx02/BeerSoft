@@ -10,23 +10,23 @@
 #include <boost/asio.hpp>
 
 template<>
-KegaratorSamplingTasks & KegaratorSamplingTasks::getInstance()
+KegeratorSamplingTasks & KegeratorSamplingTasks::getInstance()
 {
-  static KegaratorSamplingTasks wKegaratorSamplingTasks;
-  return wKegaratorSamplingTasks;
+  static KegeratorSamplingTasks wKegeratorSamplingTasks;
+  return wKegeratorSamplingTasks;
 }
 
 template<>
-KegaratorInterruptTasks & KegaratorInterruptTasks::getInstance()
+KegeratorInterruptTasks & KegeratorInterruptTasks::getInstance()
 {
-  static KegaratorInterruptTasks wKegaratorInterruptTasks;
-  return wKegaratorInterruptTasks;
+  static KegeratorInterruptTasks wKegeratorInterruptTasks;
+  return wKegeratorInterruptTasks;
 }
 
-class ConsoleOutput : public IObserver< KegaratorMetrics >
+class ConsoleOutput : public IObserver< KegeratorMetrics >
 {
 public:
-  virtual void update(const KegaratorMetrics &iMetrics)
+  virtual void update(const KegeratorMetrics &iMetrics)
   {
     std::cout << iMetrics.dataString() << std::endl;
   }
@@ -35,35 +35,35 @@ public:
 int main(int argc, char *argv[])
 {
 
-  DataActiveObject< KegaratorMetrics > wKegaratorMetrics = KegaratorMetrics(argc == 2 ? argv[1] : "");
+  DataActiveObject< KegeratorMetrics > wKegeratorMetrics = KegeratorMetrics(argc == 2 ? argv[1] : "");
 
   ConsoleOutput wConsoleOutput;
-  //wKegaratorMetrics.getConstInternal().attach(&wConsoleOutput);
+  //wKegeratorMetrics.getConstInternal().attach(&wConsoleOutput);
 
   boost::asio::io_service wIoService;
-  auto wWebSocketServer = createTcpServer< WebSocketConnection >(wIoService, ConnectionHandler(wKegaratorMetrics.getConstInternal()), 8000);
+  auto wWebSocketServer = createTcpServer< WebSocketConnection >(wIoService, ConnectionHandler(wKegeratorMetrics.getConstInternal()), 8000);
   std::thread wTcpServerThread([&]() { wIoService.run(); });
 
-  ThreadPool wThreadPool(KegaratorSamplingTasks::getInstance().size());
-  auto wKegaratorMetricsThread = std::thread([&]() { wKegaratorMetrics.run(); });
+  ThreadPool wThreadPool(KegeratorSamplingTasks::getInstance().size());
+  auto wKegeratorMetricsThread = std::thread([&]() { wKegeratorMetrics.run(); });
 
   std::vector< std::thread > wInterruptThreads;
-  for (auto &&wInterruptTask : KegaratorInterruptTasks::getInstance())
+  for (auto &&wInterruptTask : KegeratorInterruptTasks::getInstance())
   {
-    wInterruptThreads.emplace_back([&]() { wInterruptTask(wKegaratorMetrics); });
+    wInterruptThreads.emplace_back([&]() { wInterruptTask(wKegeratorMetrics); });
   }
   
   while (true)
   {
-    for (auto &&wSamplingTask : KegaratorSamplingTasks::getInstance())
+    for (auto &&wSamplingTask : KegeratorSamplingTasks::getInstance())
     {
-      wThreadPool.enqueue([&]() { wSamplingTask(wKegaratorMetrics); });
+      wThreadPool.enqueue([&]() { wSamplingTask(wKegeratorMetrics); });
     }
     std::this_thread::sleep_for(std::chrono::seconds(1));
   }
 
-  wKegaratorMetrics.stop();
-  wKegaratorMetricsThread.join();
+  wKegeratorMetrics.stop();
+  wKegeratorMetricsThread.join();
 
   for (auto &&wInterruptThread : wInterruptThreads)
   {
