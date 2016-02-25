@@ -7,10 +7,10 @@ public:
   Co2MassSampling(const char *iDevicePath)
     : mAds1115(iDevicePath)
   {
-    KegaratorSamplingTasks::getInstance().addSamplingTask([&](DataActiveObject< KegaratorMetrics > &iKegaratorMetrics)
+    KegeratorSamplingTasks::getInstance().addSamplingTask([&](DataActiveObject< KegeratorMetrics > &iKegeratorMetrics)
     {
       auto wCo2MassIndex = sampleCo2MassIndex(mAds1115);
-      iKegaratorMetrics.dataPush([&](KegaratorMetrics &iMetrics)
+      iKegeratorMetrics.dataPush([&](KegeratorMetrics &iMetrics)
       {
         iMetrics.setCo2MassIndex(wCo2MassIndex);
       });

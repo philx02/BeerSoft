@@ -36,8 +36,8 @@ SET( ${this_target}_SOURCE_FILES
 LIST(APPEND ${this_target}_SOURCE_FILES ${${this_target}_HEADER_FILES})
 
 add_executable(${this_target} ${${this_target}_SOURCE_FILES})
-target_link_libraries(KegeratorEmbeddedServer ${Boost_LIBRARIES})
-target_link_libraries(KegeratorEmbeddedServer InterIntegratedCircuit)
+target_link_libraries(${this_target} ${Boost_LIBRARIES})
+target_link_libraries(${this_target} InterIntegratedCircuit)
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-target_link_libraries(KegeratorEmbeddedServer pthread)
+target_link_libraries(${this_target} pthread)
 ENDIF()

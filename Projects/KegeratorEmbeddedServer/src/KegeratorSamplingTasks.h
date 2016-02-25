@@ -4,4 +4,4 @@
 #include "ActiveObject.h"
 #include "KegeratorMetrics.h"
 
-typedef SamplingTasksRegistrar< void (DataActiveObject< KegaratorMetrics > &) > KegaratorSamplingTasks;
+typedef SamplingTasksRegistrar< void (DataActiveObject< KegeratorMetrics > &) > KegeratorSamplingTasks;

@@ -3,24 +3,24 @@
 #include "TcpServer/ISender.h"
 #include "KegeratorMetrics.h"
 
-class ConnectionHandler : public IObserver< KegaratorMetrics >
+class ConnectionHandler : public IObserver< KegeratorMetrics >
 {
 public:
-  ConnectionHandler(const KegaratorMetrics &iKegaratorMetrics)
-    : mKegaratorMetrics(iKegaratorMetrics)
+  ConnectionHandler(const KegeratorMetrics &iKegeratorMetrics)
+    : mKegeratorMetrics(iKegeratorMetrics)
   {
-    mKegaratorMetrics.attach(this);
+    mKegeratorMetrics.attach(this);
   }
 
   ConnectionHandler(const ConnectionHandler &iConnectionHandler)
-    : mKegaratorMetrics(iConnectionHandler.mKegaratorMetrics)
+    : mKegeratorMetrics(iConnectionHandler.mKegeratorMetrics)
   {
-    mKegaratorMetrics.attach(this);
+    mKegeratorMetrics.attach(this);
   }
 
   ~ConnectionHandler()
   {
-    mKegaratorMetrics.detach(this);
+    mKegeratorMetrics.detach(this);
   }
 
   void setSender(const std::shared_ptr< ISender > &iSender)
@@ -33,12 +33,12 @@ public:
     handleMessage(iPayload);
   }
 
-  void update(const KegaratorMetrics &iMetrics)
+  void update(const KegeratorMetrics &iMetrics)
   {
     auto wSender = mSender.lock();
     if (wSender != nullptr)
     {
-      wSender->send(mKegaratorMetrics.dataString());
+      wSender->send(mKegeratorMetrics.dataString());
     }
   }
 
@@ -47,10 +47,10 @@ private:
   {
     if (iPayload == "get_status")
     {
-      update(mKegaratorMetrics);
+      update(mKegeratorMetrics);
     }
   }
 
   std::weak_ptr< ISender > mSender;
-  const KegaratorMetrics &mKegaratorMetrics;
+  const KegeratorMetrics &mKegeratorMetrics;
 };

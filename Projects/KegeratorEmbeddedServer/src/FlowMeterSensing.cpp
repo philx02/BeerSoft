@@ -9,14 +9,14 @@ public:
     , mPollFd(openSwitchListener(mGpioFd))
     , mKegIndex(iKegIndex)
   {
-    KegaratorInterruptTasks::getInstance().addInterruptTask([&](DataActiveObject< KegaratorMetrics > &iKegaratorMetrics)
+    KegeratorInterruptTasks::getInstance().addInterruptTask([&](DataActiveObject< KegeratorMetrics > &iKegeratorMetrics)
     {
       while (true)
       {
         auto wGpioValue = readGpio(mPollFd, mGpioFd);
         if (wGpioValue)
         {
-          iKegaratorMetrics.dataPush([&](KegaratorMetrics &iMetrics)
+          iKegeratorMetrics.dataPush([&](KegeratorMetrics &iMetrics)
           {
             iMetrics.pulseKeg(mKegIndex);
           });
