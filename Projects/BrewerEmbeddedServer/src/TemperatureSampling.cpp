@@ -1,4 +1,3 @@
-#include "Ads1115.h"
 #include "BrewControlSamplingTasks.h"
 #include <fstream>
 #include <string>
@@ -9,7 +8,7 @@ class TemperatureSampling
 {
 public:
   TemperatureSampling(const char *iDevicePath, const char *iCalibrationFile)
-    : mAds1115(iDevicePath)
+    : mAdc(iDevicePath)
     , mTemperatureCalibration(std::numeric_limits< uint16_t >::max() + 1)
   {
     struct Segment
@@ -18,14 +17,14 @@ public:
       {
         std::vector< std::string > wSplit;
         boost::split(wSplit, iStartingPoint, boost::is_any_of(","));
-        mStartingIndex = std::strtoul(wSplit[0].c_str(), nullptr, 10);
+        mStartingIndex = static_cast< uint16_t >(std::strtoul(wSplit[0].c_str(), nullptr, 10));
         mStartingValue = std::strtod(wSplit[1].c_str(), nullptr);
       }
       void setEndPoint(const std::string &iStartingPoint)
       {
         std::vector< std::string > wSplit;
         boost::split(wSplit, iStartingPoint, boost::is_any_of(","));
-        mEndingIndex = std::strtoul(wSplit[0].c_str(), nullptr, 10);
+        mEndingIndex = static_cast< uint16_t >(std::strtoul(wSplit[0].c_str(), nullptr, 10));
         mEndingValue = std::strtod(wSplit[1].c_str(), nullptr);
         mSlope = (mEndingValue - mStartingValue) / static_cast< double >(mEndingIndex - mStartingIndex);
         mInitialValue = mEndingValue - mSlope * static_cast< double >(mEndingIndex);
@@ -61,7 +60,7 @@ public:
     
     BrewControlSamplingTasks::getInstance().addSamplingTask([&](DataActiveObject< BrewControl > &iBrewControl)
     {
-      auto wTemperature = mTemperatureCalibration[sampleTemperatureIndex(mAds1115)];
+      auto wTemperature = mTemperatureCalibration[sampleTemperatureIndex(mAdc)];
       iBrewControl.dataPush([&](BrewControl &iController)
       {
         iController.setActualTemperature(wTemperature);
@@ -69,13 +68,15 @@ public:
     });
   }
 
-  size_t sampleTemperatureIndex(const Ads1115 &iAds1115)
+  size_t sampleTemperatureIndex(std::ifstream &iAdc)
   {
-    return iAds1115.read();
+    size_t wTemperatureIndex;
+    iAdc >> wTemperatureIndex;
+    return wTemperatureIndex;
   }
 
 private:
-  Ads1115 mAds1115;
+  std::ifstream mAdc;
   std::vector< double > mTemperatureCalibration;
 };
 

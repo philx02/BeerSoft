@@ -4,9 +4,12 @@
 #include "TcpServer/TcpServer.h"
 #include "TcpServer/WebSocketConnection.h"
 #include "ConnectionHandler.h"
+#include "HeaterControl.h"
 #include "BrewControl.h"
 
 #include <boost/asio.hpp>
+
+#include <memory>
 
 template<>
 BrewControlSamplingTasks & BrewControlSamplingTasks::getInstance()
@@ -17,7 +20,7 @@ BrewControlSamplingTasks & BrewControlSamplingTasks::getInstance()
 
 int main(int argc, char *argv[])
 {
-  DataActiveObject< BrewControl > wBrewControl = BrewControl();
+  DataActiveObject< BrewControl > wBrewControl = BrewControl(std::make_unique< HeaterControl >(std::getenv("PWM_GPIO_DEVICE")));
 
   boost::asio::io_service wIoService;
   auto wWebSocketServer = createTcpServer< WebSocketConnection >(wIoService, ConnectionHandler(wBrewControl.getConstInternal()), 8000);
