@@ -20,7 +20,7 @@ BrewControlSamplingTasks & BrewControlSamplingTasks::getInstance()
 
 int main(int argc, char *argv[])
 {
-  DataActiveObject< BrewControl > wBrewControl = BrewControl(std::make_unique< HeaterControl >(std::getenv("PWM_GPIO_DEVICE")));
+  DataActiveObject< BrewControl > wBrewControl = BrewControl(std::make_unique< HeaterControl >(std::getenv("PWM_GPIO_DEVICE"), boost::posix_time::milliseconds(10), boost::posix_time::seconds(2), 20));
 
   boost::asio::io_service wIoService;
   auto wWebSocketServer = createTcpServer< WebSocketConnection >(wIoService, ConnectionHandler(wBrewControl.getConstInternal()), 8000);
