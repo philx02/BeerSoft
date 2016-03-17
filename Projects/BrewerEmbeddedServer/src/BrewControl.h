@@ -18,21 +18,27 @@ public:
   {
   }
 
-  void setTemperatureCommand(double iTemperature)
+  void setTemperatureCommand(double iTemperature) const
   {
     mHeaterControl->setTemperatureCommand(iTemperature);
     Subject< BrewControl >::notify(*this);
   }
 
-  void setActualTemperature(double iTemperature)
+  void setActualTemperature(double iTemperature) const
   {
     mHeaterControl->setActualTemperature(iTemperature);
     Subject< BrewControl >::notify(*this);
   }
 
+  void setMode(size_t iMode) const
+  {
+    mHeaterControl->setMode(static_cast< HeaterControl::eMode >(iMode));
+    Subject< BrewControl >::notify(*this);
+  }
+
   std::string dataString() const
   {
-    return std::to_string(mHeaterControl->getTemperatureCommand()) + "," + std::to_string(mHeaterControl->getActualTemperature()) + "," + std::to_string(mHeaterControl->getActualDutyCycle());
+    return std::to_string(mHeaterControl->getTemperatureCommand()) + "," + std::to_string(mHeaterControl->getActualTemperature()) + "," + std::to_string(mHeaterControl->getActualDutyCycle()) + "," + std::to_string(mHeaterControl->getMode());
   }
 
 private:

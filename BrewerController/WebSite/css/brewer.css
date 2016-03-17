@@ -1,5 +1,13 @@
-.text_data {
+body
+{
   font-family: "Trebuchet MS", "Arial";
+  width: 750px;
+}
+
+.top_table_th
+{
+  font-size: 20px;
+  padding-top: 50px;
 }
 
 .temperature, .duty_cycle {
@@ -9,25 +17,60 @@
 }
 
 .degree_c, .pct {
+  padding-top: 25px;
   font-size: 30px;
   vertical-align: top;
-  padding-top: 30px;
+}
+
+#temperature_command, #actual_temperature, #actual_duty_cycle
+{
+  width: 300px;
 }
 
 #enter_temperature_command
 {
-  width: 200px;
+  margin-left: 100px;
+  margin-top: 100px;
+  width: 500px;
+  height: 260px;
   display: none;
   position: absolute;
   background-color: white;
   z-index: 1;
   top: 0;
-  margin: auto;
 }
 
 #input_temperature_command
 {
+  margin-left: 50px;
+  margin-top: 50px;
   font-size: 120px;
   width: 200px;
-  height: 200px;
+  height: 160px;
+}
+
+#input_temperature_command_button
+{
+  font-size: 40px;
+  margin-left: 20px;
+  width: 200px;
+  height: 100px;
+}
+
+.mode_button
+{
+  white-space: normal;
+  font-size: 50px;
+  width: 242px;
+  height: 150px;
+}
+
+#off_button
+{
+  background-color: red;
+}
+
+#bottom_buttons
+{
+  margin-top: 50px;
 }

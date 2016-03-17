@@ -44,7 +44,26 @@
     actual_temperature.innerHTML = Number(wSplit[1]).toFixed(1);
 
     var actual_duty_cycle = document.getElementById("actual_duty_cycle");
-    actual_duty_cycle.innerHTML = Number(wSplit[2]).toFixed(1);
+    actual_duty_cycle.innerHTML = (100.0 * Number(wSplit[2])).toFixed(1);
+
+    switch (Number(wSplit[3]))
+    {
+      case 0:
+        document.getElementById("off_button").style.background = "red";
+        document.getElementById("pwm_button").style.background = "grey";
+        document.getElementById("always_on_button").style.background = "grey";
+        break;
+      case 1:
+        document.getElementById("off_button").style.background = "grey";
+        document.getElementById("pwm_button").style.background = "red";
+        document.getElementById("always_on_button").style.background = "grey";
+        break;
+      case 2:
+        document.getElementById("off_button").style.background = "grey";
+        document.getElementById("pwm_button").style.background = "grey";
+        document.getElementById("always_on_button").style.background = "red";
+        break;
+    }
   }
 
   function toggle_visibility(id)
@@ -53,15 +72,32 @@
     if (e.style.display == 'block')
     {
       e.style.display = 'none';
+      document.body.style.backgroundColor = "white";
     }
     else
     {
       e.style.display = 'block';
+      document.body.style.backgroundColor = "grey";
     }
+  }
+
+  function submitCommand()
+  {
+    toggle_visibility('enter_temperature_command');
+    wWebSocket.send("set_command," + document.getElementById("input_temperature_command").value);
+  }
+
+  function setMode(mode)
+  {
+    wWebSocket.send("set_mode," + mode);
   }
 </script>
 
 <table>
+  <tr class="top_table_tr">
+    <th class="top_table_th">Temperature Command</th>
+    <th class="top_table_th">Measured Temperature</th>
+  </tr>
   <tr>
     <td class="text_data">
       <table>
@@ -81,6 +117,9 @@
     </td>
   </tr>
   
+  <tr class="top_table_tr">
+    <th class="top_table_th">Duty Cycle</th>
+  </tr>
   <tr>
     <td class="text_data" colspan="2">
       <table>
@@ -93,8 +132,17 @@
   </tr>
 </table>
 
+<table id="bottom_buttons">
+  <tr>
+    <td class="mode_button_td"><input id="always_on_button" class="mode_button" type="button" value="ALWAYS ON" onclick="setMode(2);" /></td>
+    <td class="mode_button_td"><input id="pwm_button" class="mode_button" type="button" value="PWM" onclick="setMode(1);" /></td>
+    <td class="mode_button_td"><input id="off_button" class="mode_button" type="button" value="OFF" onclick="setMode(0);" /></td>
+  </tr>
+</table>
+
 <div id="enter_temperature_command">
   <input id="input_temperature_command" type="number" />
+  <input id="input_temperature_command_button" type="submit" onclick="submitCommand();" />
 </div>
 
 </body>
