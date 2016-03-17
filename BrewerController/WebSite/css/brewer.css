@@ -1,17 +1,17 @@
 body
 {
   font-family: "Trebuchet MS", "Arial";
-  width: 750px;
+  width: 900px;
 }
 
 .top_table_th
 {
-  font-size: 20px;
+  font-size: 30px;
   padding-top: 50px;
 }
 
 .temperature, .duty_cycle {
-  font-size: 120px;
+  font-size: 160px;
   text-align: right;
   vertical-align: top;
 }
@@ -24,7 +24,7 @@ body
 
 #temperature_command, #actual_temperature, #actual_duty_cycle
 {
-  width: 300px;
+  width: 380px;
 }
 
 #enter_temperature_command
@@ -61,7 +61,7 @@ body
 {
   white-space: normal;
   font-size: 50px;
-  width: 242px;
+  width: 292px;
   height: 150px;
 }
 
