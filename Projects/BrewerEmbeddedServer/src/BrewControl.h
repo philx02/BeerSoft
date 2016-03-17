@@ -30,14 +30,9 @@ public:
     Subject< BrewControl >::notify(*this);
   }
 
-  double getTemperatureCommand() const
+  std::string dataString() const
   {
-    mHeaterControl->getActualTemperature();
-  }
-
-  double getActualTemperature() const
-  {
-    return mHeaterControl->getActualTemperature();
+    return std::to_string(mHeaterControl->getTemperatureCommand()) + "," + std::to_string(mHeaterControl->getActualTemperature()) + "," + std::to_string(mHeaterControl->getActualDutyCycle());
   }
 
 private:

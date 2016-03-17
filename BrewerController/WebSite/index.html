@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Brewer Control</title>
+<link rel="stylesheet" type="text/css" href="css/brewer.css"/>
+</head>
+ 
+<body onload="connect()">
+
+<script src="common.js"></script>
+
+<script>
+
+  var wWebSocket;
+
+  function connect()
+  {
+    try
+    {
+      wWebSocket = new WebSocket(QueryString.server);
+    }
+    catch (exc)
+    {
+      console.log(exc.message);
+    }
+    wWebSocket.onopen = function (evt) { greetings(evt); };
+    wWebSocket.onmessage = function (evt) { parseMessage(evt); };
+  }
+
+  function greetings(evt)
+  {
+    wWebSocket.send("get_status");
+  }
+
+  function parseMessage(evt)
+  {
+    console.log(evt.data);
+    var wSplit = evt.data.split(",");
+
+    var temperature_command = document.getElementById("temperature_command");
+    temperature_command.innerHTML = Number(wSplit[0]).toFixed(1);
+
+    var actual_temperature = document.getElementById("actual_temperature");
+    actual_temperature.innerHTML = Number(wSplit[1]).toFixed(1);
+
+    var actual_duty_cycle = document.getElementById("actual_duty_cycle");
+    actual_duty_cycle.innerHTML = Number(wSplit[2]).toFixed(1);
+  }
+
+  function toggle_visibility(id)
+  {
+    var e = document.getElementById(id);
+    if (e.style.display == 'block')
+    {
+      e.style.display = 'none';
+    }
+    else
+    {
+      e.style.display = 'block';
+    }
+  }
+</script>
+
+<table>
+  <tr>
+    <td class="text_data">
+      <table>
+        <tr>
+          <td id="temperature_command" class="temperature" onclick="toggle_visibility('enter_temperature_command'); document.getElementById('input_temperature_command').focus();"></td>
+          <td class="degree_c">&deg;C</td>
+        </tr>
+      </table>
+    </td>
+    <td class="text_data">
+      <table>
+        <tr>
+          <td id="actual_temperature" class="temperature"></td>
+          <td class="degree_c">&deg;C</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  
+  <tr>
+    <td class="text_data" colspan="2">
+      <table>
+        <tr>
+          <td id="actual_duty_cycle" class="duty_cycle"></td>
+          <td class="pct">%</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<div id="enter_temperature_command">
+  <input id="input_temperature_command" type="number" />
+</div>
+
+</body>
+</html>

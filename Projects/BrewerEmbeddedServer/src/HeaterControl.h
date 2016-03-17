@@ -30,7 +30,7 @@ public:
     , mTemperatureCommand(iHeaterControl.mTemperatureCommand.load())
     , mActualTemperature(iHeaterControl.mActualTemperature.load())
     , mIoService(std::move(iHeaterControl.mIoService))
-    , mDutyCycle(std::move(iHeaterControl.mDutyCycle))
+    , mDutyCycle(iHeaterControl.mDutyCycle.load())
     , mMinimumIncrement(std::move(iHeaterControl.mMinimumIncrement))
     , mPwmPeriod(std::move(iHeaterControl.mPwmPeriod))
     , mPwmPeriodProgress(std::move(iHeaterControl.mPwmPeriodProgress))
@@ -61,6 +61,11 @@ public:
   double getActualTemperature() const
   {
     return mActualTemperature;
+  }
+
+  double getActualDutyCycle() const
+  {
+    return static_cast< double >(mDutyCycle.load().total_microseconds()) / static_cast< double >(mPwmPeriod.total_microseconds());
   }
 
   enum eMode
@@ -139,7 +144,7 @@ private:
   std::ofstream mPwmGpio;
   std::atomic< double > mTemperatureCommand;
   std::atomic< double > mActualTemperature;
-  boost::posix_time::time_duration mDutyCycle;
+  std::atomic< boost::posix_time::time_duration > mDutyCycle;
   boost::posix_time::time_duration mMinimumIncrement;
   boost::posix_time::time_duration mPwmPeriod;
   boost::posix_time::time_duration mPwmPeriodProgress;
