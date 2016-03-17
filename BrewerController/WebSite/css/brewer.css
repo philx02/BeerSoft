@@ -11,20 +11,20 @@ body
 }
 
 .temperature, .duty_cycle {
-  font-size: 180px;
+  font-size: 170px;
   text-align: right;
   vertical-align: top;
 }
 
 .degree_c, .pct {
   padding-top: 25px;
-  font-size: 30px;
+  font-size: 40px;
   vertical-align: top;
 }
 
 #temperature_command, #actual_temperature, #actual_duty_cycle
 {
-  width: 425px;
+  width: 420px;
 }
 
 #enter_temperature_command
@@ -61,7 +61,7 @@ body
 {
   white-space: normal;
   font-size: 60px;
-  width: 330px;
+  width: 325px;
   height: 170px;
 }
 
