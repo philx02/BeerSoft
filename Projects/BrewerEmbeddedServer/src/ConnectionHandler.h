@@ -38,7 +38,7 @@ public:
     auto wSender = mSender.lock();
     if (wSender != nullptr)
     {
-      //wSender->send(mBrewControl.dataString());
+      wSender->send(mBrewControl.dataString());
     }
   }
 

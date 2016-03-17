@@ -71,6 +71,7 @@ public:
   size_t sampleTemperatureIndex(std::ifstream &iAdc)
   {
     size_t wTemperatureIndex;
+    iAdc.seekg(0);
     iAdc >> wTemperatureIndex;
     return wTemperatureIndex;
   }

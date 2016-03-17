@@ -1,0 +1,33 @@
+.text_data {
+  font-family: "Trebuchet MS", "Arial";
+}
+
+.temperature, .duty_cycle {
+  font-size: 120px;
+  text-align: right;
+  vertical-align: top;
+}
+
+.degree_c, .pct {
+  font-size: 30px;
+  vertical-align: top;
+  padding-top: 30px;
+}
+
+#enter_temperature_command
+{
+  width: 200px;
+  display: none;
+  position: absolute;
+  background-color: white;
+  z-index: 1;
+  top: 0;
+  margin: auto;
+}
+
+#input_temperature_command
+{
+  font-size: 120px;
+  width: 200px;
+  height: 200px;
+}
