@@ -3,6 +3,8 @@
 #include "TcpServer/ISender.h"
 #include "BrewControl.h"
 
+#include <boost/algorithm/string.hpp>
+
 class ConnectionHandler : public IObserver< BrewControl >
 {
 public:
@@ -48,6 +50,19 @@ private:
     if (iPayload == "get_status")
     {
       update(mBrewControl);
+    }
+    else
+    {
+      std::vector< std::string > wSplit;
+      boost::split(wSplit, iPayload, boost::is_any_of(","));
+      if (wSplit.size() == 2 && wSplit[0] == "set_command")
+      {
+        mBrewControl.setTemperatureCommand(std::strtod(wSplit[1].c_str(), nullptr));
+      }
+      else if (wSplit.size() == 2 && wSplit[0] == "set_mode")
+      {
+        mBrewControl.setMode(std::strtoul(wSplit[1].c_str(), nullptr, 10));
+      }
     }
   }
 

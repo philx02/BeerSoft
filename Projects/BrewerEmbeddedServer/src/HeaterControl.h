@@ -80,6 +80,11 @@ public:
     mMode = iMode;
   }
 
+  eMode getMode() const
+  {
+    return mMode;
+  }
+
 private:
   std::unique_ptr< boost::asio::deadline_timer > makeDeadlineTimer(const boost::posix_time::time_duration &iMinimumIncrement)
   {
@@ -95,7 +100,11 @@ private:
     case PWM:
       {
         auto wTemperatureError = mTemperatureCommand.load() - mActualTemperature.load();
-        mDutyCycle = mPwmPeriod * static_cast<size_t>(mKp * wTemperatureError / 100.0);
+        if (wTemperatureError < 0)
+        {
+          wTemperatureError = 0;
+        }
+        mDutyCycle = mPwmPeriod * static_cast< size_t >(mKp * wTemperatureError) / 100;
         if (mDutyCycle > mPwmPeriod)
         {
           mDutyCycle = mPwmPeriod;
