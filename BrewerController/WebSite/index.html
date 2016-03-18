@@ -91,6 +91,19 @@
   {
     wWebSocket.send("set_mode," + mode);
   }
+
+  function checkKey()
+  {
+    console.log(event.keyCode);
+    /*if (event.keyCode == 13)
+    {
+      submitCommand();
+    }
+    else */if (event.keyCode == 27)
+    {
+      toggle_visibility('enter_temperature_command');
+    }
+  }
 </script>
 
 <table>
@@ -141,8 +154,10 @@
 </table>
 
 <div id="enter_temperature_command">
-  <input id="input_temperature_command" type="number" />
-  <input id="input_temperature_command_button" type="submit" onclick="submitCommand();" />
+  <form onsubmit="submitCommand(); return false;">
+    <input id="input_temperature_command" type="number" onkeydown="checkKey();" />
+    <input id="input_temperature_command_button" type="submit" />
+  </form>
 </div>
 
 </body>

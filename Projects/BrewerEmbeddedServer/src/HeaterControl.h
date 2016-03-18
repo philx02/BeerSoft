@@ -46,6 +46,14 @@ public:
   void setTemperatureCommand(double iTemperature)
   {
     mTemperatureCommand = iTemperature;
+    if (mTemperatureCommand > 100)
+    {
+      mTemperatureCommand = 100;
+    }
+    if (mTemperatureCommand < 0)
+    {
+      mTemperatureCommand = 0;
+    }
   }
 
   void setActualTemperature(double iTemperature)
