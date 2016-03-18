@@ -1,7 +1,7 @@
 body
 {
-  font-family: "Trebuchet MS", "Arial";
-  width: 1000px;
+  font-family: "Trebuchet MS", "Source Sans Pro", "Arial";
+  width: 950px;
 }
 
 .top_table_th
@@ -49,7 +49,7 @@ body
   height: 160px;
 }
 
-#input_temperature_command_button
+.input_temperature_command_button
 {
   font-size: 40px;
   margin-left: 20px;
@@ -61,7 +61,7 @@ body
 {
   white-space: normal;
   font-size: 60px;
-  width: 325px;
+  width: 315px;
   height: 170px;
 }
 
