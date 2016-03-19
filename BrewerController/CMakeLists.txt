@@ -42,7 +42,7 @@ IF(MSVC)
 ENDIF()
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} --std=c++11" )
+  SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} --std=c++14" )
 ENDIF()
 
 #in visual studio, display folder hierarchy in solution. Otherwise, all project appears all at the first hierarchy level
