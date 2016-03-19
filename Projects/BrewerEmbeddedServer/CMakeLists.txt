@@ -20,6 +20,7 @@ SET(${this_target}_HEADER_FILES
   src/TcpServer/WebSocketConnection.h
   src/ConnectionHandler.h
   src/HeaterControl.h
+  src/PeriodicTimer.h
 )
 
 SET( ${this_target}_SOURCE_FILES

@@ -1,28 +1,31 @@
 #pragma once
 
-#include <boost/asio.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include "PeriodicTimer.h"
 
 #include <fstream>
 #include <atomic>
+#include <chrono>
 
 class HeaterControl
 {
 public:
-  HeaterControl(const char *iPwmGpio, const boost::posix_time::time_duration &iMinimumIncrement, const boost::posix_time::time_duration &iPwmPeriod, size_t iMinimalPwmPct, double iKp)
-    : mPwmGpio(iPwmGpio)
+  HeaterControl(const char *iPwmGpio, const std::chrono::milliseconds &iMinimumIncrement, const std::chrono::milliseconds &iPwmPeriod, size_t iMinimalPwmPct, double iKp)
+    : mPwmGpio(std::make_unique< std::ofstream >(iPwmGpio))
     , mTemperatureCommand(0)
     , mActualTemperature(0)
+    , mDutyCycle(std::chrono::milliseconds::zero())
     , mMinimumIncrement(iMinimumIncrement)
     , mPwmPeriod(iPwmPeriod)
     , mMinimalDutyCycle(iPwmPeriod * iMinimalPwmPct / 100)
     , mIoService(std::make_unique< boost::asio::io_service >())
-    , mDeadlineTimer(makeDeadlineTimer(iMinimumIncrement))
-    , mPwmThread(std::make_unique< std::thread >([&]() { mIoService->run(); }))
+    , mHandleIteration([&]() { handleIteration(); })
+    , mPeriodicTimer(createPeriodicTimer(*mIoService, mHandleIteration, iMinimumIncrement))
     , mKp(iKp)
     , mMode(OFF)
     , mGpioValue(GPIO_OFF)
   {
+    mPeriodicTimer->start();
+    mPwmThread = std::make_unique< std::thread >([&]() { mIoService->run(); });
   }
 
   HeaterControl(HeaterControl &&iHeaterControl)
@@ -35,7 +38,8 @@ public:
     , mPwmPeriod(std::move(iHeaterControl.mPwmPeriod))
     , mPwmPeriodProgress(std::move(iHeaterControl.mPwmPeriodProgress))
     , mMinimalDutyCycle(std::move(iHeaterControl.mMinimalDutyCycle))
-    , mDeadlineTimer(std::move(iHeaterControl.mDeadlineTimer))
+    , mHandleIteration([&]() { handleIteration(); })
+    , mPeriodicTimer(std::move(iHeaterControl.mPeriodicTimer))
     , mPwmThread(std::move(iHeaterControl.mPwmThread))
     , mKp(iHeaterControl.mKp)
     , mMode(iHeaterControl.mMode.load())
@@ -73,7 +77,7 @@ public:
 
   double getActualDutyCycle() const
   {
-    return static_cast< double >(mDutyCycle.load().total_microseconds()) / static_cast< double >(mPwmPeriod.total_microseconds());
+    return static_cast< double >(mDutyCycle.load().count()) / static_cast< double >(mPwmPeriod.count());
   }
 
   enum eMode
@@ -94,13 +98,6 @@ public:
   }
 
 private:
-  std::unique_ptr< boost::asio::deadline_timer > makeDeadlineTimer(const boost::posix_time::time_duration &iMinimumIncrement)
-  {
-    auto wDeadlineTimer = std::make_unique< boost::asio::deadline_timer >(*mIoService, iMinimumIncrement);
-    wDeadlineTimer->async_wait([&](const boost::system::error_code &iError) { handleIteration(iError); });
-    return wDeadlineTimer;
-  }
-
   void computeDutyCycle()
   {
     switch (mMode)
@@ -112,11 +109,16 @@ private:
         {
           wTemperatureError = 0;
         }
-        mDutyCycle = mPwmPeriod * static_cast< size_t >(mKp * wTemperatureError) / 100;
-        if (mDutyCycle > mPwmPeriod)
+        auto wDutyCycle = mPwmPeriod * static_cast< size_t >(mKp * wTemperatureError) / 100;
+        if (wDutyCycle > mPwmPeriod)
         {
-          mDutyCycle = mPwmPeriod;
+          wDutyCycle = mPwmPeriod;
         }
+        else if (wDutyCycle > std::chrono::milliseconds::zero() && wDutyCycle < mMinimalDutyCycle)
+        {
+          wDutyCycle = mMinimalDutyCycle;
+        }
+        mDutyCycle = wDutyCycle;
       }
       break;
     case ALWAYS_ON:
@@ -124,29 +126,27 @@ private:
       break;
     case OFF:
     default:
-      mDutyCycle = boost::posix_time::time_duration();
+      mDutyCycle = std::chrono::milliseconds::zero();
       break;
     }
   }
 
-  void handleIteration(const boost::system::error_code &iError)
+  void handleIteration()
   {
-    if (iError)
-    {
-      return;
-    }
     mPwmPeriodProgress += mMinimumIncrement;
     if (mPwmPeriodProgress >= mPwmPeriod)
     {
       computeDutyCycle();
-      mPwmPeriodProgress = boost::posix_time::time_duration();
-      setGpio((mDutyCycle > mMinimalDutyCycle) ? GPIO_ON : GPIO_OFF);
+      mPwmPeriodProgress = std::chrono::milliseconds::zero();
+      if (mDutyCycle.load() != std::chrono::milliseconds::zero())
+      {
+        setGpio(GPIO_ON);
+      }
     }
-    else if (mPwmPeriodProgress >= mDutyCycle)
+    else if (mPwmPeriodProgress.count() >= mDutyCycle.load().count())
     {
       setGpio(GPIO_OFF);
     }
-    mDeadlineTimer->async_wait([&](const boost::system::error_code &iError) { handleIteration(iError); });
   }
 
   void setGpio(char iGpioValue)
@@ -154,20 +154,22 @@ private:
     if (mGpioValue != iGpioValue)
     {
       mGpioValue = iGpioValue;
-      mPwmGpio << mGpioValue;
+      *mPwmGpio << mGpioValue;
+      mPwmGpio->flush();
     }
   }
 
-  std::ofstream mPwmGpio;
+  std::unique_ptr< std::ofstream > mPwmGpio;
   std::atomic< double > mTemperatureCommand;
   std::atomic< double > mActualTemperature;
-  std::atomic< boost::posix_time::time_duration > mDutyCycle;
-  boost::posix_time::time_duration mMinimumIncrement;
-  boost::posix_time::time_duration mPwmPeriod;
-  boost::posix_time::time_duration mPwmPeriodProgress;
-  boost::posix_time::time_duration mMinimalDutyCycle;
+  std::atomic< std::chrono::milliseconds > mDutyCycle;
+  std::chrono::milliseconds mMinimumIncrement;
+  std::chrono::milliseconds mPwmPeriod;
+  std::chrono::milliseconds mPwmPeriodProgress;
+  std::chrono::milliseconds mMinimalDutyCycle;
   std::unique_ptr< boost::asio::io_service > mIoService;
-  std::unique_ptr< boost::asio::deadline_timer > mDeadlineTimer;
+  std::function< void (void) > mHandleIteration;
+  std::shared_ptr< PeriodicTimer< decltype(mHandleIteration) > > mPeriodicTimer;
   std::unique_ptr< std::thread > mPwmThread;
 
   double mKp;

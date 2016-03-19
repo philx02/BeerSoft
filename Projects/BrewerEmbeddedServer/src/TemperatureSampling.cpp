@@ -38,6 +38,10 @@ public:
     };
     std::vector< Segment > wSegments;
     std::ifstream wCalibration(iCalibrationFile);
+    if (!wCalibration)
+    {
+      throw std::runtime_error(std::string("Calibration file not found: ").append(iCalibrationFile));
+    }
     std::string wLine;
     std::getline(wCalibration, wLine);
     wSegments.emplace_back(wLine);
@@ -68,9 +72,9 @@ public:
     });
   }
 
-  size_t sampleTemperatureIndex(std::ifstream &iAdc)
+  uint16_t sampleTemperatureIndex(std::ifstream &iAdc)
   {
-    size_t wTemperatureIndex;
+    uint16_t wTemperatureIndex;
     iAdc.seekg(0);
     iAdc >> wTemperatureIndex;
     return wTemperatureIndex;
@@ -81,4 +85,4 @@ private:
   std::vector< double > mTemperatureCalibration;
 };
 
-static TemperatureSampling sTemperatureSampling(std::getenv("I2C_BUS_PATH"), std::getenv("RTD_ADC_TEMPERATURE_CALIBRATION"));
+static TemperatureSampling sTemperatureSampling(std::getenv("MCP3424_DEVICE_PATH"), std::getenv("RTD_ADC_TEMPERATURE_CALIBRATION"));
