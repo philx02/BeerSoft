@@ -16,6 +16,7 @@ public:
     , mDutyCycle(std::chrono::milliseconds::zero())
     , mMinimumIncrement(iMinimumIncrement)
     , mPwmPeriod(iPwmPeriod)
+    , mPwmPeriodProgress(std::chrono::milliseconds::zero())
     , mMinimalDutyCycle(iPwmPeriod * iMinimalPwmPct / 100)
     , mIoService(std::make_unique< boost::asio::io_service >())
     , mHandleIteration([&]() { handleIteration(); })
@@ -24,6 +25,7 @@ public:
     , mMode(OFF)
     , mGpioValue(GPIO_OFF)
   {
+    setGpio(GPIO_OFF, true);
     mPeriodicTimer->start();
     mPwmThread = std::make_unique< std::thread >([&]() { mIoService->run(); });
   }
@@ -149,9 +151,9 @@ private:
     }
   }
 
-  void setGpio(char iGpioValue)
+  void setGpio(char iGpioValue, bool iForce = false)
   {
-    if (mGpioValue != iGpioValue)
+    if (mGpioValue != iGpioValue || iForce)
     {
       mGpioValue = iGpioValue;
       *mPwmGpio << mGpioValue;

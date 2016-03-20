@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "Source Sans Pro";
+  src: url(SourceSansPro/SourceSansPro-Regular.otf);
+}
+
 body
 {
   font-family: "Trebuchet MS", "Source Sans Pro", "Arial";
@@ -7,11 +12,10 @@ body
 .top_table_th
 {
   font-size: 35px;
-  padding-top: 50px;
 }
 
 .temperature, .duty_cycle {
-  font-size: 170px;
+  font-size: 200px;
   text-align: right;
   vertical-align: top;
 }
@@ -31,7 +35,7 @@ body
 {
   margin-left: 100px;
   margin-top: 100px;
-  width: 550px;
+  width: 780px;
   height: 260px;
   display: none;
   position: absolute;
@@ -51,6 +55,7 @@ body
 
 .input_temperature_command_button
 {
+  font-family: "Trebuchet MS", "Source Sans Pro", "Arial";
   font-size: 40px;
   margin-left: 20px;
   width: 200px;
@@ -59,8 +64,9 @@ body
 
 .mode_button
 {
+  font-family: "Trebuchet MS", "Source Sans Pro", "Arial";
   white-space: normal;
-  font-size: 60px;
+  font-size: 70px;
   width: 315px;
   height: 170px;
 }
