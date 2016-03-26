@@ -52,9 +52,9 @@ public:
   void setTemperatureCommand(double iTemperature)
   {
     mTemperatureCommand = iTemperature;
-    if (mTemperatureCommand > 100)
+    if (mTemperatureCommand > 110)
     {
-      mTemperatureCommand = 100;
+      mTemperatureCommand = 110;
     }
     if (mTemperatureCommand < 0)
     {
