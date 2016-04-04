@@ -2,19 +2,22 @@
 
 #include "Subject.h"
 #include "HeaterControl.h"
+#include "PumpControl.h"
 
 #include <memory>
 
 class BrewControl : public Subject< BrewControl >
 {
 public:
-  BrewControl(std::unique_ptr< HeaterControl > &&iHeaterControl)
+  BrewControl(std::unique_ptr< HeaterControl > &&iHeaterControl, std::unique_ptr< PumpControl > &&iPumpControl)
     : mHeaterControl(std::move(iHeaterControl))
+    , mPumpControl(std::move(iPumpControl))
   {
   }
 
   BrewControl(BrewControl &&iBrewControl)
     : mHeaterControl(std::move(iBrewControl.mHeaterControl))
+    , mPumpControl(std::move(iBrewControl.mPumpControl))
   {
   }
 
@@ -30,17 +33,24 @@ public:
     Subject< BrewControl >::notify(*this);
   }
 
-  void setMode(size_t iMode) const
+  void setHeaterMode(size_t iMode) const
   {
     mHeaterControl->setMode(static_cast< HeaterControl::eMode >(iMode));
     Subject< BrewControl >::notify(*this);
   }
 
+  void setPumpMode(size_t iMode) const
+  {
+    mPumpControl->setMode(static_cast< PumpControl::eMode >(iMode));
+    Subject< BrewControl >::notify(*this);
+  }
+
   std::string dataString() const
   {
-    return std::to_string(mHeaterControl->getTemperatureCommand()) + "," + std::to_string(mHeaterControl->getActualTemperature()) + "," + std::to_string(mHeaterControl->getActualDutyCycle()) + "," + std::to_string(mHeaterControl->getMode());
+    return std::to_string(mHeaterControl->getTemperatureCommand()) + "," + std::to_string(mHeaterControl->getActualTemperature()) + "," + std::to_string(mHeaterControl->getActualDutyCycle()) + "," + std::to_string(mHeaterControl->getMode()) + "," + std::to_string(mPumpControl->getMode());
   }
 
 private:
   std::unique_ptr< HeaterControl > mHeaterControl;
+  std::unique_ptr< PumpControl > mPumpControl;
 };
