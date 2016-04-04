@@ -59,9 +59,13 @@ private:
       {
         mBrewControl.setTemperatureCommand(std::strtod(wSplit[1].c_str(), nullptr));
       }
-      else if (wSplit.size() == 2 && wSplit[0] == "set_mode")
+      else if (wSplit.size() == 2 && wSplit[0] == "set_heater_mode")
       {
-        mBrewControl.setMode(std::strtoul(wSplit[1].c_str(), nullptr, 10));
+        mBrewControl.setHeaterMode(std::strtoul(wSplit[1].c_str(), nullptr, 10));
+      }
+      else if (wSplit.size() == 2 && wSplit[0] == "set_pump_mode")
+      {
+        mBrewControl.setPumpMode(std::strtoul(wSplit[1].c_str(), nullptr, 10));
       }
     }
   }
