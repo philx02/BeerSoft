@@ -6,7 +6,7 @@
 #include <atomic>
 #include <chrono>
 
-class HeaterControl
+class HeaterControl : public boost::noncopyable
 {
 public:
   HeaterControl(const char *iPwmGpio, const std::chrono::milliseconds &iMinimumIncrement, const std::chrono::milliseconds &iPwmPeriod, size_t iMinimalPwmPct, double iKp)
@@ -19,7 +19,7 @@ public:
     , mPwmPeriodProgress(std::chrono::milliseconds::zero())
     , mMinimalDutyCycle(iPwmPeriod * iMinimalPwmPct / 100)
     , mIoService(std::make_unique< boost::asio::io_service >())
-    , mHandleIteration([&]() { handleIteration(); })
+    , mHandleIteration([&]() -> bool { handleIteration(); return true; })
     , mPeriodicTimer(createPeriodicTimer(*mIoService, mHandleIteration, iMinimumIncrement))
     , mKp(iKp)
     , mMode(OFF)
@@ -28,25 +28,6 @@ public:
     setGpio(GPIO_OFF, true);
     mPeriodicTimer->start();
     mPwmThread = std::make_unique< std::thread >([&]() { mIoService->run(); });
-  }
-
-  HeaterControl(HeaterControl &&iHeaterControl)
-    : mPwmGpio(std::move(iHeaterControl.mPwmGpio))
-    , mTemperatureCommand(iHeaterControl.mTemperatureCommand.load())
-    , mActualTemperature(iHeaterControl.mActualTemperature.load())
-    , mIoService(std::move(iHeaterControl.mIoService))
-    , mDutyCycle(iHeaterControl.mDutyCycle.load())
-    , mMinimumIncrement(std::move(iHeaterControl.mMinimumIncrement))
-    , mPwmPeriod(std::move(iHeaterControl.mPwmPeriod))
-    , mPwmPeriodProgress(std::move(iHeaterControl.mPwmPeriodProgress))
-    , mMinimalDutyCycle(std::move(iHeaterControl.mMinimalDutyCycle))
-    , mHandleIteration([&]() { handleIteration(); })
-    , mPeriodicTimer(std::move(iHeaterControl.mPeriodicTimer))
-    , mPwmThread(std::move(iHeaterControl.mPwmThread))
-    , mKp(iHeaterControl.mKp)
-    , mMode(iHeaterControl.mMode.load())
-    , mGpioValue(iHeaterControl.mGpioValue)
-  {
   }
 
   void setTemperatureCommand(double iTemperature)
@@ -170,7 +151,7 @@ private:
   std::chrono::milliseconds mPwmPeriodProgress;
   std::chrono::milliseconds mMinimalDutyCycle;
   std::unique_ptr< boost::asio::io_service > mIoService;
-  std::function< void (void) > mHandleIteration;
+  std::function< bool (void) > mHandleIteration;
   std::shared_ptr< PeriodicTimer< decltype(mHandleIteration) > > mPeriodicTimer;
   std::unique_ptr< std::thread > mPwmThread;
 

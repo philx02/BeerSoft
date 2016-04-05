@@ -30,6 +30,11 @@ public:
     std::lock_guard< std::mutex > wLock(mMutex);
     mObservers.erase(std::remove(mObservers.begin(), mObservers.end(), iObserver), mObservers.end());
   }
+  inline void detachAll() const
+  {
+    std::lock_guard< std::mutex > wLock(mMutex);
+    mObservers.clear();
+  }
 
 protected:
   inline void notify(const SubjectType &iThis) const
