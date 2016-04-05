@@ -67,6 +67,10 @@ private:
       {
         mBrewControl.setPumpMode(std::strtoul(wSplit[1].c_str(), nullptr, 10));
       }
+      else if (wSplit.size() == 2 && wSplit[0] == "set_pump_duration")
+      {
+        mBrewControl.setPumpDuration(std::strtoul(wSplit[1].c_str(), nullptr, 10));
+      }
     }
   }
 

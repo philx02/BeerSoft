@@ -14,19 +14,19 @@ body
   font-size: 35px;
 }
 
-.temperature, .duty_cycle {
+.temperature, .duty_cycle, .pump_until {
   font-size: 200px;
   text-align: right;
   vertical-align: top;
 }
 
-.degree_c, .pct {
+.degree_c, .pct, .seconds {
   padding-top: 25px;
   font-size: 40px;
   vertical-align: top;
 }
 
-#temperature_command, #actual_temperature, #actual_duty_cycle
+#temperature_command, #actual_temperature, #actual_duty_cycle, #actual_pump_until
 {
   width: 420px;
 }
@@ -76,7 +76,11 @@ body
   background-color: red;
 }
 
-#heater_buttons
+.bottom_buttons
 {
-  margin-top: 50px;
+}
+
+.buttons_title
+{
+  font-size: 60px;
 }

@@ -30,6 +30,7 @@
   function greetings(evt)
   {
     wWebSocket.send("get_status");
+    wWebSocket.send("set_pump_duration,2");
   }
 
   function parseMessage(evt)
@@ -46,23 +47,45 @@
     var actual_duty_cycle = document.getElementById("actual_duty_cycle");
     actual_duty_cycle.innerHTML = (100.0 * Number(wSplit[2])).toFixed(1);
 
+    var actual_pump_until = document.getElementById("actual_pump_until");
+    actual_pump_until.innerHTML = Number(wSplit[5]);
+
     switch (Number(wSplit[3]))
     {
-      case 0:
-        document.getElementById("off_button").style.background = "red";
-        document.getElementById("pwm_button").style.background = "grey";
-        document.getElementById("always_on_button").style.background = "grey";
-        break;
-      case 1:
-        document.getElementById("off_button").style.background = "grey";
-        document.getElementById("pwm_button").style.background = "red";
-        document.getElementById("always_on_button").style.background = "grey";
-        break;
-      case 2:
-        document.getElementById("off_button").style.background = "grey";
-        document.getElementById("pwm_button").style.background = "grey";
-        document.getElementById("always_on_button").style.background = "red";
-        break;
+    case 0:
+      document.getElementById("heater_off_button").style.background = "red";
+      document.getElementById("heater_pwm_button").style.background = "grey";
+      document.getElementById("heater_always_on_button").style.background = "grey";
+      break;
+    case 1:
+      document.getElementById("heater_off_button").style.background = "grey";
+      document.getElementById("heater_pwm_button").style.background = "red";
+      document.getElementById("heater_always_on_button").style.background = "grey";
+      break;
+    case 2:
+      document.getElementById("heater_off_button").style.background = "grey";
+      document.getElementById("heater_pwm_button").style.background = "grey";
+      document.getElementById("heater_always_on_button").style.background = "red";
+      break;
+    }
+
+    switch (Number(wSplit[4]))
+    {
+    case 0:
+      document.getElementById("pump_off_button").style.background = "red";
+      document.getElementById("pump_pwm_button").style.background = "grey";
+      document.getElementById("pump_always_on_button").style.background = "grey";
+      break;
+    case 1:
+      document.getElementById("pump_off_button").style.background = "grey";
+      document.getElementById("pump_pwm_button").style.background = "red";
+      document.getElementById("pump_always_on_button").style.background = "grey";
+      break;
+    case 2:
+      document.getElementById("pump_off_button").style.background = "grey";
+      document.getElementById("pump_pwm_button").style.background = "grey";
+      document.getElementById("pump_always_on_button").style.background = "red";
+      break;
     }
   }
 
@@ -87,9 +110,14 @@
     wWebSocket.send("set_command," + document.getElementById("input_temperature_command").value);
   }
 
-  function setMode(mode)
+  function setHeaterMode(mode)
   {
-    wWebSocket.send("set_mode," + mode);
+    wWebSocket.send("set_heater_mode," + mode);
+  }
+
+  function setPumpMode(mode)
+  {
+    wWebSocket.send("set_pump_mode," + mode);
   }
 
   function checkKey()
@@ -132,9 +160,10 @@
   
   <tr class="top_table_tr">
     <th class="top_table_th">Duty Cycle</th>
+    <th class="top_table_th">Pump Until</th>
   </tr>
   <tr>
-    <td class="text_data" colspan="2">
+    <td class="text_data">
       <table>
         <tr>
           <td id="actual_duty_cycle" class="duty_cycle"></td>
@@ -142,14 +171,36 @@
         </tr>
       </table>
     </td>
+    <td class="text_data">
+      <table>
+        <tr>
+          <td id="actual_pump_until" class="pump_until"></td>
+          <td class="seconds">s</td>
+        </tr>
+      </table>
+    </td>
   </tr>
 </table>
 
-<table id="heater_buttons">
+<table id="heater_buttons" class="bottom_buttons">
   <tr>
-    <td class="mode_button_td"><input id="always_on_button" class="mode_button" type="button" value="ALWAYS ON" onclick="setMode(2);" /></td>
-    <td class="mode_button_td"><input id="pwm_button" class="mode_button" type="button" value="PWM" onclick="setMode(1);" /></td>
-    <td class="mode_button_td"><input id="off_button" class="mode_button" type="button" value="OFF" onclick="setMode(0);" /></td>
+    <th colspan="3" class="buttons_title">Heater Control</th>
+  </tr>
+  <tr>
+    <td class="mode_button_td"><input id="heater_always_on_button" class="mode_button" type="button" value="ALWAYS ON" onclick="setHeaterMode(2);" /></td>
+    <td class="mode_button_td"><input id="heater_pwm_button" class="mode_button" type="button" value="PWM" onclick="setHeaterMode(1);" /></td>
+    <td class="mode_button_td"><input id="heater_off_button" class="mode_button" type="button" value="OFF" onclick="setHeaterMode(0);" /></td>
+  </tr>
+</table>
+
+<table id="pump_buttons" class="bottom_buttons">
+  <tr>
+    <th colspan="3" class="buttons_title">Pump Control</th>
+  </tr>
+  <tr>
+    <td class="mode_button_td"><input id="pump_always_on_button" class="mode_button" type="button" value="ALWAYS ON" onclick="setPumpMode(2);" /></td>
+    <td class="mode_button_td"><input id="pump_pwm_button" class="mode_button" type="button" value="UNTIL" onclick="setPumpMode(1);" /></td>
+    <td class="mode_button_td"><input id="pump_off_button" class="mode_button" type="button" value="OFF" onclick="setPumpMode(0);" /></td>
   </tr>
 </table>
 

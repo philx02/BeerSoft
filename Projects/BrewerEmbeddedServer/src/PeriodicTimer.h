@@ -71,8 +71,10 @@ private:
       return;
     }
     
-    mCallBack();
-    doStart();
+    if (mCallBack())
+    {
+      doStart();
+    }
   }
 
   ba::deadline_timer mTimer;

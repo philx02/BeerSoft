@@ -1,27 +1,27 @@
 #pragma once
 
 #include "PeriodicTimer.h"
+#include "Subject.h"
 
 #include <fstream>
 #include <atomic>
 #include <chrono>
+#include <memory>
 
-class PumpControl
+class PumpControl : public Subject< PumpControl >, public boost::noncopyable
 {
 public:
   PumpControl(const char *iDopGpio)
     : mDopGpio(std::make_unique< std::ofstream >(iDopGpio))
     , mMode(OFF)
     , mGpioValue(GPIO_OFF)
+    , mIoService(std::make_unique< boost::asio::io_service >())
+    , mHandleIteration([&]() -> bool { return handleIteration(); })
+    , mPeriodicTimer(createPeriodicTimer(*mIoService, mHandleIteration, std::chrono::seconds(1)))
+    , mTimerCount(std::chrono::seconds(0))
+    , mTimerLimit(std::chrono::seconds(0))
   {
     setGpio(GPIO_OFF, true);
-  }
-
-  PumpControl(PumpControl &&iPumpControl)
-    : mDopGpio(std::move(iPumpControl.mDopGpio))
-    , mMode(iPumpControl.mMode.load())
-    , mGpioValue(iPumpControl.mGpioValue)
-  {
   }
 
   enum eMode
@@ -40,6 +40,19 @@ public:
       setGpio(GPIO_OFF);
       break;
     case PUMP_UNTIL:
+      if (mTimerCount.load() >= mTimerLimit.load())
+      {
+        setMode(OFF);
+        return;
+      }
+      if (mTimerThread != nullptr)
+      {
+        mTimerThread->join();
+      }
+      mPeriodicTimer->stop();
+      mIoService->reset();
+      mPeriodicTimer->start();
+      mTimerThread = std::make_unique< std::thread >([&]() { mIoService->run(); });
       break;
     case ALWAYS_ON:
       setGpio(GPIO_ON);
@@ -54,23 +67,30 @@ public:
     return mMode;
   }
 
+  std::chrono::seconds getRemainingTime() const
+  {
+    return mTimerLimit.load() - mTimerCount.load();
+  }
+
+  void setTimerLimit(const std::chrono::seconds &iDuration)
+  {
+    mTimerLimit = iDuration;
+    mTimerCount = std::chrono::seconds(0);
+  }
+
 private:
-  //void handleIteration()
-  //{
-  //  mPwmPeriodProgress += mMinimumIncrement;
-  //  if (mPwmPeriodProgress >= mPwmPeriod)
-  //  {
-  //    mPwmPeriodProgress = std::chrono::milliseconds::zero();
-  //    if (mDutyCycle.load() != std::chrono::milliseconds::zero())
-  //    {
-  //      setGpio(GPIO_ON);
-  //    }
-  //  }
-  //  else if (mPwmPeriodProgress.count() >= mDutyCycle.load().count())
-  //  {
-  //    setGpio(GPIO_OFF);
-  //  }
-  //}
+  bool handleIteration()
+  {
+    bool wReturnValue = true;
+    mTimerCount.store(mTimerCount.load() + std::chrono::seconds(1));
+    if (mTimerCount.load() >= mTimerLimit.load())
+    {
+      setMode(OFF);
+      wReturnValue = false;
+    }
+    Subject< PumpControl >::notify(*this);
+    return wReturnValue;
+  }
 
   void setGpio(char iGpioValue, bool iForce = false)
   {
@@ -85,6 +105,12 @@ private:
   std::unique_ptr< std::ofstream > mDopGpio;
   std::atomic< eMode > mMode;
   char mGpioValue;
+  std::unique_ptr< boost::asio::io_service > mIoService;
+  std::function< bool (void) > mHandleIteration;
+  std::shared_ptr< PeriodicTimer< decltype(mHandleIteration) > > mPeriodicTimer;
+  std::unique_ptr< std::thread > mTimerThread;
+  std::atomic< std::chrono::seconds > mTimerCount;
+  std::atomic< std::chrono::seconds > mTimerLimit;
 
   static const char GPIO_OFF = '0';
   static const char GPIO_ON = '1';
