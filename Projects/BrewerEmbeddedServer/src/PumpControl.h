@@ -45,6 +45,12 @@ public:
         setMode(OFF);
         return;
       }
+      else if (mTimerCount.load().count() > 0) // resuming
+      {
+        setGpio(GPIO_ON);
+        return;
+      }
+      setGpio(GPIO_ON);
       if (mTimerThread != nullptr)
       {
         mTimerThread->join();
@@ -82,6 +88,10 @@ private:
   bool handleIteration()
   {
     bool wReturnValue = true;
+    if (mMode.load() != PUMP_UNTIL)
+    {
+      return wReturnValue;
+    }
     mTimerCount.store(mTimerCount.load() + std::chrono::seconds(1));
     if (mTimerCount.load() >= mTimerLimit.load())
     {
