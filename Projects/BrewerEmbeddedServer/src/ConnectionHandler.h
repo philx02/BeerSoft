@@ -55,7 +55,7 @@ private:
     {
       std::vector< std::string > wSplit;
       boost::split(wSplit, iPayload, boost::is_any_of(","));
-      if (wSplit.size() == 2 && wSplit[0] == "set_command")
+      if (wSplit.size() == 2 && wSplit[0] == "set_temperature_command")
       {
         mBrewControl.setTemperatureCommand(std::strtod(wSplit[1].c_str(), nullptr));
       }
@@ -67,7 +67,7 @@ private:
       {
         mBrewControl.setPumpMode(std::strtoul(wSplit[1].c_str(), nullptr, 10));
       }
-      else if (wSplit.size() == 2 && wSplit[0] == "set_pump_duration")
+      else if (wSplit.size() == 2 && wSplit[0] == "set_pump_until_command")
       {
         mBrewControl.setPumpDuration(std::strtoul(wSplit[1].c_str(), nullptr, 10));
       }
