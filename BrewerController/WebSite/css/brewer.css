@@ -13,9 +13,14 @@
   src: url(CaviarDreams/CaviarDreams.ttf);
 }
 
+@font-face {
+  font-family: "Droid Sans";
+  src: url(DroidSans/DroidSans.ttf);
+}
+
 body, .input_temperature_command_button, .mode_button
 {
-  font-family: "Source Sans Pro", "Trebuchet MS", "Arial";
+  font-family: "Droid Sans", "Trebuchet MS", "Source Sans Pro", "Arial";
 }
 
 body
@@ -29,7 +34,7 @@ body
 }
 
 .temperature, .duty_cycle, .pump_until {
-  font-size: 180px;
+  font-size: 168px;
   text-align: right;
   vertical-align: top;
 }
