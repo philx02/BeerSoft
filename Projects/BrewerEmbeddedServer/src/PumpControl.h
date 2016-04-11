@@ -18,6 +18,7 @@ public:
     , mIoService(std::make_unique< boost::asio::io_service >())
     , mHandleIteration([&]() -> bool { return handleIteration(); })
     , mPeriodicTimer(createPeriodicTimer(*mIoService, mHandleIteration, std::chrono::seconds(1)))
+    , mCounting(false)
     , mTimerCount(std::chrono::seconds(0))
     , mTimerLimit(std::chrono::seconds(0))
   {
@@ -45,11 +46,12 @@ public:
         setMode(OFF);
         return;
       }
-      else if (mTimerCount.load().count() > 0) // resuming
+      else if (mCounting) // resuming
       {
         setGpio(GPIO_ON);
         return;
       }
+      mCounting = true;
       setGpio(GPIO_ON);
       if (mTimerThread != nullptr)
       {
@@ -95,6 +97,7 @@ private:
     mTimerCount.store(mTimerCount.load() + std::chrono::seconds(1));
     if (mTimerCount.load() >= mTimerLimit.load())
     {
+      mCounting = false;
       setMode(OFF);
       wReturnValue = false;
     }
@@ -119,6 +122,7 @@ private:
   std::function< bool (void) > mHandleIteration;
   std::shared_ptr< PeriodicTimer< decltype(mHandleIteration) > > mPeriodicTimer;
   std::unique_ptr< std::thread > mTimerThread;
+  std::atomic< bool > mCounting;
   std::atomic< std::chrono::seconds > mTimerCount;
   std::atomic< std::chrono::seconds > mTimerLimit;
 
