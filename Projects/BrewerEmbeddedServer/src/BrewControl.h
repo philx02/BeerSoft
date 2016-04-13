@@ -36,6 +36,12 @@ public:
     Subject< BrewControl >::notify(*this);
   }
 
+  void setDutyCycleCommand(double iDutyCycle) const
+  {
+    mHeaterControl->setDutyCycleCommand(iDutyCycle);
+    Subject< BrewControl >::notify(*this);
+  }
+
   void setHeaterMode(size_t iMode) const
   {
     mHeaterControl->setMode(static_cast< HeaterControl::eMode >(iMode));
@@ -61,7 +67,7 @@ public:
 
   std::string dataString() const
   {
-    return std::to_string(mHeaterControl->getTemperatureCommand()) + "," + std::to_string(mHeaterControl->getActualTemperature()) + "," + std::to_string(mHeaterControl->getActualDutyCycle()) + "," + std::to_string(mHeaterControl->getMode()) + "," + std::to_string(mPumpControl->getMode()) + "," + std::to_string(mPumpControl->getRemainingTime().count());
+    return std::to_string(mHeaterControl->getTemperatureCommand()) + "," + std::to_string(mHeaterControl->getActualTemperature()) + "," + std::to_string(mHeaterControl->getActualDutyCycle()) + "," + std::to_string(mHeaterControl->getMode()) + "," + std::to_string(mPumpControl->getMode()) + "," + std::to_string(mPumpControl->getRemainingTime().count()) + "," + std::to_string(mHeaterControl->getControlCommandSource());
   }
 
 private:

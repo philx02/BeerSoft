@@ -71,6 +71,10 @@ private:
       {
         mBrewControl.setPumpDuration(std::strtoul(wSplit[1].c_str(), nullptr, 10));
       }
+      else if (wSplit.size() == 2 && wSplit[0] == "set_duty_cycle_command")
+      {
+        mBrewControl.setDutyCycleCommand(std::strtoul(wSplit[1].c_str(), nullptr, 10));
+      }
     }
   }
 

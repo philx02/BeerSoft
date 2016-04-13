@@ -12,6 +12,7 @@
 <script>
 
   var wWebSocket;
+  var wEditingVariableName;
 
   function connect()
   {
@@ -86,6 +87,17 @@
       document.getElementById("pump_always_on_button").style.background = "red";
       break;
     }
+
+    switch (Number(wSplit[6])) {
+      case 0:
+        document.getElementById("temperature_command").style.color = "green";
+        document.getElementById("actual_duty_cycle").style.color = "black";
+        break;
+      case 1:
+        document.getElementById("temperature_command").style.color = "#d3d3d3";
+        document.getElementById("actual_duty_cycle").style.color = "green";
+        break;
+    }
   }
 
   function toggle_visibility(id)
@@ -104,10 +116,10 @@
     }
   }
 
-  function submitCommand(command_type)
+  function submitCommand()
   {
-    toggle_visibility('enter_' + command_type + '_command');
-    wWebSocket.send("set_" + command_type + "_command," + document.getElementById("input_" + command_type + "_command").value);
+    toggle_visibility('enter_command');
+    wWebSocket.send("set_" + wEditingVariableName + "_command," + document.getElementById("input_command").value);
   }
 
   function setHeaterMode(mode)
@@ -123,14 +135,18 @@
   function checkKey()
   {
     console.log(event.keyCode);
-    /*if (event.keyCode == 13)
+    if (event.keyCode == 27)
     {
-      submitCommand();
+      //toggle_visibility('enter_temperature_command');
     }
-    else */if (event.keyCode == 27)
-    {
-      toggle_visibility('enter_temperature_command');
-    }
+  }
+
+  function showEditingWindow(editingVariableName)
+  {
+    wEditingVariableName = editingVariableName;
+    toggle_visibility('enter_command');
+    document.getElementById('input_command').value = '';
+    document.getElementById('input_command').focus();
   }
 </script>
 
@@ -143,8 +159,8 @@
     <td class="text_data">
       <table>
         <tr>
-          <td id="temperature_command" class="temperature" onclick="toggle_visibility('enter_temperature_command'); document.getElementById('input_temperature_command').value=''; document.getElementById('input_temperature_command').focus();"></td>
-          <td class="degree_c">&deg;C</td>
+          <td id="temperature_command" class="temperature" onclick="showEditingWindow('temperature');"></td>
+          <td id="temperature_command_degree_c" class="degree_c">&deg;C</td>
         </tr>
       </table>
     </td>
@@ -166,7 +182,7 @@
     <td class="text_data">
       <table>
         <tr>
-          <td id="actual_duty_cycle" class="duty_cycle"></td>
+          <td id="actual_duty_cycle" class="duty_cycle" onclick="showEditingWindow('duty_cycle');"></td>
           <td class="pct">%</td>
         </tr>
       </table>
@@ -174,7 +190,7 @@
     <td class="text_data">
       <table>
         <tr>
-          <td id="actual_pump_until" class="pump_until" onclick="toggle_visibility('enter_pump_until_command'); document.getElementById('input_pump_until_command').value=''; document.getElementById('input_pump_until_command').focus();"></td>
+          <td id="actual_pump_until" class="pump_until" onclick="showEditingWindow('pump_until');"></td>
           <td class="seconds">s</td>
         </tr>
       </table>
@@ -204,16 +220,10 @@
   </tr>
 </table>
 
-<div id="enter_temperature_command">
-  <input id="input_temperature_command" type="number" onkeydown="checkKey();" />
-  <input class="input_temperature_command_button" type="submit" onclick="submitCommand('temperature');" />
-  <input class="input_temperature_command_button" type="button" value="Cancel" onclick="toggle_visibility('enter_temperature_command');" />
-</div>
-
-<div id="enter_pump_until_command">
-  <input id="input_pump_until_command" type="number" onkeydown="checkKey();" />
-  <input class="input_pump_until_command_button" type="submit" onclick="submitCommand('pump_until');" />
-  <input class="input_pump_until_command_button" type="button" value="Cancel" onclick="toggle_visibility('enter_pump_until_command');" />
+<div id="enter_command">
+  <input id="input_command" type="number" onkeydown="checkKey();" />
+  <input class="input_command_button" type="submit" onclick="submitCommand();" />
+  <input class="input_command_button" type="button" value="Cancel" onclick="toggle_visibility('enter_command');" />
 </div>
 
 <div id="overlay" />
