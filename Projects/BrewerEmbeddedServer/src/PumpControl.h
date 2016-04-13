@@ -4,9 +4,9 @@
 #include "Subject.h"
 
 #include <fstream>
-#include <atomic>
 #include <chrono>
 #include <memory>
+#include <mutex>
 
 class PumpControl : public Subject< PumpControl >, public boost::noncopyable
 {
@@ -19,8 +19,8 @@ public:
     , mHandleIteration([&]() -> bool { return handleIteration(); })
     , mPeriodicTimer(createPeriodicTimer(*mIoService, mHandleIteration, std::chrono::seconds(1)))
     , mCounting(false)
-    , mTimerCount(std::chrono::seconds(0))
-    , mTimerLimit(std::chrono::seconds(0))
+    , mTimerCount(std::chrono::seconds::zero())
+    , mTimerLimit(std::chrono::seconds::zero())
   {
     setGpio(GPIO_OFF, true);
   }
@@ -34,6 +34,7 @@ public:
 
   void setMode(eMode iMode)
   {
+    Lock wLock(mMutex);
     mMode = iMode;
     switch (mMode)
     {
@@ -41,7 +42,7 @@ public:
       setGpio(GPIO_OFF);
       break;
     case PUMP_UNTIL:
-      if (mTimerCount.load() >= mTimerLimit.load())
+      if (mTimerCount >= mTimerLimit)
       {
         setMode(OFF);
         return;
@@ -77,25 +78,28 @@ public:
 
   std::chrono::seconds getRemainingTime() const
   {
-    return mTimerLimit.load() - mTimerCount.load();
+    Lock wLock(mMutex);
+    return mTimerLimit - mTimerCount;
   }
 
   void setTimerLimit(const std::chrono::seconds &iDuration)
   {
+    Lock wLock(mMutex);
     mTimerLimit = iDuration;
-    mTimerCount = std::chrono::seconds(0);
+    mTimerCount = std::chrono::seconds::zero();
   }
 
 private:
   bool handleIteration()
   {
+    Lock wLock(mMutex);
     bool wReturnValue = true;
-    if (mMode.load() != PUMP_UNTIL)
+    if (mMode != PUMP_UNTIL)
     {
       return wReturnValue;
     }
-    mTimerCount.store(mTimerCount.load() + std::chrono::seconds(1));
-    if (mTimerCount.load() >= mTimerLimit.load())
+    mTimerCount = mTimerCount + std::chrono::seconds(1);
+    if (mTimerCount >= mTimerLimit)
     {
       mCounting = false;
       setMode(OFF);
@@ -107,6 +111,7 @@ private:
 
   void setGpio(char iGpioValue, bool iForce = false)
   {
+    Lock wLock(mMutex);
     if (mGpioValue != iGpioValue || iForce)
     {
       mGpioValue = iGpioValue;
@@ -116,15 +121,17 @@ private:
   }
 
   std::unique_ptr< std::ofstream > mDopGpio;
-  std::atomic< eMode > mMode;
+  eMode mMode;
   char mGpioValue;
   std::unique_ptr< boost::asio::io_service > mIoService;
   std::function< bool (void) > mHandleIteration;
   std::shared_ptr< PeriodicTimer< decltype(mHandleIteration) > > mPeriodicTimer;
   std::unique_ptr< std::thread > mTimerThread;
-  std::atomic< bool > mCounting;
-  std::atomic< std::chrono::seconds > mTimerCount;
-  std::atomic< std::chrono::seconds > mTimerLimit;
+  bool mCounting;
+  std::chrono::seconds mTimerCount;
+  std::chrono::seconds mTimerLimit;
+  mutable std::recursive_mutex mMutex;
+  typedef std::lock_guard< decltype(mMutex) > Lock;
 
   static const char GPIO_OFF = '0';
   static const char GPIO_ON = '1';
