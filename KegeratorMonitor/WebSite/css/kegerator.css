@@ -1,5 +1,10 @@
+@font-face {
+  font-family: "Droid Sans";
+  src: url(DroidSans/DroidSans.ttf);
+}
+
 .text_data {
-  font-family: "Arial", "Trebuchet MS";
+  font-family: "Droid Sans", "Arial", "Trebuchet MS";
 }
 
 .temperature {
@@ -17,7 +22,7 @@
 .degree_c {
   font-size: 30px;
   vertical-align: top;
-  padding-top: 30px;
+  padding-top: 20px;
 }
 
 .kpa {
@@ -58,4 +63,10 @@
   top: 0px;
   left: 0px;
   z-index: -1;
+}
+
+.clock
+{
+  text-align: center;
+  font-size: 40px;
 }
