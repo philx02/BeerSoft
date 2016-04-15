@@ -2,7 +2,21 @@
   font-family: "Droid Sans";
   src: url(DroidSans/DroidSans.ttf);
 }
+/*
+html, body {
+    height: 100%;
+}
 
+html {
+    display: table;
+    margin: auto;
+}
+
+body {
+    display: table-cell;
+    vertical-align: middle;
+}
+*/
 .text_data {
   font-family: "Droid Sans", "Arial", "Trebuchet MS";
 }
@@ -36,11 +50,7 @@
 }
 
 .keg_left {
-  padding: 0 0 0 0;
-}
-
-.keg_right {
-  padding: 0 0 0 0;
+  padding-left: 30px;
 }
 
 .keg {
