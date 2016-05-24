@@ -16,3 +16,7 @@ Tank full mass: ~162
 
 ### fstab ###
 //192.168.0.103/philx02/MyPassport/Kegerator/data /home/pi/KegeratorMonitor/data cifs user=philx02,password=orbitxxx,sec=ntlm,uid=pi,gid=pi 0 0
+
+### Prevent wifi disconnect ###
+Add this to the bottom of your /etc/network/interfaces file, as it prevents power-save modes in the wifi dongles:
+wireless-power off
