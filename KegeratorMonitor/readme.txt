@@ -20,3 +20,4 @@ Tank full mass: ~162
 ### Prevent wifi disconnect ###
 Add this to the bottom of your /etc/network/interfaces file, as it prevents power-save modes in the wifi dongles:
 wireless-power off
+http://weworkweplay.com/play/rebooting-the-raspberry-pi-when-it-loses-wireless-connection-wifi/
