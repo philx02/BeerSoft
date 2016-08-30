@@ -7,6 +7,8 @@
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#else
+int read(int, void *, size_t) { return 0; }
 #endif
 
 class I2CDevice::Impl
@@ -61,16 +63,37 @@ I2CDevice::~I2CDevice()
 {
 }
 
+uint8_t I2CDevice::readByte() const
+{
+  return i2c_smbus_read_byte(mImpl->getDevice());
+}
+
 uint8_t I2CDevice::readByte(uint8_t iAddress) const
 {
-  int32_t wResult = i2c_smbus_write_byte(mImpl->getDevice(), iAddress);
+  //int32_t wResult = i2c_smbus_write_byte(mImpl->getDevice(), iAddress);
   return i2c_smbus_read_byte_data(mImpl->getDevice(), iAddress);
 }
 
 uint16_t I2CDevice::readWord(uint8_t iAddress) const
 {
-  int32_t wResult = i2c_smbus_write_byte(mImpl->getDevice(), iAddress);
+  //int32_t wResult = i2c_smbus_write_byte(mImpl->getDevice(), iAddress);
   return i2c_smbus_read_word_data(mImpl->getDevice(), iAddress);
+}
+
+uint16_t I2CDevice::readWord() const
+{
+  uint16_t wBuffer;
+  auto wResult = read(mImpl->getDevice(), &wBuffer, sizeof(wBuffer));
+  if (wResult < 0)
+  {
+    return wResult;
+  }
+  return wBuffer;
+}
+
+void I2CDevice::writeByte(uint8_t iValue) const
+{
+  i2c_smbus_write_byte(mImpl->getDevice(), iValue);
 }
 
 void I2CDevice::writeByte(uint8_t iAddress, uint8_t iValue) const

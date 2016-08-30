@@ -1,4 +1,5 @@
 #include "BrewControlSamplingTasks.h"
+#include "Mcp3424.h"
 #include <fstream>
 #include <string>
 
@@ -8,7 +9,7 @@ class TemperatureSampling
 {
 public:
   TemperatureSampling(const char *iDevicePath, const char *iCalibrationFile)
-    : mAdc(iDevicePath)
+    : mMcp3424(iDevicePath, 3, Mcp3424::Resolution::bits12)
     , mTemperatureCalibration(std::numeric_limits< uint16_t >::max() + 1)
   {
     struct Segment
@@ -64,7 +65,7 @@ public:
     
     BrewControlSamplingTasks::getInstance().addSamplingTask([&](DataActiveObject< BrewControl > &iBrewControl)
     {
-      auto wTemperature = mTemperatureCalibration[sampleTemperatureIndex(mAdc)];
+      auto wTemperature = mTemperatureCalibration[sampleTemperatureIndex(mMcp3424)];
       iBrewControl.dataPush([&](BrewControl &iController)
       {
         iController.setActualTemperature(wTemperature);
@@ -72,16 +73,13 @@ public:
     });
   }
 
-  uint16_t sampleTemperatureIndex(std::ifstream &iAdc)
+  uint16_t sampleTemperatureIndex(Mcp3424 &iMcp3424)
   {
-    uint16_t wTemperatureIndex;
-    iAdc.seekg(0);
-    iAdc >> wTemperatureIndex;
-    return wTemperatureIndex;
+    return iMcp3424.read();
   }
 
 private:
-  std::ifstream mAdc;
+  Mcp3424 mMcp3424;
   std::vector< double > mTemperatureCalibration;
 };
 

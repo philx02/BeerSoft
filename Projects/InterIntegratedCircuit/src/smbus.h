@@ -30,6 +30,7 @@ extern int32_t i2c_smbus_write_byte_data(int file, uint8_t command, uint8_t valu
 
 extern int32_t i2c_smbus_write_quick(int file, uint8_t value);
 extern int32_t i2c_smbus_write_byte(int file, uint8_t value);
+extern int32_t i2c_smbus_read_byte(int file);
 extern int32_t i2c_smbus_read_byte_data(int file, uint8_t command);
 extern int32_t i2c_smbus_read_word_data(int file, uint8_t command);
 extern int32_t i2c_smbus_write_word_data(int file, uint8_t command, uint16_t value);
