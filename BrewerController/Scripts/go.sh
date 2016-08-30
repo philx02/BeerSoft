@@ -2,6 +2,6 @@
 if (( $# == 1 )); then
   source $1
 else
-  source /home/pi/Brewer/env_var.sh
+  source /home/chip/Brewer/env_var.sh
 fi
-/home/pi/Brewer/BrewerEmbeddedServer
+/home/chip/BrewerController/BrewerEmbeddedServer

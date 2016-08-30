@@ -1,3 +1,5 @@
-export PWM_GPIO_DEVICE=/sys/class/gpio/gpio17/value
-export MCP3424_DEVICE_PATH=/sys/bus/i2c/devices/1-0068/iio:device0/in_voltage3_raw
-export RTD_ADC_TEMPERATURE_CALIBRATION=/home/pi/Brewer/calib.csv
+export LD_LIBRARY_PATH=.
+export PWM_GPIO_DEVICE=/sys/class/gpio/gpio1016/value
+export PUMP_GPIO_DEVICE=/sys/class/gpio/gpio1017/value
+export MCP3424_DEVICE_PATH=/dev/i2c-2
+export RTD_ADC_TEMPERATURE_CALIBRATION=/home/chip/BrewerController/calib.csv
