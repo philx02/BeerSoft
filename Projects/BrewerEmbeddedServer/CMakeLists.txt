@@ -6,7 +6,7 @@ INCLUDE_DIRECTORIES(
 )
 
 SET(${this_target}_HEADER_FILES
-  src/Ads1115.h
+  src/Mcp3424.h
   src/ActiveObject.h
   src/ThreadPool.h
   src/SamplingTasksRegistrar.h
@@ -33,6 +33,7 @@ LIST(APPEND ${this_target}_SOURCE_FILES ${${this_target}_HEADER_FILES})
 
 add_executable(${this_target} ${${this_target}_SOURCE_FILES})
 target_link_libraries(${this_target} ${Boost_LIBRARIES})
+target_link_libraries(${this_target} InterIntegratedCircuit)
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 target_link_libraries(${this_target} pthread)
 ENDIF()

@@ -13,8 +13,11 @@ public:
   I2CDevice(const char *iDeviceName, int iSlaveAddress);
   ~I2CDevice();
 
+  uint8_t readByte() const;
   uint8_t readByte(uint8_t iAddress) const;
   uint16_t readWord(uint8_t iAddress) const;
+  uint16_t readWord() const;
+  void writeByte(uint8_t iValue) const;
   void writeByte(uint8_t iAddress, uint8_t iValue) const;
   void writeWord(uint8_t iAddress, uint16_t iValue) const;
 

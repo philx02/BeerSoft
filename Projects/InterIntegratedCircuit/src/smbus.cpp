@@ -40,6 +40,11 @@ int32_t i2c_smbus_write_byte(int file, uint8_t value)
 	return 0;
 }
 
+int32_t i2c_smbus_read_byte(int file)
+{
+  return 0;
+}
+
 int32_t i2c_smbus_read_byte_data(int file, uint8_t command)
 {
 	return 0;
