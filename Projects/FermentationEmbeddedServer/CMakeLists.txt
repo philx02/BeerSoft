@@ -6,7 +6,7 @@ INCLUDE_DIRECTORIES(
 )
 
 SET(${this_target}_HEADER_FILES
-  src/Ads1115.h
+  src/Mcp3424.h
 )
 
 SET( ${this_target}_SOURCE_FILES
