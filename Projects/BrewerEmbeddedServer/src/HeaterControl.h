@@ -9,7 +9,7 @@
 class HeaterControl : public boost::noncopyable
 {
 public:
-  HeaterControl(const char *iPwmGpio, const std::chrono::milliseconds &iMinimumIncrement, const std::chrono::milliseconds &iPwmPeriod, size_t iMinimalPwmPct, size_t iMaximalPwmPct, double iKp)
+  HeaterControl(const char *iPwmGpio, const std::chrono::milliseconds &iMinimumIncrement, const std::chrono::milliseconds &iPwmPeriod, size_t iMinimalPwmPct, size_t iMaximalPwmPct, double iKp, double iKi = 0.0, double iKd = 0.0)
     : mPwmGpio(std::make_unique< std::ofstream >(iPwmGpio))
     , mTemperatureCommand(0)
     , mActualTemperature(0)
@@ -200,6 +200,8 @@ private:
   std::atomic< eControlCommandSource > mControlCommandSource;
 
   double mKp;
+  double mKi;
+  double mKd;
   std::atomic< eMode > mMode;
   char mGpioValue;
 
