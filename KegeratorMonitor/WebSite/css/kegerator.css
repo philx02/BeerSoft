@@ -22,7 +22,7 @@ body {
 }
 
 .temperature {
-  font-size: 120px;
+  font-size: 300px;
   text-align: right;
   vertical-align: top;
 }
@@ -34,9 +34,9 @@ body {
 }
 
 .degree_c {
-  font-size: 30px;
+  font-size: 75px;
   vertical-align: top;
-  padding-top: 20px;
+  padding-top: 50px;
 }
 
 .kpa {
@@ -78,5 +78,5 @@ body {
 .clock
 {
   text-align: center;
-  font-size: 40px;
+  font-size: 80px;
 }
