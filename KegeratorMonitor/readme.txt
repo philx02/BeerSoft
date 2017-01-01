@@ -1,3 +1,6 @@
+### [GUIDE] Raspbian Lite with PIXEL/LXDE/XFCE/MATE/Openbox GUI ###
+https://www.raspberrypi.org/forums/viewtopic.php?f=66&t=133691
+
 ### To enable i2c-0 ###
 add bcm2708.vc_i2c_override=1 to /boot/cmdline.txt
 add dtparam=i2c_vc=on to /boot/config.txt
