@@ -1,4 +1,4 @@
-SET(this_target FermentationEmbeddedServer)
+SET(this_target FermentationDataProcessor)
 
 INCLUDE_DIRECTORIES(
   ${Boost_INCLUDE_DIRS}
@@ -6,9 +6,6 @@ INCLUDE_DIRECTORIES(
 )
 
 SET(${this_target}_HEADER_FILES
-  src/Mcp3424.h
-  src/PeriodicTimer.h
-  src/CalibratedSensor.h
 )
 
 SET( ${this_target}_SOURCE_FILES
@@ -22,7 +19,5 @@ LIST(APPEND ${this_target}_SOURCE_FILES ${${this_target}_HEADER_FILES})
 
 add_executable(${this_target} ${${this_target}_SOURCE_FILES})
 target_link_libraries(${this_target} ${Boost_LIBRARIES})
-target_link_libraries(${this_target} InterIntegratedCircuit)
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-target_link_libraries(${this_target} pthread)
 ENDIF()
