@@ -22,40 +22,33 @@ body {
   background-image: url("../background.jpg");
 }
 
+#connection_lost {
+  display: none;
+  font-family: "Droid Sans", "Arial", "Trebuchet MS";
+  z-index: 1;
+  position: absolute;
+  background-color: black;
+  color: white;
+  font-size: 100px;
+  left: 200px;
+  top: 250px;
+}
+
 .text_data, .keg_left, .keg_right {
   font-family: "Droid Sans", "Arial", "Trebuchet MS";
 }
 
 #left_col {
-  padding-right: 20px;
+  padding-left: 35px;
+  padding-right: 60px;
 }
 
 #middle_col {
-  padding-right: 20px;
+  padding-right: 60px;
 }
 
-.temperature {
-  font-size: 300px;
-  text-align: right;
-  vertical-align: top;
-}
-
-.pressure {
-  font-size: 60px;
-  text-align: right;
-  vertical-align: top;
-}
-
-.degree_c {
-  font-size: 75px;
-  vertical-align: top;
-  padding-top: 50px;
-}
-
-.kpa {
-  font-size: 20px;
-  vertical-align: top;
-  padding-top: 15px;
+#rotating_arrows {
+  z-index: 0;
 }
 
 .parent {
@@ -63,21 +56,28 @@ body {
   z-index: 0;
 }
 
-.keg_left {
-  background-color: transparent;
-  background-image: url("../white-op60.png");
-  background-repeat: repeat;
-}
-
 .keg_left_title, .keg_right_title {
   text-align: center;
   font-size: 75px;
   font-style: italic;
+  color: white;
+  text-shadow:
+   -2px -2px 0 #000,  
+    2px -2px 0 #000,
+    -2px 2px 0 #000,
+     2px 2px 0 #000;
+  /*  -webkit-text-stroke: 2px black;  */
 }
 
 .beer_details {
+  color: white;
+  text-shadow:
+   -1px -1px 0 #000,  
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+     1px 1px 0 #000;
   text-align: right;
-  font-size: 75px;
+  font-size: 60px;
 }
 
 #co2_level {
@@ -87,6 +87,13 @@ body {
   z-index: -1;
 }
 
+.beer_level_back {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: -2;
+}
+
 .beer_level {
   position: absolute;
   top: 0px;
@@ -94,8 +101,22 @@ body {
   z-index: -1;
 }
 
-.clock
-{
-  text-align: center;
-  font-size: 80px;
+.loader {
+  position: absolute;
+  top: 200px;
+  left: 18px;
+  z-index: 1;
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-bottom: 16px solid #3498db;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  animation: spin 2s linear infinite;
+  display: none;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
