@@ -24,6 +24,7 @@ SET(${this_target}_HEADER_FILES
   src/ConnectionHandler.h
   src/Operations.h
   src/FilteredValue.h
+  src/MovingAveragedValue.h
 )
 
 SET( ${this_target}_SOURCE_FILES

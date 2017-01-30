@@ -2,6 +2,7 @@
 
 #include "Subject.h"
 #include "FilteredValue.h"
+#include "MovingAveragedValue.h"
 
 #include <cassert>
 #include <string>
@@ -13,6 +14,12 @@
 #include <boost/filesystem.hpp>
 
 namespace bfs = boost::filesystem;
+
+static size_t retrieveEnvVar(const char *iName, size_t iDefaultValue)
+{
+  auto wMovingAverageWindow = std::getenv(iName);
+  return wMovingAverageWindow != nullptr ? std::strtoul(wMovingAverageWindow, nullptr, 10) : iDefaultValue;
+}
 
 class KegeratorMetrics : public Subject< KegeratorMetrics >
 {
@@ -84,7 +91,7 @@ public:
     Data()
       : mTemperature(0, 0.1)
       , mAmbientPressure(0, 0.1)
-      , mCo2MassIndex(0, 0.1)
+      , mCo2MassIndex(retrieveEnvVar("CO2_METER_MOVING_AVERAGE_WINDOW", 120))
     {
       for (auto &&wKegPulses : mKegsActualPulses)
       {
@@ -105,7 +112,7 @@ public:
 
     FilteredValue mTemperature;
     FilteredValue mAmbientPressure;
-    FilteredValue mCo2MassIndex;
+    MovingAveragedValue mCo2MassIndex;
     std::array< std::atomic< size_t >, NUMBER_OF_KEGS > mKegsActualPulses;
   };
 
