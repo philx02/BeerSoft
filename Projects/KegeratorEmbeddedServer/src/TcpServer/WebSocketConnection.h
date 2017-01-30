@@ -47,7 +47,7 @@ public:
     std::string wResponseHeader(1, 0x81U);
     if (iMessage.size() < 126)
     {
-      wResponseHeader.append(1, iMessage.size());
+      wResponseHeader.append(1, static_cast< char >(iMessage.size()));
     }
     else if (iMessage.size() < 65536)
     {

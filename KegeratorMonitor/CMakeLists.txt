@@ -25,7 +25,7 @@ ENDIF()
 ADD_DEFINITIONS(-D_PACKAGE_VERSION=${CPACK_PACKAGE_VERSION})
 
 SET(Boost_USE_STATIC_LIBS ON)
-FIND_PACKAGE(Boost 1.55.0 REQUIRED system date_time regex filesystem)
+FIND_PACKAGE(Boost 1.55.0 REQUIRED system date_time regex filesystem program_options)
 MESSAGE(STATUS "Boost_LIBRARY_DIRS is: " ${Boost_LIBRARY_DIRS})
 
 SET(Internal_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/../include)
