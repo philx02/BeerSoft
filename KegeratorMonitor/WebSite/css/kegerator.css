@@ -103,8 +103,8 @@ body {
 
 .loader {
   position: absolute;
-  top: 200px;
-  left: 18px;
+  top: 120px;
+  left: 108px;
   z-index: 1;
   border: 16px solid #f3f3f3; /* Light grey */
   border-top: 16px solid #3498db; /* Blue */
