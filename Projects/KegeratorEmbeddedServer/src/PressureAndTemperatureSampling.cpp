@@ -10,7 +10,7 @@ public:
     KegeratorSamplingTasks::getInstance().addSamplingTask([&](DataActiveObject< KegeratorMetrics > &iKegeratorMetrics)
     {
       auto wData = samplePressureAndTemperature(mBmp180);
-      iKegeratorMetrics.dataPush([&](KegeratorMetrics &iMetrics)
+      iKegeratorMetrics.pushDataAccess([&](KegeratorMetrics &iMetrics)
       {
         iMetrics.setAmbientPressure(wData.mPressure);
         iMetrics.setTemperature(wData.mTemperature);

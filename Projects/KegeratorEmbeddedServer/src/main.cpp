@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
   DataActiveObject< KegeratorMetrics > wKegeratorMetrics = KegeratorMetrics(wConsoleArgs["data"].as< bfs::path >());
   
   boost::asio::io_service wIoService;
-  auto wWebSocketServer = createTcpServer< WebSocketConnection >(wIoService, ConnectionHandler(wKegeratorMetrics.getConstInternal()), wConsoleArgs["port"].as< uint16_t >());
+  auto wWebSocketServer = createTcpServer< WebSocketConnection >(wIoService, ConnectionHandler(wKegeratorMetrics), wConsoleArgs["port"].as< uint16_t >());
   std::thread wTcpServerThread([&]() { wIoService.run(); });
 
   ThreadPool wThreadPool(KegeratorSamplingTasks::getInstance().size());
@@ -71,6 +71,10 @@ int main(int argc, char *argv[])
       wThreadPool.enqueue([&]() { wSamplingTask(wKegeratorMetrics); });
     }
     std::this_thread::sleep_for(std::chrono::seconds(1));
+    wKegeratorMetrics.pushDataAccess([&](KegeratorMetrics &iMetrics)
+    {
+      iMetrics.notifyAll();
+    });
   }
 
   wKegeratorMetrics.stop();

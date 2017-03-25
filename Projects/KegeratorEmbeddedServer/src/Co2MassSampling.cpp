@@ -10,7 +10,7 @@ public:
     KegeratorSamplingTasks::getInstance().addSamplingTask([&](DataActiveObject< KegeratorMetrics > &iKegeratorMetrics)
     {
       auto wCo2MassIndex = sampleCo2MassIndex(mAds1115);
-      iKegeratorMetrics.dataPush([&](KegeratorMetrics &iMetrics)
+      iKegeratorMetrics.pushDataAccess([&](KegeratorMetrics &iMetrics)
       {
         iMetrics.setCo2MassIndex(wCo2MassIndex);
       });

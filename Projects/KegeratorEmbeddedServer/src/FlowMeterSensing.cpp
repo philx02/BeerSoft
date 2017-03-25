@@ -16,7 +16,7 @@ public:
         auto wGpioValue = readGpio(mPollFd, mGpioFd);
         if (wGpioValue)
         {
-          iKegeratorMetrics.dataPush([&](KegeratorMetrics &iMetrics)
+          iKegeratorMetrics.pushDataAccess([&](KegeratorMetrics &iMetrics)
           {
             iMetrics.pulseKeg(mKegIndex);
           });
