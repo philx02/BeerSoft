@@ -26,12 +26,12 @@ class KegeratorMetrics : public Subject< KegeratorMetrics >
 public:
   KegeratorMetrics(const bfs::path &iDataFolder)
   {
-    auto wRetrievePulses = [&](size_t wKegId, const char *iFilename)
+    auto wRetrievePulses = [&](size_t iKegId, const char *iFilename)
     {
-      mKegsActualPulsesFiles[wKegId].reset(new std::fstream((iDataFolder / iFilename).c_str()));
+      mKegsActualPulsesFiles[iKegId].mStream.reset(new std::fstream((iDataFolder / iFilename).c_str()));
       size_t wRetrievedPulses;
-      *mKegsActualPulsesFiles[wKegId] >> wRetrievedPulses;
-      mData.mKegsActualPulses[wKegId].store(wRetrievedPulses);
+      *mKegsActualPulsesFiles[iKegId].mStream >> wRetrievedPulses;
+      mData.mKegsActualPulses[iKegId].store(wRetrievedPulses);
     };
     wRetrievePulses(0, "Keg0Pulses.txt");
     wRetrievePulses(1, "Keg1Pulses.txt");
@@ -75,13 +75,30 @@ public:
   void pulseKeg(size_t iKegIndex)
   {
     assert(iKegIndex < NUMBER_OF_KEGS);
-    mKegsActualPulsesFiles[iKegIndex]->seekp(0);
-    *mKegsActualPulsesFiles[iKegIndex] << ++mData.mKegsActualPulses[iKegIndex];
-    mKegsActualPulsesFiles[iKegIndex]->flush();
+    mKegsActualPulsesFiles[iKegIndex].mStream->seekp(0);
+    *mKegsActualPulsesFiles[iKegIndex].mStream << ++mData.mKegsActualPulses[iKegIndex];
+    mKegsActualPulsesFiles[iKegIndex].mFlushRequired = true;
+  }
+
+  void setKegLevel(size_t iKegIndex, double iLevel)
+  {
+    assert(iKegIndex < NUMBER_OF_KEGS);
+    mData.mKegsActualPulses[iKegIndex] = mFullKegTotalPulses - static_cast< decltype(mFullKegTotalPulses) >(iLevel * static_cast< double >(mFullKegTotalPulses));
+    mKegsActualPulsesFiles[iKegIndex].mStream->seekp(0);
+    *mKegsActualPulsesFiles[iKegIndex].mStream << mData.mKegsActualPulses[iKegIndex];
+    mKegsActualPulsesFiles[iKegIndex].mFlushRequired = true;
   }
 
   void notifyAll() const
   {
+    for (auto &&wStreamInfo : mKegsActualPulsesFiles)
+    {
+      if (wStreamInfo.mFlushRequired)
+      {
+        wStreamInfo.mStream->flush();
+        wStreamInfo.mFlushRequired = false;
+      }
+    }
     Subject< KegeratorMetrics >::notify(*this);
   }
 
@@ -155,5 +172,19 @@ private:
   size_t mCo2TankEmptyMassIndex;
   size_t mCo2TankFullMassIndex;
   size_t mFullKegTotalPulses;
-  std::array< std::unique_ptr< std::fstream >, NUMBER_OF_KEGS > mKegsActualPulsesFiles;
+  struct StreamInfo
+  {
+    StreamInfo()
+      : mFlushRequired(false)
+    {
+    }
+    StreamInfo(std::unique_ptr< std::fstream > &&iStream)
+      : mStream(std::move(iStream))
+      , mFlushRequired(false)
+    {
+    }
+    std::unique_ptr< std::fstream > mStream;
+    mutable bool mFlushRequired;
+  };
+  std::array< StreamInfo, NUMBER_OF_KEGS > mKegsActualPulsesFiles;
 };
