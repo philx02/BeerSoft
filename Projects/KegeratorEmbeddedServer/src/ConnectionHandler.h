@@ -4,6 +4,8 @@
 #include "KegeratorMetrics.h"
 #include "Subject.h"
 
+#include <boost/algorithm/string.hpp>
+
 class ConnectionHandler : public IObserver< KegeratorMetrics >
 {
 public:
@@ -50,8 +52,22 @@ private:
     {
       mKegeratorMetrics.pushDataAccess([&](KegeratorMetrics &iMetrics)
       {
-        update(mKegeratorMetrics.getConstInternal());
+        update(iMetrics);
       });
+    }
+    else
+    {
+      std::vector< std::string > wSplit;
+      boost::split(wSplit, iPayload, boost::is_any_of("|"));
+      if (wSplit.size() == 3 && wSplit[0] == "set_keg_level")
+      {
+        auto wKegIndex = std::strtoul(wSplit[1].c_str(), nullptr, 10);
+        auto wLevel = std::strtod(wSplit[2].c_str(), nullptr) / 100.0;
+        mKegeratorMetrics.pushDataAccess([=](KegeratorMetrics &iMetrics)
+        {
+          iMetrics.setKegLevel(wKegIndex, wLevel);
+        });
+      }
     }
   }
 
