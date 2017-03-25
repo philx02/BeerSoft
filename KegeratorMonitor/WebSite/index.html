@@ -91,9 +91,12 @@
     context.fillStyle = 'lightgrey';
     context.fill();
     var zoom_factor = 1.75;
-    var level_px = -(zoom_factor * 220) * level_pct + (zoom_factor * 252);
-    var bottom_level_px = (zoom_factor * 260) - level_px;
-    context.drawImage(beer_img, 100, level_px, 150, bottom_level_px);
+    // bottom of barrel = 320 from top of canvas
+    // top of barrel = ~50 (full) from top of canvas
+    // full height of beer = 270
+    var height_of_beer = level_pct * 270;
+    var top_of_beer = 320 - height_of_beer;
+    context.drawImage(beer_img, 100, top_of_beer, 150, height_of_beer);
 
     if (keg_level_pct_prev[keg_id] != level_pct) {
       keg_animation_timer[keg_id] = 5;
@@ -126,7 +129,7 @@
 
   function set_keg_level(level) {
     document.getElementById('enter_keg_level').style.display = 'none';
-    alert('kegid=' + set_keg_level_id + ' level=' + document.getElementById('enter_keg_level_range').value);
+    wWebSocket.send('set_keg_level|' + (set_keg_level_id == 0 ? 1 : 0) + '|' + document.getElementById('enter_keg_level_range').value);
   }
 
   $(function () {
