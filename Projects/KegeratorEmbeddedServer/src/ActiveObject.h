@@ -79,7 +79,7 @@ public:
   {
   }
 
-  inline void dataPush(const std::function< void (T &) > &iFunction)
+  inline void pushDataAccess(const std::function< void (T &) > &iFunction)
   {
     push([=]() { iFunction(mInternal); });
   }

@@ -60,19 +60,16 @@ public:
   void setTemperature(double iTemperature)
   {
     mData.mTemperature.addSample(iTemperature);
-    Subject< KegeratorMetrics >::notify(*this);
   }
   
   void setAmbientPressure(double iPressure)
   {
     mData.mAmbientPressure.addSample(iPressure);
-    Subject< KegeratorMetrics >::notify(*this);
   }
 
   void setCo2MassIndex(size_t iCo2MassIndex)
   {
     mData.mCo2MassIndex.addSample(iCo2MassIndex);
-    Subject< KegeratorMetrics >::notify(*this);
   }
 
   void pulseKeg(size_t iKegIndex)
@@ -81,6 +78,10 @@ public:
     mKegsActualPulsesFiles[iKegIndex]->seekp(0);
     *mKegsActualPulsesFiles[iKegIndex] << ++mData.mKegsActualPulses[iKegIndex];
     mKegsActualPulsesFiles[iKegIndex]->flush();
+  }
+
+  void notifyAll() const
+  {
     Subject< KegeratorMetrics >::notify(*this);
   }
 
@@ -123,7 +124,22 @@ public:
 
   const std::string dataString() const
   {
-    auto wCo2Ratio = mData.mCo2MassIndex.getActualValue() < mCo2TankFullMassIndex ? static_cast< double >(mData.mCo2MassIndex.getActualValue() - mCo2TankEmptyMassIndex) / static_cast< double >(mCo2TankFullMassIndex - mCo2TankEmptyMassIndex) : 1.0;
+    auto wCo2Ratio = [&]() -> double
+    {
+      auto &&wActualValue = mData.mCo2MassIndex.getActualValue();
+      if (wActualValue < mCo2TankEmptyMassIndex)
+      {
+        return 0.0;
+      }
+      else if (wActualValue < mCo2TankFullMassIndex)
+      {
+        return static_cast<double>(wActualValue - mCo2TankEmptyMassIndex) / static_cast<double>(mCo2TankFullMassIndex - mCo2TankEmptyMassIndex);
+      }
+      else
+      {
+        return 1.0;
+      }
+    }();
     auto wKeg0Ratio = mData.mKegsActualPulses[0] < mFullKegTotalPulses ? static_cast< double >(mFullKegTotalPulses - mData.mKegsActualPulses[0]) / static_cast< double >(mFullKegTotalPulses) : 0.0;
     auto wKeg1Ratio = mData.mKegsActualPulses[1] < mFullKegTotalPulses ? static_cast< double >(mFullKegTotalPulses - mData.mKegsActualPulses[1]) / static_cast< double >(mFullKegTotalPulses) : 0.0;
     return    std::to_string(mData.mTemperature.getActualValue())

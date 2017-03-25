@@ -2,25 +2,26 @@
 
 #include "TcpServer/ISender.h"
 #include "KegeratorMetrics.h"
+#include "Subject.h"
 
 class ConnectionHandler : public IObserver< KegeratorMetrics >
 {
 public:
-  ConnectionHandler(const KegeratorMetrics &iKegeratorMetrics)
+  ConnectionHandler(DataActiveObject< KegeratorMetrics > &iKegeratorMetrics)
     : mKegeratorMetrics(iKegeratorMetrics)
   {
-    mKegeratorMetrics.attach(this);
+    mKegeratorMetrics.getConstInternal().attach(this);
   }
 
   ConnectionHandler(const ConnectionHandler &iConnectionHandler)
     : mKegeratorMetrics(iConnectionHandler.mKegeratorMetrics)
   {
-    mKegeratorMetrics.attach(this);
+    mKegeratorMetrics.getConstInternal().attach(this);
   }
 
   ~ConnectionHandler()
   {
-    mKegeratorMetrics.detach(this);
+    mKegeratorMetrics.getConstInternal().detach(this);
   }
 
   void setSender(const std::shared_ptr< ISender > &iSender)
@@ -38,7 +39,7 @@ public:
     auto wSender = mSender.lock();
     if (wSender != nullptr)
     {
-      wSender->send(mKegeratorMetrics.dataString());
+      wSender->send(iMetrics.dataString());
     }
   }
 
@@ -47,10 +48,13 @@ private:
   {
     if (iPayload == "get_status")
     {
-      update(mKegeratorMetrics);
+      mKegeratorMetrics.pushDataAccess([&](KegeratorMetrics &iMetrics)
+      {
+        update(mKegeratorMetrics.getConstInternal());
+      });
     }
   }
 
   std::weak_ptr< ISender > mSender;
-  const KegeratorMetrics &mKegeratorMetrics;
+  DataActiveObject< KegeratorMetrics > &mKegeratorMetrics;
 };
