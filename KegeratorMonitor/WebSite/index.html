@@ -2,12 +2,14 @@
 <html>
 <head>
 <title>Kegerator Monitor</title>
-<link rel="stylesheet" type="text/css" href="css/kegerator.css"/>
+<link rel="stylesheet" type="text/css" href="css/rangeslider.css"/>
+<link rel="stylesheet" type="text/css" href="css/kegerator.css" />
 <script type="text/javascript" src="scripts/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxcore.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxdata.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxdraw.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxgauge.js"></script>
+<script type="text/javascript" src="scripts/rangeslider.min.js"></script>
 </head>
  
 <body onload="start()">
@@ -113,6 +115,24 @@
       document.getElementById('keg_' + keg_id + '_pouring').style.display = 'none';
     }
   }
+
+  var set_keg_level_id = 0;
+
+  function set_keg_level_dialog(keg_id) {
+    set_keg_level_id = keg_id;
+    $('#enter_keg_level_range').val(100*keg_level_pct_prev[keg_id]).change();
+    //document.getElementById('enter_keg_level_range').value = "25";//keg_level_pct_prev[keg_id];
+    document.getElementById('enter_keg_level').style.display = 'inline';
+  }
+
+  function set_keg_level(level) {
+    document.getElementById('enter_keg_level').style.display = 'none';
+    alert('kegid=' + set_keg_level_id + ' level=' + document.getElementById('enter_keg_level_range').value);
+  }
+
+  $(function () {
+    $('input[type=range]').rangeslider({ polyfill: false });
+  });
 </script>
 
   <script type="text/javascript">
@@ -165,6 +185,15 @@
   </script>
 
   <div id="connection_lost">CONNECTION LOST</div>
+
+  <div id="enter_keg_level">
+    <div id="enter_keg_level_input">
+      <input id="enter_keg_level_range" type="range" min="0" max="100" />
+      <input id="enter_keg_level_button_ok" type="button" value="OK" onclick="set_keg_level();" />
+      <input id="enter_keg_level_button_cancel" type="button" value="CANCEL" onclick="document.getElementById('enter_keg_level').style.display = 'none';" />
+    </div>
+  </div>
+
   <img id="beer_level_img" class="beer_level" src="beer_column.jpg" style="display: none;" />
 <table>
   <tr>
@@ -179,7 +208,7 @@
         <tr>
           <td align='center'>
             <div class="parent">
-              <img src="Barrel.png" height="350" />
+              <img src="Barrel.png" height="350" onclick="set_keg_level_dialog(0);" />
               <div id="keg_0_pouring" class="loader"></div>
               <canvas id="beer_level_keg_0_back"  class="beer_level_back" height="330" width="250"></canvas>
             </div>
@@ -208,7 +237,7 @@
         <tr>
           <td align='center'>
             <div class="parent">
-              <img src="Barrel.png" height="350" />
+              <img src="Barrel.png" height="350" onclick="set_keg_level_dialog(1);" />
               <div id="keg_1_pouring" class="loader"></div>
               <canvas id="beer_level_keg_1_back"  class="beer_level_back" height="330" width="250"></canvas>
             </div>

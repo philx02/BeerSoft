@@ -34,6 +34,44 @@ body {
   top: 250px;
 }
 
+#enter_keg_level {
+  display: none;
+  font-family: "Droid Sans", "Arial", "Trebuchet MS";
+  z-index: 1;
+  position: absolute;
+  background-color: white;
+  width: 880px;
+  height: 220px;
+  font-size: 100px;
+  left: 200px;
+  top: 250px;
+  border-style: solid;
+}
+
+#enter_keg_level_input {
+  position: relative;
+  left: 50px;
+  top: 50px;
+  width: 780px;
+  height: 100px;
+}
+
+#enter_keg_level_button_ok {
+  position: relative;
+  left: 337px;
+  width: 100px;
+  height: 75px;
+  font-size: 50px;
+}
+
+#enter_keg_level_button_cancel {
+  position: relative;
+  left: 337px;
+  width: 230px;
+  height: 75px;
+  font-size: 50px;
+}
+
 .text_data, .keg_left, .keg_right {
   font-family: "Droid Sans", "Arial", "Trebuchet MS";
 }
