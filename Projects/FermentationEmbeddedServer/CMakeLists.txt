@@ -6,7 +6,7 @@ INCLUDE_DIRECTORIES(
 )
 
 SET(${this_target}_HEADER_FILES
-  src/Mcp3424.h
+  src/Ads1115.h
   src/Max6675.h
   src/PeriodicTimer.h
   src/CalibratedSensor.h
