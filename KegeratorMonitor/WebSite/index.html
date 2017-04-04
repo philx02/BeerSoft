@@ -21,6 +21,7 @@
   var keg_level_pct_prev = [0, 0];
   var keg_animation_timer = [0, 0];
   var connection_watchdog = true;
+  var beer_img = new Array();
 
   function start()
   {
@@ -28,7 +29,8 @@
 
     connect();    
 
-    beer_img = document.getElementById('beer_level_img');
+	beer_img.push(document.getElementById('beer_level_img_right'));
+    beer_img.push(document.getElementById('beer_level_img_left'));
 
     setInterval(kegPouringAnimation, 1000);
     setInterval(checkConnection, 2000);
@@ -96,7 +98,7 @@
     // full height of beer = 270
     var height_of_beer = level_pct * 270;
     var top_of_beer = 320 - height_of_beer;
-    context.drawImage(beer_img, 100, top_of_beer, 150, height_of_beer);
+    context.drawImage(beer_img[keg_id], 100, top_of_beer, 150, height_of_beer);
 
     if (keg_level_pct_prev[keg_id] != level_pct) {
       keg_animation_timer[keg_id] = 5;
@@ -196,7 +198,8 @@
     </div>
   </div>
 
-  <img id="beer_level_img" class="beer_level" src="beer_column.jpg" style="display: none;" />
+  <img id="beer_level_img_left" class="beer_level" src="beer_column_gold.jpg" style="display: none;" />
+  <img id="beer_level_img_right" class="beer_level" src="beer_column_dark.jpg" style="display: none;" />
 <table>
   <tr>
 
