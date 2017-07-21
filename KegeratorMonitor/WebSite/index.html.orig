@@ -2,14 +2,12 @@
 <html>
 <head>
 <title>Kegerator Monitor</title>
-<link rel="stylesheet" type="text/css" href="css/rangeslider.css"/>
-<link rel="stylesheet" type="text/css" href="css/kegerator.css" />
+<link rel="stylesheet" type="text/css" href="css/kegerator.css"/>
 <script type="text/javascript" src="scripts/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxcore.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxdata.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxdraw.js"></script>
 <script type="text/javascript" src="jqwidgets/jqxgauge.js"></script>
-<script type="text/javascript" src="scripts/rangeslider.min.js"></script>
 </head>
  
 <body onload="start()">
@@ -21,7 +19,6 @@
   var keg_level_pct_prev = [0, 0];
   var keg_animation_timer = [0, 0];
   var connection_watchdog = true;
-  var beer_img = new Array();
 
   function start()
   {
@@ -29,8 +26,7 @@
 
     connect();    
 
-	beer_img.push(document.getElementById('beer_level_img_right'));
-    beer_img.push(document.getElementById('beer_level_img_left'));
+    beer_img = document.getElementById('beer_level_img');
 
     setInterval(kegPouringAnimation, 1000);
     setInterval(checkConnection, 2000);
@@ -41,7 +37,6 @@
     try
     {
       var ws_server = (QueryString.server == null ? "ws://" + window.location.hostname + ":8011" : QueryString.server);
-      //var ws_server = (QueryString.server == null ? "wss://" + window.location.hostname + "/wskegerator" : QueryString.server);
       wWebSocket = new WebSocket(ws_server);
     }
     catch (exc)
@@ -90,16 +85,13 @@
     context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.beginPath();
-    context.rect(100, 20, canvas.width, canvas.height);
-    context.fillStyle = 'lightgrey';
+    context.rect(100, 50, canvas.width, canvas.height);
+    context.fillStyle = 'grey';
     context.fill();
     var zoom_factor = 1.75;
-    // bottom of barrel = 320 from top of canvas
-    // top of barrel = ~50 (full) from top of canvas
-    // full height of beer = 270
-    var height_of_beer = level_pct * 270;
-    var top_of_beer = 320 - height_of_beer;
-    context.drawImage(beer_img[keg_id], 100, top_of_beer, 150, height_of_beer);
+    var level_px = -(zoom_factor * 203) * level_pct + (zoom_factor * 252);
+    var bottom_level_px = (zoom_factor * 260) - level_px;
+    context.drawImage(beer_img, 20, level_px, 125, bottom_level_px);
 
     if (keg_level_pct_prev[keg_id] != level_pct) {
       keg_animation_timer[keg_id] = 5;
@@ -121,23 +113,6 @@
       document.getElementById('keg_' + keg_id + '_pouring').style.display = 'none';
     }
   }
-
-  var set_keg_level_id = 0;
-
-  function set_keg_level_dialog(keg_id) {
-    set_keg_level_id = keg_id;
-    $('#enter_keg_level_range').val(100*keg_level_pct_prev[keg_id]).change();
-    document.getElementById('enter_keg_level').style.display = 'inline';
-  }
-
-  function set_keg_level(level) {
-    document.getElementById('enter_keg_level').style.display = 'none';
-    wWebSocket.send('set_keg_level|' + (set_keg_level_id == 0 ? 1 : 0) + '|' + document.getElementById('enter_keg_level_range').value);
-  }
-
-  $(function () {
-    $('input[type=range]').rangeslider({ polyfill: false });
-  });
 </script>
 
   <script type="text/javascript">
@@ -190,17 +165,7 @@
   </script>
 
   <div id="connection_lost">CONNECTION LOST</div>
-
-  <div id="enter_keg_level">
-    <div id="enter_keg_level_input">
-      <input id="enter_keg_level_range" type="range" min="0" max="100" />
-      <input id="enter_keg_level_button_ok" type="button" value="OK" onclick="set_keg_level();" />
-      <input id="enter_keg_level_button_cancel" type="button" value="CANCEL" onclick="document.getElementById('enter_keg_level').style.display = 'none';" />
-    </div>
-  </div>
-
-  <img id="beer_level_img_left" class="beer_level" src="beer_column_gold.jpg" style="display: none;" />
-  <img id="beer_level_img_right" class="beer_level" src="beer_column_dark.jpg" style="display: none;" />
+  <img id="beer_level_img" class="beer_level" src="beer_column.jpg" style="display: none;" />
 <table>
   <tr>
 
@@ -208,13 +173,13 @@
       <table>
         <tr>
           <td class="keg_left_title">
-            <img src='MasterOfTheFeast.png' width='350'/>
+            <img src='ObkWitbier.png' width='350'/>
           </td>
         </tr>
         <tr>
           <td align='center'>
             <div class="parent">
-              <img src="Barrel.png" height="350" onclick="set_keg_level_dialog(0);" />
+              <img src="Barrel.png" height="350" />
               <div id="keg_0_pouring" class="loader"></div>
               <canvas id="beer_level_keg_0_back"  class="beer_level_back" height="330" width="250"></canvas>
             </div>
@@ -228,7 +193,7 @@
         <div id="gauge-temperature" style="float: left;"></div>
       </div>
 
-      <div class="gauge">
+      <div class="gauge"">
         <div id="gauge-co2" style="float: left;"></div>
       </div>
     </td>
@@ -243,7 +208,7 @@
         <tr>
           <td align='center'>
             <div class="parent">
-              <img src="Barrel.png" height="350" onclick="set_keg_level_dialog(1);" />
+              <img src="Barrel.png" height="350" />
               <div id="keg_1_pouring" class="loader"></div>
               <canvas id="beer_level_keg_1_back"  class="beer_level_back" height="330" width="250"></canvas>
             </div>
