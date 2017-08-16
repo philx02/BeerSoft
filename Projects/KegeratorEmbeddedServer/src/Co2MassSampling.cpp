@@ -19,7 +19,8 @@ public:
 
   size_t sampleCo2MassIndex(const Ads1115 &iAds1115)
   {
-    return iAds1115.read();
+    auto wValue = iAds1115.read();
+    return wValue < 0 ? 0 : wValue;
   }
 
 private:
