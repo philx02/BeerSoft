@@ -99,6 +99,7 @@ void KegeratorMetrics::notifyAll() const
   {
     if (mData.mKegsActualPulses[wIndex].mPulsesFlushCountdown == 0)
     {
+      mUpdateKegLevel->clear();
       mUpdateKegLevel->bind(1, mData.mKegsActualPulses[wIndex].mPulses.load());
       mUpdateKegLevel->bind(2, wIndex);
       mUpdateKegLevel->runOnce();
