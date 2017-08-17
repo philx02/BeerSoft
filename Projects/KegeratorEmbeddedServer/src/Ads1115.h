@@ -10,10 +10,10 @@ public:
   {
   }
 
-  int16_t read() const
+  uint16_t read() const
   {
     mDevice.writeWord(0x01, 0x838B);
-    int16_t wResult = mDevice.readWord(0x00);
+    uint16_t wResult = mDevice.readWord(0x00);
     // fix endianess
     return wResult >> 8 | wResult << 8;
   }
