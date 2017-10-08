@@ -19,10 +19,10 @@ int main(int argc, char *argv[])
     ("help,h", "produce help message")
     ("path,p", bpo::value(&wPath)->default_value("/sys/class/gpio"), "Path to gpio folder")
     ("id,i", bpo::value(&wId)->required(), "Gpio ID")
-    ("activation_level,a", bpo::value(&wActivationLevel)->required(), "Path to gpio folder")
+    ("activation_level,a", bpo::value(&wActivationLevel)->required(), "Activation level (low or high)")
     ("edge,e", bpo::value(&wEdge), "Edge")
     ("initial_value,v", bpo::value(&wInitialValue), "Initial Value")
-    ("direction,d", bpo::value(&wDirection)->required(), "Direction");
+    ("direction,d", bpo::value(&wDirection)->required(), "Direction (out or in)");
   
   bpo::variables_map wOptions;
   bpo::store(bpo::parse_command_line(argc, argv, wDescriptions), wOptions);
