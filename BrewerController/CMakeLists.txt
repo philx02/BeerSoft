@@ -52,5 +52,6 @@ SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 ADD_SUBDIRECTORY(../Projects/InterIntegratedCircuit InterIntegratedCircuit)
 ADD_SUBDIRECTORY(../Projects/BrewerEmbeddedServer BrewerEmbeddedServer)
 ADD_SUBDIRECTORY(../Projects/SetupGpio SetupGpio)
+ADD_SUBDIRECTORY(../Projects/Mcp3424Sensor Mcp3424Sensor)
 
 
