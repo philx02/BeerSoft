@@ -45,7 +45,7 @@
     actual_temperature.innerHTML = Number(wSplit[1]).toFixed(1);
 
     var actual_duty_cycle = document.getElementById("actual_duty_cycle");
-    actual_duty_cycle.innerHTML = (100.0 * Number(wSplit[2])).toFixed(1);
+    actual_duty_cycle.innerHTML = (Number(wSplit[2])).toFixed(1);
 
     var actual_pump_until = document.getElementById("actual_pump_until");
     actual_pump_until.innerHTML = Number(wSplit[5]);
