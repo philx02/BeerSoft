@@ -18,6 +18,8 @@ def consumer(message):
         BC.set_pump_until_command(int(proto[1]))
     elif len(proto) == 2 and proto[0] == "set_duty_cycle_command":
         BC.set_duty_cycle_command(int(proto[1]))
+    elif len(proto) == 2 and proto[0] == "set_sparge_heater_mode":
+        BC.set_sparge_heater_mode(int(proto[1]))
 
 class TemperatureProtocol:
     def connection_made(self, transport):
