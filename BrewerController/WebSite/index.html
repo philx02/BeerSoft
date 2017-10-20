@@ -45,7 +45,7 @@
     actual_temperature.innerHTML = Number(wSplit[1]).toFixed(1);
 
     var actual_duty_cycle = document.getElementById("actual_duty_cycle");
-    actual_duty_cycle.innerHTML = (100.0 * Number(wSplit[2])).toFixed(1);
+    actual_duty_cycle.innerHTML = (Number(wSplit[2])).toFixed(1);
 
     var actual_pump_until = document.getElementById("actual_pump_until");
     actual_pump_until.innerHTML = Number(wSplit[5]);
@@ -98,6 +98,17 @@
         document.getElementById("actual_duty_cycle").style.color = "green";
         break;
     }
+
+    switch (Number(wSplit[7])) {
+      case 0:
+        document.getElementById("sparge_heater_on_button").style.background = "grey";
+        document.getElementById("sparge_heater_off_button").style.background = "red";
+        break;
+      case 1:
+        document.getElementById("sparge_heater_on_button").style.background = "red";
+        document.getElementById("sparge_heater_off_button").style.background = "gray";
+        break;
+    }
   }
 
   function toggle_visibility(id)
@@ -130,6 +141,11 @@
   function setPumpMode(mode)
   {
     wWebSocket.send("set_pump_mode," + mode);
+  }
+
+  function setSpargeHeaterMode(mode)
+  {
+    wWebSocket.send("set_sparge_heater_mode," + mode);
   }
 
   function checkKey()
@@ -200,7 +216,7 @@
 
 <table id="heater_buttons" class="bottom_buttons">
   <tr>
-    <th colspan="3" class="buttons_title">Heater Control</th>
+    <th colspan="3" class="buttons_title">Main Heater Control</th>
   </tr>
   <tr>
     <td class="mode_button_td"><input id="heater_always_on_button" class="mode_button" type="button" value="ALWAYS ON" onclick="setHeaterMode(2);" /></td>
@@ -217,6 +233,17 @@
     <td class="mode_button_td"><input id="pump_always_on_button" class="mode_button" type="button" value="ALWAYS ON" onclick="setPumpMode(2);" /></td>
     <td class="mode_button_td"><input id="pump_pwm_button" class="mode_button" type="button" value="UNTIL" onclick="setPumpMode(1);" /></td>
     <td class="mode_button_td"><input id="pump_off_button" class="mode_button" type="button" value="OFF" onclick="setPumpMode(0);" /></td>
+  </tr>
+</table>
+
+<table id="sparge_heater_buttons" class="bottom_buttons">
+  <tr>
+    <th colspan="3" class="buttons_title">Sparge Heater Control</th>
+  </tr>
+  <tr>
+    <td class="mode_button_td"><input id="sparge_heater_on_button" class="mode_button" type="button" value="ALWAYS ON" onclick="setSpargeHeaterMode(1);" /></td>
+    <td class="mode_button_td"><div class="mode_button" /></td>
+    <td class="mode_button_td"><input id="sparge_heater_off_button" class="mode_button" type="button" value="OFF" onclick="setSpargeHeaterMode(0);" /></td>
   </tr>
 </table>
 
