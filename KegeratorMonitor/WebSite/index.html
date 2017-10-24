@@ -40,8 +40,8 @@
   {
     try
     {
-      var ws_server = (QueryString.server == null ? "ws://" + window.location.hostname + ":8011" : QueryString.server);
-      //var ws_server = (QueryString.server == null ? "wss://" + window.location.hostname + "/wskegerator" : QueryString.server);
+      //var ws_server = (QueryString.server == null ? "ws://" + window.location.hostname + ":8011" : QueryString.server);
+      var ws_server = (QueryString.server == null ? "wss://" + window.location.hostname + "/wskegerator" : QueryString.server);
       wWebSocket = new WebSocket(ws_server);
     }
     catch (exc)
