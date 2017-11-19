@@ -1,0 +1,70 @@
+from datetime import datetime
+from datetime import timedelta
+from accumulator import Accumulator
+import sys
+import socket
+
+import RPi.GPIO as GPIO
+
+class TemperatureControl:
+    gpio = 0
+    actual_temperature = Accumulator(60)
+    low_threshold = 0.0
+    high_threshold = 0.0
+    run_period = timedelta(minutes=15)
+    cooldown_period = timedelta(minutes=15)
+    start_time = None
+    stop_time = None
+    cooling_command = False
+    udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    MCAST_GRP = "224.0.0.2"
+    MCAST_PORT = 10003
+
+    def __init__(self, gpio, low_threshold, high_threshold):
+        self.gpio = gpio
+        self.low_threshold = low_threshold
+        self.high_threshold = high_threshold
+        self.stop_time = datetime.now() - self.cooldown_period
+        GPIO.setup(self.gpio, GPIO.OUT)
+
+    def __del__(self):
+        GPIO.cleanup(self.gpio)
+
+    def set_low_threshold(self, low_threshold):
+        self.low_threshold = low_threshold
+
+    def set_high_threshold(self, high_threshold):
+        self.high_threshold = high_threshold
+
+    def update(self, temp):
+        self.actual_temperature.add(temp)
+
+        #the algorithm could have 2 variables, target temp and a delta, with a proper model of the
+        #freezer/wort bucket, compute time_on = [model stuff that predicts time required to get target - delta/2]
+        # and compute that value only when temperature >= target + delta/2
+        #lolz, this works even better with the thresholds
+
+        if self.cooling_command:
+            run_duration = datetime.now() - self.start_time
+            if run_duration >= self.run_period:
+                self.cooling_command = False
+                self.stop_time = datetime.now()
+        else:
+            if self.actual_temperature.mean() > self.high_threshold:
+                cooldown_duration = datetime.now() - self.stop_time
+                if cooldown_duration >= self.cooldown_period:
+                    self.cooling_command = True
+                    self.start_time = datetime.now()
+        
+        self.__update_cooling()
+    
+    def __update_cooling(self):
+        if (self.cooling_command):
+            self.__set_output(GPIO.LOW)
+        else:
+            self.__set_output(GPIO.HIGH)
+
+    def __set_output(self, value):
+        self.udp_socket.send("0" if value else "1", self.MCAST_GRP, self.MCAST_PORT)
+        #TBD uncomment
+        #GPIO.output(self.gpio, value)

@@ -1,0 +1,4 @@
+thermocouple=224.0.0.2:10000
+chamber_temp_hum=224.0.0.2:10001
+density_meter=224.0.0.2:10002
+cooling_status=224.0.0.2:10003
