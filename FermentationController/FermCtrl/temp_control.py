@@ -11,7 +11,7 @@ class TemperatureControl:
     actual_temperature = Accumulator(60)
     low_threshold = 0.0
     high_threshold = 0.0
-    run_period = timedelta(minutes=15)
+    run_period = timedelta(minutes=10)
     cooldown_period = timedelta(minutes=15)
     start_time = None
     stop_time = None
@@ -22,10 +22,11 @@ class TemperatureControl:
 
     def __init__(self, gpio, low_threshold, high_threshold):
         self.gpio = gpio
-        self.low_threshold = low_threshold
-        self.high_threshold = high_threshold
+        self.low_threshold = float(low_threshold)
+        self.high_threshold = float(high_threshold)
         self.stop_time = datetime.now() - self.cooldown_period
         GPIO.setup(self.gpio, GPIO.OUT)
+        self.__set_output(GPIO.HIGH)
 
     def __del__(self):
         GPIO.cleanup(self.gpio)
@@ -50,7 +51,7 @@ class TemperatureControl:
                 self.cooling_command = False
                 self.stop_time = datetime.now()
         else:
-            if self.actual_temperature.mean() > self.high_threshold:
+            if self.actual_temperature.mean() >= self.high_threshold:
                 cooldown_duration = datetime.now() - self.stop_time
                 if cooldown_duration >= self.cooldown_period:
                     self.cooling_command = True
@@ -65,6 +66,6 @@ class TemperatureControl:
             self.__set_output(GPIO.HIGH)
 
     def __set_output(self, value):
-        self.udp_socket.send("0" if value else "1", self.MCAST_GRP, self.MCAST_PORT)
-        #TBD uncomment
-        #GPIO.output(self.gpio, value)
+        message = "0" if value else "1"
+        self.udp_socket.sendto(message, (self.MCAST_GRP, self.MCAST_PORT))
+        GPIO.output(self.gpio, value)

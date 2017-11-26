@@ -1,26 +1,25 @@
 from collections import deque
 
 class Accumulator:
-    __values = deque()
-    __size = 0.0
-    __total = 0.0
-    __mean = 0.0
-
     def __init__(self, size):
+        self.values = deque()
+        self.size = 0.0
+        self.total = 0.0
+        self.mean = 0.0
         if size < 1:
             raise ValueError('Size must me > 0.')
         self.size = size
 
     def add(self, value):
-        self.__values.append(value)
-        self.__total += value
-        if len(self.__values) > self.__size:
-            self.__total -= self.__values[0]
-            self.__values.popleft()
-        self.__mean = self.__total / len(self.__values)
+        self.values.append(value)
+        self.total += value
+        if len(self.values) > self.size:
+            self.total -= self.values[0]
+            self.values.popleft()
+        self.mean = self.total / float(len(self.values))
 
-    def mean(self):
-        return self.__mean
+    def get_mean(self):
+        return self.mean
 
-    def total(self):
-        return self.__total
+    def get_total(self):
+        return self.total

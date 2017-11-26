@@ -1,3 +1,5 @@
+#!/usr/bin/python2
+
 import Adafruit_DHT
 import argparse
 import socket
