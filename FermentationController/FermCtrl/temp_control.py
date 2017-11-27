@@ -7,24 +7,20 @@ import socket
 import RPi.GPIO as GPIO
 
 class TemperatureControl:
-    gpio = 0
-    actual_temperature = Accumulator(60)
-    low_threshold = 0.0
-    high_threshold = 0.0
-    run_period = timedelta(minutes=10)
-    cooldown_period = timedelta(minutes=15)
-    start_time = None
-    stop_time = None
-    cooling_command = False
-    udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    MCAST_GRP = "224.0.0.2"
-    MCAST_PORT = 10003
-
     def __init__(self, gpio, low_threshold, high_threshold):
         self.gpio = gpio
+        self.actual_temperature = Accumulator(60)
         self.low_threshold = float(low_threshold)
         self.high_threshold = float(high_threshold)
+        self.run_period = timedelta(minutes=10)
+        self.cooldown_period = timedelta(minutes=15)
+        self.start_time = None
         self.stop_time = datetime.now() - self.cooldown_period
+        self.cooling_command = False
+        self.udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.MCAST_GRP = "224.0.0.2"
+        self.MCAST_PORT = 10003
+        
         GPIO.setup(self.gpio, GPIO.OUT)
         self.__set_output(GPIO.HIGH)
 
@@ -51,7 +47,7 @@ class TemperatureControl:
                 self.cooling_command = False
                 self.stop_time = datetime.now()
         else:
-            if self.actual_temperature.mean() >= self.high_threshold:
+            if self.actual_temperature.get_mean() >= self.high_threshold:
                 cooldown_duration = datetime.now() - self.stop_time
                 if cooldown_duration >= self.cooldown_period:
                     self.cooling_command = True
