@@ -16,10 +16,11 @@ PERIOD = float(args.period)
 
 @asyncio.coroutine
 def print_data():
+    global ferm_data
     while True:
         yield from lock
         try:
-            print(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "," + "%.2f" % wort_temperature.get_mean() + "," + "%.2f" % chamber_temperature.get_mean() + "," + "%.2f" % chamber_humidity.get_mean() + "," + "%.2f" % wort_density.get_mean() + "," + ("1" if cooling_status else "0"))
+            print(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "," + "%.2f" % ferm_data.wort_temperature.get_mean() + "," + "%.2f" % ferm_data.chamber_temperature.get_mean() + "," + "%.2f" % ferm_data.chamber_humidity.get_mean() + "," + "%.2f" % ferm_data.wort_density.get_mean() + "," + ("1" if ferm_data.cooling_status else "0"))
         finally:
             lock.release()
         sys.stdout.flush()
