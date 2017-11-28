@@ -3,8 +3,7 @@ import asyncio
 from data_collection import *
 
 def producer():
-    global ferm_data 
-    print(ferm_data.cooling_status)
+    global ferm_data
     return "%.2f" % ferm_data.wort_temperature.get_mean() + "," + "%.2f" % ferm_data.chamber_temperature.get_mean() + "," + "%.2f" % ferm_data.chamber_humidity.get_mean() + "," + "%.2f" % ferm_data.wort_density.get_mean() + "," + ("1" if ferm_data.cooling_status else "0")
 
 def consumer(message):
