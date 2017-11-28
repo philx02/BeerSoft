@@ -10,11 +10,15 @@ CHAMBER_TEMP_HUM_PORT = 10001
 DENSITY_METER_PORT = 10002
 COOLING_STATUS_PORT = 10003
 
-wort_temperature = Accumulator(60)
-chamber_temperature = Accumulator(60)
-chamber_humidity = Accumulator(60)
-wort_density = Accumulator(60)
-cooling_status = False
+class FermData:
+    def __init__(self):
+        self.wort_temperature = Accumulator(60)
+        self.chamber_temperature = Accumulator(60)
+        self.chamber_humidity = Accumulator(60)
+        self.wort_density = Accumulator(60)
+        self.cooling_status = False
+
+ferm_data = FermData()
 
 loop = asyncio.get_event_loop()
 
@@ -59,23 +63,23 @@ class GenericProtocol(asyncio.DatagramProtocol):
 
 class WortTemperatureProtocol(GenericProtocol):
     def set_the_data(self, data):
-        global wort_temperature
-        wort_temperature.add(float(data.decode()))
+        global ferm_data
+        ferm_data.wort_temperature.add(float(data.decode()))
 
 class ChamberTemperatureHumidityProtocol(GenericProtocol):
     def set_the_data(self, data):
-        global chamber_temperature, chamber_humidity
+        global ferm_data
         split = data.decode().split(",")
         if len(split) == 2:
-            chamber_temperature.add(float(split[0]))
-            chamber_humidity.add(float(split[1]))
+            ferm_data.chamber_temperature.add(float(split[0]))
+            ferm_data.chamber_humidity.add(float(split[1]))
 
 class WortDensityProtocol(GenericProtocol):
     def set_the_data(self, data):
-        global wort_density
-        wort_density.add(float(data.decode()))
+        global ferm_data
+        ferm_data.wort_density.add(float(data.decode()))
 
 class CoolingStatusProtocol(GenericProtocol):
     def set_the_data(self, data):
-        global cooling_status
-        cooling_status = data.decode() != "0"
+        global ferm_data
+        ferm_data.cooling_status = data.decode() != "0"
