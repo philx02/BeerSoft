@@ -55,11 +55,8 @@ class GenericProtocol(asyncio.DatagramProtocol):
     @asyncio.coroutine
     def __set_data(self, data):
         global lock
-        yield from lock
-        try:
+        with (yield from lock):
             self.set_the_data(data)
-        finally:
-            lock.release()
 
 class WortTemperatureProtocol(GenericProtocol):
     def set_the_data(self, data):

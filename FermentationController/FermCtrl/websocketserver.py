@@ -5,25 +5,16 @@ import producerconsumer
 connected = set()
 
 @asyncio.coroutine
-def produce():
-    return producerconsumer.producer()
-
-@asyncio.coroutine
-def consume(message):
-    producerconsumer.consumer(message)
-
-@asyncio.coroutine
 def consumer_handler(websocket):
     while True:
         message = yield from websocket.recv()
-        yield from consume(message)
+        yield from producerconsumer.consume(message)
 
 @asyncio.coroutine
 def producer_handler(websocket):
     while True:
-        message = yield from produce()
+        message = yield from producerconsumer.produce()
         yield from websocket.send(message)
-        yield from asyncio.sleep(1)
 
 @asyncio.coroutine
 def handler(websocket, path):
