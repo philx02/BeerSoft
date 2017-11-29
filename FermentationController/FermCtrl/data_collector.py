@@ -17,14 +17,11 @@ PERIOD = float(args.period)
 @asyncio.coroutine
 def print_data():
     global ferm_data
-    while True:
-        yield from lock
-        try:
-            print(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "," + "%.2f" % ferm_data.wort_temperature.get_mean() + "," + "%.2f" % ferm_data.chamber_temperature.get_mean() + "," + "%.2f" % ferm_data.chamber_humidity.get_mean() + "," + "%.2f" % ferm_data.wort_density.get_mean() + "," + ("1" if ferm_data.cooling_status else "0"))
-        finally:
-            lock.release()
-        sys.stdout.flush()
-        yield from asyncio.sleep(PERIOD)
+    with (yield from lock):
+        print(str(int(datetime.now().timestamp())) + "," + "%.2f" % ferm_data.wort_temperature.get_mean() + "," + "%.2f" % ferm_data.chamber_temperature.get_mean() + "," + "%.2f" % ferm_data.chamber_humidity.get_mean() + "," + "%.2f" % ferm_data.wort_density.get_mean() + "," + ("1" if ferm_data.cooling_status else "0"))
+    sys.stdout.flush()
+    yield from asyncio.sleep(PERIOD)
+    asyncio.ensure_future(print_data())
 
 wort_temperature_transport = loop.run_until_complete(loop.create_datagram_endpoint(WortTemperatureProtocol, sock=create_socket(THERMOCOUPLE_PORT)))
 chamber_temperature_humidity_transport = loop.run_until_complete(loop.create_datagram_endpoint(ChamberTemperatureHumidityProtocol, sock=create_socket(CHAMBER_TEMP_HUM_PORT)))

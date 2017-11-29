@@ -12,7 +12,6 @@
 <script>
 
   var wWebSocket;
-  var wEditingVariableName;
 
   function connect()
   {
@@ -33,24 +32,34 @@
 
   function greetings(evt)
   {
-    wWebSocket.send("get_status");
+    wWebSocket.send("get_historical_data");
   }
 
   function parseMessage(evt)
   {
     console.log(evt.data);
-    var wSplit = evt.data.split(",");
+    var wCommand = evt.data.split("|");
+    if (wCommand.length == 2)
+    {
+      if (wCommand[0] == "now_data")
+      {
+        handleNowData(wCommand[1].split(","))
+      } 
+    }
+  }
 
+  function handleNowData(data)
+  {
     var wort_temperature = document.getElementById("wort_temperature");
-    wort_temperature.innerHTML = Number(wSplit[0]).toFixed(1);
+    wort_temperature.innerHTML = Number(data[0]).toFixed(1);
 
     var air_temperature = document.getElementById("air_temperature");
-    air_temperature.innerHTML = Number(wSplit[1]).toFixed(1);
+    air_temperature.innerHTML = Number(data[1]).toFixed(1);
 
     var actual_relative_humidity = document.getElementById("actual_relative_humidity");
-    actual_relative_humidity.innerHTML = (Number(wSplit[2])).toFixed(1);
+    actual_relative_humidity.innerHTML = (Number(data[2])).toFixed(1);
 
-    switch (Number(wSplit[4]))
+    switch (Number(data[4]))
     {
     case 0:
       document.getElementById("actual_cooler_status").style.background = "red";
