@@ -7,14 +7,12 @@ connected = set()
 @asyncio.coroutine
 def consumer_handler(websocket):
     while True:
-        message = yield from websocket.recv()
-        yield from producerconsumer.consume(message)
+        yield from producerconsumer.consume(websocket)
 
 @asyncio.coroutine
 def producer_handler(websocket):
     while True:
-        message = yield from producerconsumer.produce()
-        yield from websocket.send(message)
+        yield from producerconsumer.produce(websocket)
 
 @asyncio.coroutine
 def handler(websocket, path):
