@@ -18,11 +18,11 @@ class FermData:
         self.wort_density = Accumulator(60)
         self.cooling_status = False
 
-ferm_data = FermData()
+FERM_DATA = FermData()
 
-loop = asyncio.get_event_loop()
+LOOP = asyncio.get_event_loop()
 
-lock = asyncio.Lock(loop=loop)
+LOCK = asyncio.Lock(loop=LOOP)
 
 def create_socket(port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
@@ -46,37 +46,37 @@ class GenericProtocol(asyncio.DatagramProtocol):
         self.transport = transport
 
     def datagram_received(self, data, addr):
-        global loop
-        asyncio.ensure_future(self.__set_data(data), loop=loop)
+        global LOOP
+        asyncio.ensure_future(self.__set_data(data), loop=LOOP)
     
     def set_the_data(self, data):
         raise NotImplementedError()
 
     @asyncio.coroutine
     def __set_data(self, data):
-        global lock
-        with (yield from lock):
+        global LOCK
+        with (yield from LOCK):
             self.set_the_data(data)
 
 class WortTemperatureProtocol(GenericProtocol):
     def set_the_data(self, data):
-        global ferm_data
-        ferm_data.wort_temperature.add(float(data.decode()))
+        global FERM_DATA
+        FERM_DATA.wort_temperature.add(float(data.decode()))
 
 class ChamberTemperatureHumidityProtocol(GenericProtocol):
     def set_the_data(self, data):
-        global ferm_data
+        global FERM_DATA
         split = data.decode().split(",")
         if len(split) == 2:
-            ferm_data.chamber_temperature.add(float(split[0]))
-            ferm_data.chamber_humidity.add(float(split[1]))
+            FERM_DATA.chamber_temperature.add(float(split[0]))
+            FERM_DATA.chamber_humidity.add(float(split[1]))
 
 class WortDensityProtocol(GenericProtocol):
     def set_the_data(self, data):
-        global ferm_data
-        ferm_data.wort_density.add(float(data.decode()))
+        global FERM_DATA
+        FERM_DATA.wort_density.add(float(data.decode()))
 
 class CoolingStatusProtocol(GenericProtocol):
     def set_the_data(self, data):
-        global ferm_data
-        ferm_data.cooling_status = data.decode() != "0"
+        global FERM_DATA
+        FERM_DATA.cooling_status = data.decode() != "0"

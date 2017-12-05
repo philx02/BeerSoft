@@ -26,13 +26,7 @@
     {
       console.log(exc.message);
     }
-    wWebSocket.onopen = function (evt) { greetings(evt); };
     wWebSocket.onmessage = function (evt) { parseMessage(evt); };
-  }
-
-  function greetings(evt)
-  {
-    wWebSocket.send("get_historical_data");
   }
 
   function parseMessage(evt)

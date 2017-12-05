@@ -21,6 +21,7 @@ def handler(websocket, path):
     # Register.
     connected.add(websocket)
     try:
+        yield from producerconsumer.init(websocket)
         consumer_task = asyncio.async(consumer_handler(websocket))
         producer_task = asyncio.async(producer_handler(websocket))
         done, pending = yield from asyncio.wait(
