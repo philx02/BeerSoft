@@ -32,3 +32,8 @@ body, .input_temperature_command_button, .mode_button
   border-color: black;
   text-align: center;
 }
+
+#fetch_historical_data_button {
+  width: 100%;
+  font-size: 80px;
+}
