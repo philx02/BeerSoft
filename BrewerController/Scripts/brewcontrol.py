@@ -23,19 +23,17 @@ class SpargeHeaterMode(Enum):
 
 class BrewerControl:
     """ BrewerControl """
-
-    target_temp = 0
-    actual_temp = 0
-    duty_cycle = 0
-    heater_mode = HeaterMode.OFF
-    pump_mode = PumpMode.OFF
-    pump_remaining_time = 0
-    heater_command_source = HeaterCommandSource.TEMPERATURE
-    sparge_heater_mode = SpargeHeaterMode.OFF
-    k_p = 0
-
+    
     def __init__(self, k_p):
         self.k_p = k_p
+        self.target_temp = 0
+        self.actual_temp = 0
+        self.duty_cycle = 0
+        self.heater_mode = HeaterMode.OFF
+        self.pump_mode = PumpMode.OFF
+        self.pump_remaining_time = 0
+        self.heater_command_source = HeaterCommandSource.TEMPERATURE
+        self.sparge_heater_mode = SpargeHeaterMode.OFF
         SPWM.start("CSID0", 0, .5, 1)
         GPIO.setup("CSID1", GPIO.OUT)
         GPIO.output("CSID1", GPIO.LOW)
