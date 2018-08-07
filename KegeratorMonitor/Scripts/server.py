@@ -28,9 +28,9 @@ class KegeratorServer:
     def consume(self, websocket):
         message = yield from websocket.recv()
         if message == "get_status":
-			with (yield from self.lock):
-				message = self.kegerator_data.serialize()
-			yield from websocket.send(message)
+            with (yield from self.lock):
+                message = self.kegerator_data.serialize()
+            yield from websocket.send(message)
 
     @asyncio.coroutine
     def notify_clients(self):
