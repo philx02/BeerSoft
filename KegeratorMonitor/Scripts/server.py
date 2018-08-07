@@ -2,57 +2,35 @@
 
 import asyncio
 from websocketserver import WebSocketServer
-
-from datetime import datetime
-
-from data_collection import *
 from create_socket import create_socket
+from data_collection import *
 
-class FermDataSnapshot:
-    def __init__(self, timestamp, ferm_data):
-        self.timestamp = timestamp
-        self.wort_temperature = ferm_data.wort_temperature.get_mean()
-        self.chamber_temperature = ferm_data.chamber_temperature.get_mean()
-        self.chamber_humidity = ferm_data.chamber_humidity.get_mean()
-        self.wort_density = ferm_data.wort_density.get_mean()
-        self.cooling_status = ferm_data.cooling_status
-    
-    def serialize(self):
-        return str(self.timestamp) + ",%.2f" % self.wort_temperature + ",%.2f" % self.chamber_temperature + ",%.2f" % self.chamber_humidity + ",%.2f" % self.wort_density + "," + ("1" if self.cooling_status else "0")
-
-def generate_message(ferm_data):
-    return "now_data|%.2f" % ferm_data.wort_temperature.get_mean() + "," + "%.2f" % ferm_data.chamber_temperature.get_mean() + "," + "%.2f" % ferm_data.chamber_humidity.get_mean() + "," + "%.2f" % ferm_data.wort_density.get_mean() + "," + ("1" if ferm_data.cooling_status else "0")
-
-class FermServer:
+class KegeratorServer:
     def __init__(self):
         self.lock = asyncio.Lock()
-        self.historical_lock = asyncio.Lock()
         self.producer_condition = asyncio.Condition(lock=self.lock)
-        self.ferm_data = FermData()
-        self.historical_data = []
+        self.kegerator_data = KegeratorData()
 
     @asyncio.coroutine
     def init(self, websocket):
         with (yield from self.lock):
-            message = generate_message(self.ferm_data)
+            message = self.kegerator_data.serialize()
         yield from websocket.send(message)
 
     @asyncio.coroutine
     def produce(self, websocket):
         with (yield from self.producer_condition):
             yield from self.producer_condition.wait()
-            message = generate_message(self.ferm_data)
+            message = self.kegerator_data.serialize()
         yield from websocket.send(message)
 
     @asyncio.coroutine
     def consume(self, websocket):
         message = yield from websocket.recv()
-        if message == "get_historical_data":
-            response = "historical_data|"
-            with (yield from self.historical_lock):
-                for data_point in self.historical_data:
-                    response += data_point.serialize() + ";"
-            yield from websocket.send(response)
+        if message == "get_status":
+			with (yield from self.lock):
+				message = self.kegerator_data.serialize()
+			yield from websocket.send(message)
 
     @asyncio.coroutine
     def notify_clients(self):
@@ -61,32 +39,23 @@ class FermServer:
         yield from asyncio.sleep(1)
         asyncio.ensure_future(self.notify_clients())
 
-    @asyncio.coroutine
-    def store_historical_data(self):
-        yield from asyncio.sleep(60)
-        with (yield from self.lock):
-            with (yield from self.historical_lock):
-                self.historical_data.append(FermDataSnapshot(int(datetime.now().timestamp()), self.ferm_data))
-        asyncio.ensure_future(self.store_historical_data())
-
 def main():
     loop = asyncio.get_event_loop()
-    ferm_server = FermServer()
+    kegerator_server = KegeratorServer()
 
-    wt_transport, wt_protocol = loop.run_until_complete(loop.create_datagram_endpoint(WortTemperatureProtocol, sock=create_socket(MCAST_GRP, THERMOCOUPLE_PORT)))
-    wt_protocol.setup(ferm_server.ferm_data, ferm_server.lock)
-    cth_transport, cth_protocol = loop.run_until_complete(loop.create_datagram_endpoint(ChamberTemperatureHumidityProtocol, sock=create_socket(MCAST_GRP, CHAMBER_TEMP_HUM_PORT)))
-    cth_protocol.setup(ferm_server.ferm_data, ferm_server.lock)
-    wd_transport, wd_protocol = loop.run_until_complete(loop.create_datagram_endpoint(WortDensityProtocol, sock=create_socket(MCAST_GRP, DENSITY_METER_PORT)))
-    wd_protocol.setup(ferm_server.ferm_data, ferm_server.lock)
-    cs_transport, cs_protocol = loop.run_until_complete(loop.create_datagram_endpoint(CoolingStatusProtocol, sock=create_socket(MCAST_GRP, COOLING_STATUS_PORT)))
-    cs_protocol.setup(ferm_server.ferm_data, ferm_server.lock)
+    t_transport, t_protocol = loop.run_until_complete(loop.create_datagram_endpoint(TemperatureProtocol, sock=create_socket(MCAST_GRP, THERMOMETER_PORT)))
+    t_protocol.setup(ferm_server.ferm_data, ferm_server.lock)
+    lc_transport, lc_protocol = loop.run_until_complete(loop.create_datagram_endpoint(LoadCellProtocol, sock=create_socket(MCAST_GRP, LOAD_CELL_PORT)))
+    lc_protocol.setup(ferm_server.ferm_data, ferm_server.lock)
+    k1_transport, k1_protocol = loop.run_until_complete(loop.create_datagram_endpoint(Keg1LevelProtocol, sock=create_socket(MCAST_GRP, KEG1_LEVEL_PORT)))
+    k1_protocol.setup(ferm_server.ferm_data, ferm_server.lock)
+    k2_transport, k2_protocol = loop.run_until_complete(loop.create_datagram_endpoint(Keg2LevelProtocol, sock=create_socket(MCAST_GRP, KEG2_LEVEL_PORT)))
+    k2_protocol.setup(ferm_server.ferm_data, ferm_server.lock)
 
     websocket_server = WebSocketServer(ferm_server.init, ferm_server.consume, ferm_server.produce, 8011)
     loop.run_until_complete(websocket_server.start_server)
 
     asyncio.ensure_future(ferm_server.notify_clients())
-    asyncio.ensure_future(ferm_server.store_historical_data())
 
     asyncio.get_event_loop().run_forever()
 
