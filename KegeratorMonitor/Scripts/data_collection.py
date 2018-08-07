@@ -17,7 +17,7 @@ class KegeratorData:
     
     def serialize(self):
         return "%.2f" % self.temperature.get_mean() + ",0,%.2f" % self.co2_level.get_mean() + ",%.2f" % self.keg1_level + ",%.2f" % self.keg2_level
-		
+        
 class GenericProtocol(asyncio.DatagramProtocol):
     def __init__(self):
         self.data = None
@@ -49,11 +49,11 @@ class TemperatureProtocol(GenericProtocol):
 class LoadCellProtocol(GenericProtocol):
     def set_the_data(self, data):
         self.data.co2_level.add(float(data.decode()))
-		
+        
 class Keg1LevelProtocol(GenericProtocol):
     def set_the_data(self, data):
         self.data.keg1_level = int(data.decode())
-		
+        
 class Keg2LevelProtocol(GenericProtocol):
     def set_the_data(self, data):
         self.data.keg2_level = int(data.decode())
