@@ -33,7 +33,7 @@
     beer_img.push(document.getElementById('beer_level_img_left'));
 
     setInterval(kegPouringAnimation, 1000);
-    setInterval(checkConnection, 2000);
+    setInterval(checkConnection, 3000);
   }
 
   function connect()
@@ -74,7 +74,7 @@
 
   function parseMessage(evt)
   {
-    //console.log(evt.data);
+    console.log(evt.data);
     connection_watchdog = true;
     var wSplit = evt.data.split(",");
 
