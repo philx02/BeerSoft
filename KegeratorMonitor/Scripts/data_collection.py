@@ -5,18 +5,29 @@ from accumulator import Accumulator
 MCAST_GRP = '224.0.0.3'
 THERMOMETER_PORT = 10000
 LOAD_CELL_PORT = 10001
-KEG1_LEVEL_PORT = 10002
-KEG2_LEVEL_PORT = 10003
+KEG0_LEVEL_PORT = 10002
+KEG1_LEVEL_PORT = 10003
+
+class KegLevel:
+    def __init__(self):
+        self.level = 0
+        self.last_count = 0
+        self.init = False
+    
+    def set_level_pct(self, value):
+        self.level = value * 126
 
 class KegeratorData:
     def __init__(self):
         self.temperature = Accumulator(60)
         self.co2_level = Accumulator(60)
-        self.keg1_level = 0
-        self.keg2_level = 0
+        self.kegs = [KegLevel(), KegLevel()]
     
     def serialize(self):
-        return "%.2f" % self.temperature.get_mean() + ",0,%.2f" % self.co2_level.get_mean() + ",%.2f" % self.keg1_level + ",%.2f" % self.keg2_level
+        co2_level = (self.co2_level.get_mean() - 102) / 60
+        keg0_level = (self.kegs[0].level / 12600)
+        keg1_level = (self.kegs[1].level / 12600)
+        return "%.2f" % self.temperature.get_mean() + ",0,%.2f" % co2_level + ",%.2f" % keg0_level + ",%.2f" % keg1_level
         
 class GenericProtocol(asyncio.DatagramProtocol):
     def __init__(self):
@@ -44,7 +55,7 @@ class GenericProtocol(asyncio.DatagramProtocol):
 
 class TemperatureProtocol(GenericProtocol):
     def set_the_data(self, data):
-        self.data.wort_temperature.add(float(data.decode()))
+        self.data.temperature.add(float(data.decode()))
 
 class LoadCellProtocol(GenericProtocol):
     def set_the_data(self, data):
@@ -52,8 +63,20 @@ class LoadCellProtocol(GenericProtocol):
         
 class Keg1LevelProtocol(GenericProtocol):
     def set_the_data(self, data):
-        self.data.keg1_level = int(data.decode())
+        count = int(data.decode())
+        if self.data.kegs[0].init:
+            increment = self.data.kegs[0].last_count - count
+            self.data.kegs[0].level -= increment
+        else:
+            self.data.kegs[0].init = True
+        self.data.kegs[0].last_count = count
         
 class Keg2LevelProtocol(GenericProtocol):
     def set_the_data(self, data):
-        self.data.keg2_level = int(data.decode())
+        count = int(data.decode())
+        if self.data.kegs[1].init:
+            increment = self.data.kegs[1].last_count - count
+            self.data.kegs[1].level -= increment
+        else:
+            self.data.kegs[1].init = True
+        self.data.kegs[1].last_count = count
