@@ -27,7 +27,7 @@ class KegeratorData:
         co2_level = (self.co2_level.get_mean() - 102) / 60
         keg0_level = (self.kegs[0].level / 12600)
         keg1_level = (self.kegs[1].level / 12600)
-        return "%.2f" % self.temperature.get_mean() + ",0,%.2f" % co2_level + ",%.2f" % keg0_level + ",%.2f" % keg1_level
+        return "%.2f" % self.temperature.get_mean() + ",0,%.2f" % co2_level + "," + str(keg0_level) + "," + str(keg1_level)
         
 class GenericProtocol(asyncio.DatagramProtocol):
     def __init__(self):
@@ -65,8 +65,8 @@ class Keg1LevelProtocol(GenericProtocol):
     def set_the_data(self, data):
         count = int(data.decode())
         if self.data.kegs[0].init:
-            increment = self.data.kegs[0].last_count - count
-            self.data.kegs[0].level -= increment
+            decrement = count - self.data.kegs[0].last_count
+            self.data.kegs[0].level -= decrement
         else:
             self.data.kegs[0].init = True
         self.data.kegs[0].last_count = count
@@ -75,8 +75,8 @@ class Keg2LevelProtocol(GenericProtocol):
     def set_the_data(self, data):
         count = int(data.decode())
         if self.data.kegs[1].init:
-            increment = self.data.kegs[1].last_count - count
-            self.data.kegs[1].level -= increment
+            decrement = count - self.data.kegs[1].last_count
+            self.data.kegs[1].level -= decrement
         else:
             self.data.kegs[1].init = True
         self.data.kegs[1].last_count = count
