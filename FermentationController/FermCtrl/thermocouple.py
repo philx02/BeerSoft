@@ -19,5 +19,9 @@ udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 while True:
     temp = sensor.readTempC() - 2 # Calibrated at -2C
     message = format(temp, '.2f')
-    udp_socket.sendto(message, (MCAST_GRP, MCAST_PORT))
+    print(message)
+    try:
+        udp_socket.sendto(message, (MCAST_GRP, MCAST_PORT))
+    except Exception as exception:
+        print(exception)
     time.sleep(1.0)

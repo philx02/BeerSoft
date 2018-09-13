@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 
 import socket
 import struct
@@ -6,26 +6,90 @@ import argparse
 
 import RPi.GPIO as GPIO
 from temp_control import TemperatureControl
-
-parser = argparse.ArgumentParser(description='Temperature sensing.')
-parser.add_argument('-l', '--low_threshold', help='Low threshold', required=True)
-parser.add_argument('-i', '--high_threshold', help='High threshold', required=True)
-
-args = parser.parse_args()
+from data_collection import *
+from create_socket import create_socket
+from websocketserver import WebSocketServer
+import requests
 
 GPIO.setmode(GPIO.BCM)
-
-TEMPERATURE_CONTROL = TemperatureControl(gpio=16, low_threshold=args.low_threshold, high_threshold=args.high_threshold)
 
 MCAST_GRP = '224.0.0.2'
 MCAST_PORT = 10000
 
-SOCK = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-SOCK.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-SOCK.bind((MCAST_GRP, MCAST_PORT))
-MREQ = struct.pack("4sl", socket.inet_aton(MCAST_GRP), socket.INADDR_ANY)
-SOCK.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, MREQ)
+def detect_temp_sensor_fault(data):
+    if abs(data.get_difference_quotient()) > 5:
+        return (True, "Derivative exceed tolerance: " + data.get_difference_quotient())
+    if data.last_value() > 28:
+        return (True, "Absolute value exceed limit: " + data.last_value())
+    return (False, "")
 
-while True:
-    data = SOCK.recv(32)
-    TEMPERATURE_CONTROL.update(float(data))
+def notify_sensor_fault():
+    url = 'https://voip.ms/api/v1/rest.php'
+    message = 'Fermentation Control Sensor Malfunction Detected.'
+    payload = {'api_username': 'pcayouette@spoluck.ca', 'api_password': '0TH7zRXKINXj7Exz8S0c', 'method': 'sendSMS', 'did': '4503141161', 'dst': '5144760655', 'message': message}
+    return requests.get(url, params=payload)
+
+class CtrlServer:
+    def __init__(self, gpio, high_threshold):
+        self.lock = asyncio.Lock()
+        self.producer_condition = asyncio.Condition(lock=self.lock)
+        self.temp_ctrl = TemperatureControl(gpio=gpio, high_threshold=high_threshold)
+        self.ferm_data = FermData()
+        self.sensor_fault = False
+
+    def update(self):
+        if not self.sensor_fault:
+            sensor_fault, error_msg = detect_temp_sensor_fault(self.ferm_data.wort_temperature)
+            if sensor_fault:
+                notify_sensor_fault(error_msg)
+                self.sensor_fault = True
+            else:
+                self.temp_ctrl.update(self.ferm_data.wort_temperature.get_mean())
+
+    @asyncio.coroutine
+    def init(self, websocket):
+        pass
+        #with (yield from self.lock):
+        #    message = str(self.temp_ctrl.high_threshold)
+        #yield from websocket.send(message)
+
+    @asyncio.coroutine
+    def produce(self, websocket):
+        with (yield from self.producer_condition):
+            yield from self.producer_condition.wait()
+            message = str(self.temp_ctrl.high_threshold)
+        yield from websocket.send(message)
+
+    @asyncio.coroutine
+    def consume(self, websocket):
+        message = yield from websocket.recv()
+        print(message)
+        command = message.split("|")
+        if len(command) == 2 and command[0] == "set_high_threshold":
+            with (yield from self.lock):
+                self.temp_ctrl.set_high_threshold(float(command[1]))
+                f = open('data/high_threshold.txt','w')
+                f.write(command[1])
+                f.close()
+        with (yield from self.producer_condition):
+            self.producer_condition.notify_all()
+
+def main():
+    parser = argparse.ArgumentParser(description='Temperature sensing.')
+    parser.add_argument('-g', '--gpio', help='Output GPIO', required=True)
+    parser.add_argument('-t', '--high_threshold', help='High threshold', required=True)
+
+    args = parser.parse_args()
+
+    loop = asyncio.get_event_loop()
+    ctrl_server = CtrlServer(int(args.gpio), args.high_threshold)
+
+    wt_transport, wt_protocol = loop.run_until_complete(loop.create_datagram_endpoint(WortTemperatureProtocol, sock=create_socket(MCAST_GRP, THERMOCOUPLE_PORT)))
+    wt_protocol.setup(ctrl_server.ferm_data, ctrl_server.lock, ctrl_server.update)
+
+    websocket_server = WebSocketServer(ctrl_server.init, ctrl_server.consume, ctrl_server.produce, 8011)
+    loop.run_until_complete(websocket_server.start_server)
+
+    asyncio.get_event_loop().run_forever()
+
+main()
