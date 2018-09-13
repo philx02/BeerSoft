@@ -17,8 +17,6 @@ if [ "$_IP" ]; then
   printf "My IP address is %s\n" "$_IP"
 fi
 
-mount -a
-/home/pi/KegeratorMonitor/setup_init.sh
 su - pi -c /home/pi/KegeratorMonitor/go.sh
 
 exit 0
