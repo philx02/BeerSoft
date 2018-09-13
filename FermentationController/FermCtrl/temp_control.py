@@ -7,10 +7,9 @@ import socket
 import RPi.GPIO as GPIO
 
 class TemperatureControl:
-    def __init__(self, gpio, low_threshold, high_threshold):
+    def __init__(self, gpio, high_threshold):
         self.gpio = gpio
         self.actual_temperature = Accumulator(60)
-        self.low_threshold = float(low_threshold)
         self.high_threshold = float(high_threshold)
         self.run_period = timedelta(minutes=10)
         self.cooldown_period = timedelta(minutes=15)
@@ -27,14 +26,14 @@ class TemperatureControl:
     def __del__(self):
         GPIO.cleanup(self.gpio)
 
-    def set_low_threshold(self, low_threshold):
-        self.low_threshold = low_threshold
-
     def set_high_threshold(self, high_threshold):
         self.high_threshold = high_threshold
 
     def update(self, temp):
         self.actual_temperature.add(temp)
+
+        #debug
+        print(str(self.actual_temperature.get_mean()) + ", " + str(self.run_period) + ", " + str(self.cooldown_period) + ", " + str(self.cooling_command) + ", " + str(self.start_time) + ", " + str(self.stop_time))
 
         #the algorithm could have 2 variables, target temp and a delta, with a proper model of the
         #freezer/wort bucket, compute time_on = [model stuff that predicts time required to get target - delta/2]
@@ -63,5 +62,5 @@ class TemperatureControl:
 
     def __set_output(self, value):
         message = "0" if value else "1"
-        self.udp_socket.sendto(message, (self.MCAST_GRP, self.MCAST_PORT))
+        self.udp_socket.sendto(message.encode('utf-8'), (self.MCAST_GRP, self.MCAST_PORT))
         GPIO.output(self.gpio, value)
