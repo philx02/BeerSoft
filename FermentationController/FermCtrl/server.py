@@ -1,10 +1,9 @@
 #!/usr/bin/python3
 
 import asyncio
-from websocketserver import WebSocketServer
-
 from datetime import datetime
 
+from websocketserver import WebSocketServer
 from data_collection import *
 from create_socket import create_socket
 
@@ -21,6 +20,7 @@ class FermDataSnapshot:
         return str(self.timestamp) + ",%.2f" % self.wort_temperature + ",%.2f" % self.chamber_temperature + ",%.2f" % self.chamber_humidity + ",%.2f" % self.wort_density + "," + ("1" if self.cooling_status else "0")
 
 def generate_message(ferm_data):
+    print(str(ferm_data.wort_temperature.total) + ", " + str(ferm_data.wort_temperature.mean) + ", " + str(len(ferm_data.wort_temperature.values)) + ", " + str(ferm_data.wort_temperature.size))
     return "now_data|%.2f" % ferm_data.wort_temperature.get_mean() + "," + "%.2f" % ferm_data.chamber_temperature.get_mean() + "," + "%.2f" % ferm_data.chamber_humidity.get_mean() + "," + "%.2f" % ferm_data.wort_density.get_mean() + "," + ("1" if ferm_data.cooling_status else "0")
 
 class FermServer:
@@ -42,6 +42,7 @@ class FermServer:
         with (yield from self.producer_condition):
             yield from self.producer_condition.wait()
             message = generate_message(self.ferm_data)
+            print(message)
         yield from websocket.send(message)
 
     @asyncio.coroutine
@@ -82,7 +83,7 @@ def main():
     cs_transport, cs_protocol = loop.run_until_complete(loop.create_datagram_endpoint(CoolingStatusProtocol, sock=create_socket(MCAST_GRP, COOLING_STATUS_PORT)))
     cs_protocol.setup(ferm_server.ferm_data, ferm_server.lock)
 
-    websocket_server = WebSocketServer(ferm_server.init, ferm_server.consume, ferm_server.produce, 8011)
+    websocket_server = WebSocketServer(ferm_server.init, ferm_server.consume, ferm_server.produce, 8010)
     loop.run_until_complete(websocket_server.start_server)
 
     asyncio.ensure_future(ferm_server.notify_clients())

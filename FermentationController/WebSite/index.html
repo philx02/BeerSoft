@@ -13,26 +13,67 @@
 <script>
 
   var wWebSocket;
+  var wWebSocketCtrl;
 
   function start()
+  {
+    //alert("start");
+    connect();
+    setInterval(intervalHeartbeat, 1000);
+  }
+
+  function connect()
   {
     try
     {
       if (typeof QueryString.server != 'undefined')
         wWebSocket = new WebSocket(QueryString.server);
       else
-        wWebSocket = new WebSocket("wss://" + window.location.hostname + "/wsfermctrl");
+        wWebSocket = new WebSocket("wss://" + window.location.hostname + "/wsfermdata");
+
+      if (typeof QueryString.ctrl != 'undefined')
+        wWebSocketCtrl = new WebSocket(QueryString.ctrl);
+      else
+        wWebSocketCtrl = new WebSocket("wss://" + window.location.hostname + "/wsfermctrl");
     }
     catch (exc)
     {
       console.log(exc.message);
     }
     wWebSocket.onmessage = function (evt) { parseMessage(evt); };
+    wWebSocketCtrl.onmessage = function (evt) { parseMessageCtrl(evt); };
+    wWebSocketCtrl.onopen = function (evt) {  wWebSocketCtrl.send("update"); };
+  }
+
+  function getTime()
+  {
+    return (new Date()).getTime();
+  }
+
+  var lastInterval = getTime();
+
+  function intervalHeartbeat()
+  {
+    var now = getTime();
+    var diff = now - lastInterval;
+    var offBy = diff - 1000; // 1000 = the 1 second delay I was expecting
+    lastInterval = now;
+
+    if (offBy > 2000) // don't trigger on small stutters less than 2000ms
+    {
+      //alert("comeback detected");
+      //if (wWebSocket.readyState != OPEN || wWebSocketCtrl.readyState != OPEN)
+      {
+        //alert("reconnect");
+        connect();
+      }
+      console.log('interval heartbeat - off by ' + offBy + 'ms');
+    }
   }
 
   function parseMessage(evt)
   {
-    console.log(evt.data);
+    //console.log(evt.data);
     var wCommand = evt.data.split("|");
     if (wCommand.length == 2)
     {
@@ -53,11 +94,13 @@
         for (var i = 0; i < wDataPoints.length; ++i)
         {
           wSplit = wDataPoints[i].split(",");
-          datapointX.push(wSplit[0]);
+          var date = new Date(wSplit[0] * 1000);
+          var dateString = date.toLocaleDateString("fr-CA") + " " + date.toLocaleTimeString("fr-CA");
+          datapointX.push(dateString);
           datapointWT.push(wSplit[1]);
           datapointAT.push(wSplit[2]);
 
-          datapointX2.push(wSplit[0]);
+          datapointX2.push(dateString);
           datapointWT2.push(wSplit[1]);
           datapointAT2.push(wSplit[2]);
         }
@@ -65,6 +108,12 @@
         window.myLineB.update();
       } 
     }
+  }
+
+  function parseMessageCtrl(evt)
+  {
+    //console.log(evt.data);
+    document.getElementById("wort_temperature_command").innerHTML = Number(evt.data).toFixed(1);
   }
 
   function handleNowData(data)
@@ -104,12 +153,42 @@
     
     wWebSocket.send("get_historical_data");
   }
+
+  function toggle_visibility(id)
+  {
+    var window = document.getElementById(id);
+    var overlay = document.getElementById("overlay");
+    if (window.style.display == 'block')
+    {
+      window.style.display = 'none';
+      overlay.style.display = 'none';
+    }
+    else
+    {
+      window.style.display = 'block';
+      overlay.style.display = 'block';
+    }
+  }
+
+  function submitCommand()
+  {
+    toggle_visibility('enter_command');
+    wWebSocketCtrl.send("set_high_threshold|" + document.getElementById("input_command").value);
+  }
+
+  function showEditingWindow()
+  {
+    toggle_visibility('enter_command');
+    document.getElementById('input_command').value = '';
+    document.getElementById('input_command').focus();
+  }
+
 </script>
 
 <table style="width: 100%;">
   <tr class="top_table_tr">
     <th class="top_table_th">Wort Temperature</th>
-    <th class="top_table_th">Air Temperature</th>
+    <th class="top_table_th">Wort Temperature Command</th>
   </tr>
   <tr>
     <td class="text_data">
@@ -123,22 +202,33 @@
     <td class="text_data">
       <table style="width: 100%;">
         <tr>
-          <td id="air_temperature" class="top_fields">&nbsp;</td>
+          <td id="wort_temperature_command" class="top_fields" onclick="showEditingWindow()">&nbsp;</td>
           <td class="degree_c">&deg;C</td>
         </tr>
       </table>
     </td>
   </tr>
+</table>
   
+<table style="width: 100%;">
   <tr class="top_table_tr">
-    <th class="top_table_th">Relative Humidity</th>
-    <th class="top_table_th">Cooler Status</th>
+    <th class="bot_table_th">Air Temperature</th>
+    <th class="bot_table_th">Relative Humidity</th>
+    <th class="bot_table_th">Cooler Status</th>
   </tr>
   <tr>
     <td class="text_data">
       <table style="width: 100%;">
         <tr>
-          <td id="actual_relative_humidity" class="top_fields">&nbsp;</td>
+          <td id="air_temperature" class="bot_fields">&nbsp;</td>
+          <td class="degree_c">&deg;C</td>
+        </tr>
+      </table>
+    </td>
+    <td class="text_data">
+      <table style="width: 100%;">
+        <tr>
+          <td id="actual_relative_humidity" class="bot_fields">&nbsp;</td>
           <td class="pct">%</td>
         </tr>
       </table>
@@ -146,7 +236,7 @@
     <td class="text_data">
       <table style="width: 100%;">
         <tr>
-          <td id="actual_cooler_status" class="top_fields">&nbsp;</td>
+          <td id="actual_cooler_status" class="bot_fields">&nbsp;</td>
         </tr>
       </table>
     </td>
@@ -160,6 +250,14 @@
   <canvas id="historical_graph_canvas_long"></canvas>
 </div>
 </p>
+
+<div id="enter_command">
+  <input id="input_command" type="number" />
+  <input class="input_command_button" type="submit" onclick="submitCommand();" />
+  <input class="input_command_button" type="button" value="Cancel" onclick="toggle_visibility('enter_command');" />
+</div>
+
+<div id="overlay" />
 
 </body>
 </html>

@@ -20,4 +20,8 @@ while True:
     humidity, temperature = Adafruit_DHT.read_retry(sensor, args.gpio)
     if humidity is not None and temperature is not None:
         message = format(temperature, '.2f') + "," + format(humidity, '.2f')
-        udp_socket.sendto(message, (MCAST_GRP, MCAST_PORT))
+        print(message)
+        try:
+            udp_socket.sendto(message, (MCAST_GRP, MCAST_PORT))
+        except Exception as exception:
+            print(exception)

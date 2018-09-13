@@ -31,17 +31,21 @@ class GenericProtocol(asyncio.DatagramProtocol):
     def set_the_data(self, data):
         raise NotImplementedError()
 
-    def setup(self, data, lock):
+    def setup(self, data, lock, trigger = None):
         self.data = data
         self.lock = lock
+        self.trigger = trigger
 
     @asyncio.coroutine
     def __set_data(self, data):
         with (yield from self.lock):
             self.set_the_data(data)
+            if self.trigger != None:
+                self.trigger()
 
 class WortTemperatureProtocol(GenericProtocol):
     def set_the_data(self, data):
+        print(data.decode())
         self.data.wort_temperature.add(float(data.decode()))
 
 class ChamberTemperatureHumidityProtocol(GenericProtocol):
