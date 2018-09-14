@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import socket
 import struct
 import sys
@@ -17,7 +19,7 @@ sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 hysteresis = 10
 
 while True:
-  frame = sock.recv(10240)
+  frame = sock.recv(10240).decode()
   if len(frame) > 0:
     if frame[0] == '1':
       hysteresis += 1
