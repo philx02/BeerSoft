@@ -10,7 +10,7 @@
  
 <body onload="start()">
 
-<script>
+  <script>
 
   var wWebSocket;
   var wWebSocketCtrl;
@@ -106,7 +106,7 @@
         }
         window.myLineA.update();
         window.myLineB.update();
-      } 
+      }
     }
   }
 
@@ -150,7 +150,7 @@
 
     var long = document.getElementById("historical_graph_canvas_long").getContext("2d");
     window.myLineB = new Chart(long, config2);
-    
+
     wWebSocket.send("get_historical_data");
   }
 
@@ -183,81 +183,84 @@
     document.getElementById('input_command').focus();
   }
 
-</script>
+  </script>
 
-<table style="width: 100%;">
-  <tr class="top_table_tr">
-    <th class="top_table_th">Wort Temperature</th>
-    <th class="top_table_th">Wort Temperature Command</th>
-  </tr>
-  <tr>
-    <td class="text_data">
-      <table style="width: 100%;">
-        <tr>
-          <td id="wort_temperature" class="top_fields">&nbsp;</td>
-          <td id="wort_temperature_degree_c" class="degree_c">&deg;C</td>
-        </tr>
-      </table>
-    </td>
-    <td class="text_data">
-      <table style="width: 100%;">
-        <tr>
-          <td id="wort_temperature_command" class="top_fields" onclick="showEditingWindow()">&nbsp;</td>
-          <td class="degree_c">&deg;C</td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
-  
-<table style="width: 100%;">
-  <tr class="top_table_tr">
-    <th class="bot_table_th">Air Temperature</th>
-    <th class="bot_table_th">Relative Humidity</th>
-    <th class="bot_table_th">Cooler Status</th>
-  </tr>
-  <tr>
-    <td class="text_data">
-      <table style="width: 100%;">
-        <tr>
-          <td id="air_temperature" class="bot_fields">&nbsp;</td>
-          <td class="degree_c">&deg;C</td>
-        </tr>
-      </table>
-    </td>
-    <td class="text_data">
-      <table style="width: 100%;">
-        <tr>
-          <td id="actual_relative_humidity" class="bot_fields">&nbsp;</td>
-          <td class="pct">%</td>
-        </tr>
-      </table>
-    </td>
-    <td class="text_data">
-      <table style="width: 100%;">
-        <tr>
-          <td id="actual_cooler_status" class="bot_fields">&nbsp;</td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
+  <div class="top">
+    <table style="width: 100%;">
+      <tr class="top_table_tr">
+        <th class="top_table_th">Wort Temperature</th>
+        <th class="top_table_th">Wort Temperature Command</th>
+      </tr>
+      <tr>
+        <td class="text_data">
+          <table style="width: 100%;">
+            <tr>
+              <td id="wort_temperature" class="top_fields">&nbsp;</td>
+              <td id="wort_temperature_degree_c" class="degree_c">&deg;C</td>
+            </tr>
+          </table>
+        </td>
+        <td class="text_data">
+          <table style="width: 100%;">
+            <tr>
+              <td id="wort_temperature_command" class="top_fields" onclick="showEditingWindow()">&nbsp;</td>
+              <td class="degree_c">&deg;C</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
 
-<p>
-<div>
-  <input id="fetch_historical_data_button" value="Fetch Historical Data" onclick="fetchHistoricalData()" type="button"/>
+    <table style="width: 100%;">
+      <tr class="top_table_tr">
+        <th class="bot_table_th">Air Temperature</th>
+        <th class="bot_table_th">Relative Humidity</th>
+        <th class="bot_table_th">Cooler Status</th>
+      </tr>
+      <tr>
+        <td class="text_data">
+          <table style="width: 100%;">
+            <tr>
+              <td id="air_temperature" class="bot_fields">&nbsp;</td>
+              <td class="degree_c">&deg;C</td>
+            </tr>
+          </table>
+        </td>
+        <td class="text_data">
+          <table style="width: 100%;">
+            <tr>
+              <td id="actual_relative_humidity" class="bot_fields">&nbsp;</td>
+              <td class="pct">%</td>
+            </tr>
+          </table>
+        </td>
+        <td class="text_data">
+          <table style="width: 100%;">
+            <tr>
+              <td id="actual_cooler_status" class="bot_fields">&nbsp;</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <p>
+      <div>
+        <input id="fetch_historical_data_button" value="Fetch Historical Data" onclick="fetchHistoricalData()" type="button" />
+      </div>
+    </p>
+  </div>
+
   <canvas id="historical_graph_canvas"></canvas>
   <canvas id="historical_graph_canvas_long"></canvas>
-</div>
-</p>
 
-<div id="enter_command">
-  <input id="input_command" type="number" />
-  <input class="input_command_button" type="submit" onclick="submitCommand();" />
-  <input class="input_command_button" type="button" value="Cancel" onclick="toggle_visibility('enter_command');" />
-</div>
+  <div id="enter_command">
+    <input id="input_command" type="number" />
+    <input class="input_command_button" type="submit" onclick="submitCommand();" />
+    <input class="input_command_button" type="button" value="Cancel" onclick="toggle_visibility('enter_command');" />
+  </div>
 
-<div id="overlay" />
+  <div id="overlay" />
 
 </body>
 </html>
