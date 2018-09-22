@@ -3,16 +3,17 @@
   src: url(DroidSans/DroidSans.ttf);
 }
 
-body, .input_temperature_command_button, .mode_button
-{
-  font-family: "Droid Sans";
-}
-
 body
 {
-  max-width: 900px;
+  font-family: "Droid Sans";
   margin-left:auto;
   margin-right:auto;
+}
+
+.top {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .top_table_th
@@ -47,7 +48,6 @@ body
 
 #actual_cooler_status {
   border-style: solid;
-  boder-width: 33px;
   border-color: black;
   text-align: center;
 }
