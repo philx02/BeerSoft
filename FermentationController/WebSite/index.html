@@ -5,6 +5,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
 <script src="chart.js"></script>
 <script src="common.js"></script>
+<link rel="manifest" href="webmanifest.json">
 <link rel="stylesheet" type="text/css" href="css/fermctrl.css"/>
 </head>
  
@@ -113,7 +114,8 @@
   function parseMessageCtrl(evt)
   {
     //console.log(evt.data);
-    document.getElementById("wort_temperature_command").innerHTML = Number(evt.data).toFixed(1);
+    var value = Number(evt.data) > 1024 ? "N/A" : Number(evt.data).toFixed(1);
+    document.getElementById("wort_temperature_command").innerHTML = value;
   }
 
   function handleNowData(data)
