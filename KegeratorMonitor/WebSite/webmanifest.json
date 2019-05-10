@@ -1,0 +1,12 @@
+{
+  "name": "Kegerator",
+  "short_name": "Kegerator",
+  "start_url": ".",
+  "display": "standalone",
+  "description": "Kegerator Display.",
+  "icons": [{
+    "src": "beer_mug.png",
+    "sizes": "256x256",
+    "type": "image/png"
+  }]
+}
