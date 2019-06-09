@@ -2,6 +2,10 @@
   font-family: "Droid Sans";
   src: url(DroidSans/DroidSans.ttf);
 }
+@font-face {
+  font-family: "Aniron";
+  src: url(Aniron/anirm.ttf);
+}
 /*
 html, body {
     height: 100%;
@@ -72,8 +76,11 @@ body {
   font-size: 50px;
 }
 
-.text_data, .keg_left, .keg_right {
+.text_data {
   font-family: "Droid Sans", "Arial", "Trebuchet MS";
+}
+.keg_left, .keg_right {
+  font-family: "Aniron", "Droid Sans", "Arial", "Trebuchet MS";
 }
 
 #left_col {
@@ -96,8 +103,7 @@ body {
 
 .keg_left_title, .keg_right_title {
   text-align: center;
-  font-size: 75px;
-  font-style: italic;
+  font-size: 24px;
   color: white;
   text-shadow:
    -2px -2px 0 #000,  
