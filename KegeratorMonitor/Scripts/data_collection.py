@@ -9,19 +9,21 @@ KEG0_LEVEL_PORT = 10002
 KEG1_LEVEL_PORT = 10003
 
 class KegLevel:
-    def __init__(self):
-        self.level = 0
+    def __init__(self, id):
+        self.level_file = "keg_level/keg" + str(id) + ".txt"
+        self.level = int(open(self.level_file).read())
         self.last_count = 0
         self.init = False
     
     def set_level_pct(self, value):
         self.level = value * 126
+        open(self.level_file, "w").write(str(self.level))
 
 class KegeratorData:
     def __init__(self):
         self.temperature = Accumulator(60)
         self.co2_level = Accumulator(60)
-        self.kegs = [KegLevel(), KegLevel()]
+        self.kegs = [KegLevel(0), KegLevel(1)]
     
     def serialize(self):
         co2_level = (self.co2_level.get_mean() - 102) / 60
@@ -66,7 +68,9 @@ class Keg1LevelProtocol(GenericProtocol):
         count = int(data.decode())
         if self.data.kegs[0].init:
             decrement = count - self.data.kegs[0].last_count
-            self.data.kegs[0].level -= decrement
+            if decrement != 0:
+                self.data.kegs[0].level -= decrement
+                open(self.data.kegs[0].level_file, "w").write(str(self.data.kegs[0].level))
         else:
             self.data.kegs[0].init = True
         self.data.kegs[0].last_count = count
@@ -76,7 +80,9 @@ class Keg2LevelProtocol(GenericProtocol):
         count = int(data.decode())
         if self.data.kegs[1].init:
             decrement = count - self.data.kegs[1].last_count
-            self.data.kegs[1].level -= decrement
+            if decrement != 0:
+                self.data.kegs[1].level -= decrement
+                open(self.data.kegs[1].level_file, "w").write(str(self.data.kegs[1].level))
         else:
             self.data.kegs[1].init = True
         self.data.kegs[1].last_count = count
