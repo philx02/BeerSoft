@@ -40,15 +40,14 @@ class BrewerServer:
                 self.brewer_control.set_duty_cycle_command(int(proto[1]))
             elif len(proto) == 2 and proto[0] == "set_sparge_heater_mode":
                 self.brewer_control.set_sparge_heater_mode(int(proto[1]))
-        with (yield from self.producer_condition):
-            self.producer_condition.notify_all()
+        yield from websocket.send(self.brewer_control.serialize())
 
     @asyncio.coroutine
     def notify_clients(self):
         with (yield from self.producer_condition):
             self.producer_condition.notify_all()
         yield from asyncio.sleep(1)
-        asyncio.async(self.notify_clients())
+        asyncio.ensure_future(self.notify_clients())
 
 class TemperatureProtocol:
     def __init__(self):
@@ -64,7 +63,7 @@ class TemperatureProtocol:
         self.lock = lock
 
     def datagram_received(self, data, addr):
-        asyncio.async(self.set_data(data))
+        asyncio.ensure_future(self.set_data(data))
     
     @asyncio.coroutine
     def set_data(self, data):
@@ -82,7 +81,7 @@ def main():
     websocket_server = WebSocketServer(brewer_server.init, brewer_server.consume, brewer_server.produce, 8010)
     loop.run_until_complete(websocket_server.start_server)
 
-    asyncio.async(brewer_server.notify_clients())
+    asyncio.ensure_future(brewer_server.notify_clients())
 
     loop.run_forever()
 

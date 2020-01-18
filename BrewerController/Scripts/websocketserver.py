@@ -26,8 +26,8 @@ class WebSocketServer:
         self.connected.add(websocket)
         try:
             yield from self.on_connect(websocket)
-            consumer_task = asyncio.async(self.consumer_handler(websocket))
-            producer_task = asyncio.async(self.producer_handler(websocket))
+            consumer_task = asyncio.ensure_future(self.consumer_handler(websocket))
+            producer_task = asyncio.ensure_future(self.producer_handler(websocket))
             done, pending = yield from asyncio.wait(
                 [consumer_task, producer_task],
                 return_when=asyncio.FIRST_COMPLETED,
