@@ -18,7 +18,8 @@
   {
     try
     {
-      wWebSocket = new WebSocket(QueryString.server);
+      var ws_server = (QueryString.server == null ? "wss://" + window.location.hostname + "/wsbrewer" : QueryString.server);
+      wWebSocket = new WebSocket(ws_server);
     }
     catch (exc)
     {
