@@ -1,7 +1,7 @@
 {
   "name": "Kegerator",
   "short_name": "Kegerator",
-  "start_url": ".",
+  "start_url": "./?editmode=1",
   "display": "standalone",
   "description": "Kegerator Display.",
   "icons": [{
