@@ -126,9 +126,12 @@
   var set_keg_level_id = 0;
 
   function set_keg_level_dialog(keg_id) {
-    set_keg_level_id = keg_id;
-    $('#enter_keg_level_range').val(100*keg_level_pct_prev[keg_id]).change();
-    document.getElementById('enter_keg_level').style.display = 'inline';
+    if (QueryString.editmode)
+    {
+      set_keg_level_id = keg_id;
+      $('#enter_keg_level_range').val(100*keg_level_pct_prev[keg_id]).change();
+      document.getElementById('enter_keg_level').style.display = 'inline';
+    }
   }
 
   function set_keg_level(level) {
@@ -208,18 +211,28 @@
     <td class="keg_left" id="left_col">
       <table>
         <tr>
-          <td class="keg_left_title">
-            <div style="position: relative;">
-              <div style="position: absolute; top: 15px; left: 30px;">RESTORATION</div>
-              <div style="position: absolute; top: 55px; left: 190px;">LAGER</div>
-              <div style="position: absolute; top: 190px; left: 30px;">ABV 6.4%</div>
-              <div style="position: absolute; top: 230px; left: 30px;">IBU 20</div>
-              <img src='RestorationLager.png' width='350'/>
+          <td>
+            <div style="position: relative; height: 300px; background-color: white;">
+              <!--
+              <div class="keg_left_title" style="position: absolute; top: 0px;   left: 30px;">IMPENDING</div>
+              <div class="keg_left_title" style="position: absolute; top: 40px;  left: 190px;">DOOM</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">5.5%</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">22</div>
+              <img src='thb-139-impending-doom.jpg' width="350"/>
+              -->
+              <div class="keg_right_title" style="position: absolute; top: 190px; left: 30px; font-size: 28px;">Alpine Moon</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">7.6%</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">60</div>
+              <img src='alpine_moon_crop.jpg' width='350'/>
             </div>
           </td>
         </tr>
         <tr>
-          <td align='center'>
+          <td align='center' style="padding-top: 30px;">
             <div class="parent">
               <img src="Barrel.png" height="350" onclick="set_keg_level_dialog(0);" />
               <div id="keg_0_pouring" class="loader"></div>
@@ -243,16 +256,47 @@
     <td class="keg_right">
       <table>
         <tr>
-          <td class="keg_right_title">
-            <div style="position: relative;">
-              <div style="position: absolute; top: 180px; left: 40px;">ABV 5.7%</div>
-              <div style="position: absolute; top: 180px; left: 200px;">IBU 40</div>
-              <img src='alpine_moon.png' width='350'/>
+          <td>
+            <div style="position: relative; height: 300px; background-color: white;">
+              <!--
+              <div class="keg_right_title" style="position: absolute; top: 190px; left: 30px; font-size: 28px;">Blonde Facile</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">6.4%</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">25</div>
+              <img src='blonde_facile.jpg' width='350'/>
+	      --> 
+              <div class="keg_right_title" style="position: absolute; top: 195px; left: 15px; font-size: 24px;">Omen of the Hunt</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">5.4%</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">0</div>
+              <img src='omen_of_the_hunt.jpg' width='350'/>
+ 	      <!--
+              <div class="keg_right_title" style="position: absolute; top: 190px; left: 30px; font-size: 28px;">Alpine Moon</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">6.5%</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">25</div>
+              <img src='alpine_moon_crop.jpg' width='350'/>
+              -->
+              <!--
+              <div class="keg_right_title" style="position: absolute; top: 0px; left: 30px;">RESTORATION</div>
+              <div class="keg_right_title" style="position: absolute; top: 40px; left: 190px;">LAGER</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">5.7%</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">20</div>
+              <img src='avr-32-restoration-angel.jpg' width='350'/>
+              -->
+			        <!--
+              <img src='DeemWorthy.png' width='350'/>
+			        -->
             </div>
           </td>
         </tr>
         <tr>
-          <td align='center'>
+          <td align='center' style="padding-top: 30px;">
             <div class="parent">
               <img src="Barrel.png" height="350" onclick="set_keg_level_dialog(1);" />
               <div id="keg_1_pouring" class="loader"></div>
