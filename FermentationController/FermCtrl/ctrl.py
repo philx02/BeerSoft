@@ -18,14 +18,14 @@ MCAST_PORT = 10000
 
 def detect_temp_sensor_fault(data):
     if abs(data.get_difference_quotient()) > 5:
-        return (True, "Derivative exceed tolerance: " + data.get_difference_quotient())
-    if data.last_value() > 28:
-        return (True, "Absolute value exceed limit: " + data.last_value())
+        return (True, "Derivative exceed tolerance: " + str(data.get_difference_quotient()))
+    if data.last_value() > 50:
+        return (True, "Absolute value exceed limit: " + str(data.last_value()))
     return (False, "")
 
-def notify_sensor_fault():
+def notify_sensor_fault(message_detail):
     url = 'https://voip.ms/api/v1/rest.php'
-    message = 'Fermentation Control Sensor Malfunction Detected.'
+    message = 'Fermentation Control Sensor Malfunction Detected: ' + message_detail
     payload = {'api_username': 'pcayouette@spoluck.ca', 'api_password': '0TH7zRXKINXj7Exz8S0c', 'method': 'sendSMS', 'did': '4503141161', 'dst': '5144760655', 'message': message}
     return requests.get(url, params=payload)
 

@@ -20,8 +20,8 @@ class TemperatureControl:
         self.MCAST_GRP = "224.0.0.2"
         self.MCAST_PORT = 10003
         
-        GPIO.setup(self.gpio, GPIO.OUT)
-        self.__set_output(GPIO.HIGH)
+        GPIO.setup(self.gpio, GPIO.OUT, initial=GPIO.HIGH)
+        #self.__set_output(GPIO.HIGH)
 
     def __del__(self):
         GPIO.cleanup(self.gpio)
