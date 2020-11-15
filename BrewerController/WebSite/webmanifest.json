@@ -1,0 +1,12 @@
+{
+    "name": "Brewer",
+    "short_name": "Brewer",
+    "start_url": ".",
+    "display": "standalone",
+    "description": "Brewer.",
+    "icons": [{
+      "src": "brewery.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }]
+  }
