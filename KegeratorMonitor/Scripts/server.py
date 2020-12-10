@@ -11,36 +11,32 @@ class KegeratorServer:
         self.producer_condition = asyncio.Condition(lock=self.lock)
         self.data = KegeratorData()
 
-    @asyncio.coroutine
-    def init(self, websocket):
-        with (yield from self.lock):
+    async def init(self, websocket):
+        async with self.lock:
             message = self.data.serialize()
-        yield from websocket.send(message)
+        await websocket.send(message)
 
-    @asyncio.coroutine
-    def produce(self, websocket):
-        with (yield from self.producer_condition):
-            yield from self.producer_condition.wait()
+    async def produce(self, websocket):
+        async with self.producer_condition:
+            await self.producer_condition.wait()
             message = self.data.serialize()
-        yield from websocket.send(message)
+        await websocket.send(message)
 
-    @asyncio.coroutine
-    def consume(self, websocket):
-        message = yield from websocket.recv()
+    async def consume(self, websocket):
+        message = await websocket.recv()
         split = message.split("|")
         if len(split) == 3 and split[0] == "set_keg_level":
-            with (yield from self.lock):
+            async with self.lock:
                 self.data.kegs[int(split[1])].set_level_pct(int(split[2]))
-        with (yield from self.lock):
+        async with self.lock:
             message = self.data.serialize()
-        yield from websocket.send(message)
+        await websocket.send(message)
 
 
-    @asyncio.coroutine
-    def notify_clients(self):
-        with (yield from self.producer_condition):
+    async def notify_clients(self):
+        async with self.producer_condition:
             self.producer_condition.notify_all()
-        yield from asyncio.sleep(1)
+        await asyncio.sleep(1)
         asyncio.ensure_future(self.notify_clients())
 
 def main():

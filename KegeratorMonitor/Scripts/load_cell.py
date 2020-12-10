@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 # Simple demo of continuous ADC conversion mode for channel 0 of the ADS1x15 ADC.
 # Author: Tony DiCola
 # License: Public Domain
@@ -60,7 +60,7 @@ while True:
     # continuous conversion!
     print('Channel ' + str(ARGS.channel) + ': {0}'.format(value))
     # Sleep for half a second.
-    udp_socket.sendto(str(value), (MCAST_GRP, MCAST_PORT)) 
+    udp_socket.sendto(str(value).encode(), (MCAST_GRP, MCAST_PORT)) 
     time.sleep(1)
 
 # Stop continuous conversion.  After this point you can't get data from get_last_result!

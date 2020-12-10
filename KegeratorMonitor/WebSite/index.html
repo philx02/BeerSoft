@@ -91,7 +91,7 @@
     context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.beginPath();
-    context.rect(100, 20, canvas.width, canvas.height);
+    context.rect(280, 20, canvas.width, canvas.height);
     context.fillStyle = 'lightgrey';
     context.fill();
     var zoom_factor = 1.75;
@@ -100,7 +100,7 @@
     // full height of beer = 270
     var height_of_beer = level_pct * 270;
     var top_of_beer = 320 - height_of_beer;
-    context.drawImage(beer_img[keg_id], 100, top_of_beer, 150, height_of_beer);
+    context.drawImage(beer_img[keg_id], 280, top_of_beer, 150, height_of_beer);
 
     if (keg_level_pct_prev[keg_id] != level_pct) {
       keg_animation_timer[keg_id] = 5;
@@ -205,14 +205,14 @@
 
   <img id="beer_level_img_left" class="beer_level" src="beer_column_gold.jpg" style="display: none;" />
   <img id="beer_level_img_right" class="beer_level" src="beer_column_gold.jpg" style="display: none;" />
-<table>
+<table width="100%">
   <tr>
 
     <td class="keg_left" id="left_col">
-      <table>
+      <table class="keg_table">
         <tr>
-          <td>
-            <div style="position: relative; height: 300px; background-color: white;">
+          <td class="barrel_padding_top">
+            <div style="position: relative; height: 600px; background-color: white;">
               <!--
               <div class="keg_left_title" style="position: absolute; top: 0px;   left: 30px;">IMPENDING</div>
               <div class="keg_left_title" style="position: absolute; top: 40px;  left: 190px;">DOOM</div>
@@ -222,42 +222,48 @@
               <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">22</div>
               <img src='thb-139-impending-doom.jpg' width="350"/>
               -->
-              <div class="keg_right_title" style="position: absolute; top: 190px; left: 30px; font-size: 28px;">Alpine Moon</div>
-              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
-              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">7.6%</div>
-              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
-              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">60</div>
-              <img src='alpine_moon_crop.jpg' width='350'/>
+              <div class="keg_right_title" style="position: absolute; top: 380px; left: 60px; font-size: 56px;">Alpine Moon</div>
+              <div class="beer_details" style="position: absolute; top: 510px; left: 20px; color: black;">ABV</div>
+              <div class="beer_details" style="position: absolute; top: 470px; left: 210px; color: black; font-size: 76px;">7.6%</div>
+              <div class="beer_details" style="position: absolute; top: 510px; left: 430px;">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 470px; left: 590px; font-size: 76px;">60</div>
+              <img src='alpine_moon_crop.jpg' width='700'/>
             </div>
           </td>
         </tr>
         <tr>
-          <td align='center' style="padding-top: 30px;">
+          <td align='center' class="barrel_padding_top">
             <div class="parent">
               <img src="Barrel.png" height="350" onclick="set_keg_level_dialog(0);" />
               <div id="keg_0_pouring" class="loader"></div>
-              <canvas id="beer_level_keg_0_back"  class="beer_level_back" height="330" width="250"></canvas>
+              <canvas id="beer_level_keg_0_back"  class="beer_level_back" height="330" width="410"></canvas>
             </div>
           </td>
         </tr>
       </table>
     </td>
 
-    <td class="text_data" id="middle_col">
-      <div class="gauge">
-        <div id="gauge-temperature" style="float: left;"></div>
-      </div>
+    <td>
+      <table class="keg_table">
+        <tr>
+          <td class="text_data">
+            <div class="gauge">
+              <div id="gauge-temperature"></div>
+            </div>
 
-      <div class="gauge">
-        <div id="gauge-co2" style="float: left;"></div>
-      </div>
+            <div class="gauge barrel_padding_top">
+              <div id="gauge-co2"></div>
+            </div>
+          </td>
+        </tr>
+      </table>
     </td>
 
     <td class="keg_right">
-      <table>
+      <table class="keg_table">
         <tr>
-          <td>
-            <div style="position: relative; height: 300px; background-color: white;">
+          <td class="barrel_padding_top">
+            <div style="position: relative; height: 600px; background-color: white;">
               <!--
               <div class="keg_right_title" style="position: absolute; top: 190px; left: 30px; font-size: 28px;">Blonde Facile</div>
               <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
@@ -266,12 +272,12 @@
               <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">25</div>
               <img src='blonde_facile.jpg' width='350'/>
 	      --> 
-              <div class="keg_right_title" style="position: absolute; top: 195px; left: 15px; font-size: 24px;">Omen of the Hunt</div>
-              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
-              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">5.4%</div>
-              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
-              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">0</div>
-              <img src='omen_of_the_hunt.jpg' width='350'/>
+              <div class="keg_right_title" style="position: absolute; top: 390px; left: 15px; font-size: 50px;">Omen of the Hunt</div>
+              <div class="beer_details" style="position: absolute; top: 510px; left: 20px; color: black;">ABV</div>
+              <div class="beer_details" style="position: absolute; top: 470px; left: 210px; color: black; font-size: 76px;">5.4%</div>
+              <div class="beer_details" style="position: absolute; top: 510px; left: 430px;">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 470px; left: 590px; font-size: 76px;">0</div>
+              <img src='omen_of_the_hunt.jpg' width='700'/>
  	      <!--
               <div class="keg_right_title" style="position: absolute; top: 190px; left: 30px; font-size: 28px;">Alpine Moon</div>
               <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
@@ -296,11 +302,11 @@
           </td>
         </tr>
         <tr>
-          <td align='center' style="padding-top: 30px;">
+          <td align='center' class="barrel_padding_top">
             <div class="parent">
               <img src="Barrel.png" height="350" onclick="set_keg_level_dialog(1);" />
               <div id="keg_1_pouring" class="loader"></div>
-              <canvas id="beer_level_keg_1_back"  class="beer_level_back" height="330" width="250"></canvas>
+              <canvas id="beer_level_keg_1_back"  class="beer_level_back" height="330" width="410"></canvas>
             </div>
           </td>
         </tr>

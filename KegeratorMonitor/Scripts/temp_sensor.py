@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 
 # Copyright (c) 2014 Adafruit Industries
 # Author: Tony DiCola
@@ -57,6 +57,6 @@ udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 while True:
     value = sensor.read_temperature()
     print('Temp = {0:0.2f} *C'.format(value))
-    udp_socket.sendto(str(value), (MCAST_GRP, MCAST_PORT)) 
+    udp_socket.sendto(str(value).encode(), (MCAST_GRP, MCAST_PORT)) 
     time.sleep(1)
 
