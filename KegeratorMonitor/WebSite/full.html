@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Kegerator Monitor</title>
+<link rel="manifest" href="webmanifest.json">
+<link rel="stylesheet" type="text/css" href="css/kegerator.css" />
+<link rel="stylesheet" type="text/css" href="css/neon_style.css" />
+</head>
+
+<body onload="start()">
+
+<script src="common.js"></script>
+
+<video autoplay muted loop id="backgroundVideo">
+  <source src="oculus_home.mp4" type="video/mp4">
+</video>
+
+<table width="100%">
+  <tr>
+
+    <td class="keg_left" id="left_col">
+      <table class="keg_table">
+        <tr>
+          <td class="barrel_padding_top">
+            <div style="position: relative; height: 600px;">
+              <!--
+              <div class="keg_left_title" style="position: absolute; top: 0px;   left: 30px;">IMPENDING</div>
+              <div class="keg_left_title" style="position: absolute; top: 40px;  left: 190px;">DOOM</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">5.5%</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">22</div>
+              <img src='thb-139-impending-doom.jpg' width="350"/>
+              -->
+              <!-- div class="keg_right_title" style="position: absolute; top: 380px; left: 60px; font-size: 56px;">Alpine Moon</div -->
+              <!-- div class="main">
+                <span class="webdev" style="top: 380px; left: 20px; font-size: 80px;">Alpine Moon</span>
+                <span class="webdev" style="top: 20px;  left: 580px; font-size: 30px;">NEIPA</span>
+                <span class="socod" style="top: 510px; left: 20px; font-size: 60px;">ABV 7.6%</span>
+                <span class="socod" style="top: 510px; left: 480px; font-size: 60px;">IBU 60</span>
+              </div>
+              <img src='alpine_moon_crop.jpg' width='700'/ -->
+              
+              <div class="main" style="z-index: 1;">
+                <span class="webdev" style="top: 350px; left: 200px; font-size: 55px;">MASTER</span>
+                <span class="webdev" style="top: 420px; left: 200px; font-size: 55px;">OF THE FEAST</span>
+                <span class="webdev" style="top: 20px;  left: 425px; font-size: 30px;">ROBUST PORTER</span>
+                <span class="socod" style="top: 510px; left: 20px; font-size: 60px;">ABV 7.4%</span>
+                <span class="socod" style="top: 510px; left: 480px; font-size: 60px;">IBU 35</span>
+              </div>
+              <img src='jou-75-master-of-the-feast.jpg' width='700' style="border-style: solid; border-width: 5px; border-color: #ff003c; box-shadow:0 0 50px #ff003c; border-radius: 20px; opacity: 80%;">
+
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td align='center' class="barrel_padding_top">
+            <div class="parent">
+              <div style="width: 700px; height: 350px; border-style: solid; border-width: 5px; border-color: #2695ff; box-shadow:0 0 50px #2695ff; border-radius: 20px">
+              </div>
+              <div id="keg_0_pouring" class="loader"></div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+
+    <td>
+      <table class="keg_table">
+        <tr>
+          <td class="text_data">
+            <div class="gauge">
+              <div style="width: 350px; height: 350px;"></div>
+            </div>
+
+            <div class="gauge barrel_padding_top">
+              <div style="width: 350px; height: 350px;"></div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+
+    <td class="keg_right">
+      <table class="keg_table">
+        <tr>
+          <td class="barrel_padding_top">
+            <div style="position: relative; height: 600px;">
+              <!--
+              <div class="keg_right_title" style="position: absolute; top: 190px; left: 30px; font-size: 28px;">Blonde Facile</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">6.4%</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">25</div>
+              <img src='blonde_facile.jpg' width='350'/>
+	      --> 
+              <div class="main" style="z-index: 1;">
+                <span class="webdev" style="top: 400px; left: 20px; font-size: 67px;">Omen of the Hunt</span>
+                <span class="webdev" style="top: 20px;  left: 590px; font-size: 30px;">CIDER</span>
+                <span class="socod" style="top: 510px; left: 20px; font-size: 60px;">ABV 5.4%</span>
+                <span class="socod" style="top: 510px; left: 520px; font-size: 60px;">IBU 0</span>
+              </div>
+              <img src='omen_of_the_hunt.jpg' width='700' style="border-style: solid; border-width: 5px; border-color: #ff003c; box-shadow:0 0 50px #ff003c; border-radius: 20px; opacity: 80%;">
+              <!-- div style="width: 700"></div -->
+ 	      <!--
+              <div class="keg_right_title" style="position: absolute; top: 190px; left: 30px; font-size: 28px;">Alpine Moon</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">6.5%</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">25</div>
+              <img src='alpine_moon_crop.jpg' width='350'/>
+              -->
+              <!--
+              <div class="keg_right_title" style="position: absolute; top: 0px; left: 30px;">RESTORATION</div>
+              <div class="keg_right_title" style="position: absolute; top: 40px; left: 190px;">LAGER</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">5.7%</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">20</div>
+              <img src='avr-32-restoration-angel.jpg' width='350'/>
+              -->
+			        <!--
+              <img src='DeemWorthy.png' width='350'/>
+			        -->
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td align='center' class="barrel_padding_top">
+            <div class="parent">
+              <div style="width: 700px; height: 350px; border-style: solid; border-width: 5px; border-color: #2695ff; box-shadow:0 0 50px #2695ff; border-radius: 20px">
+              </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+    </tr>
+  </table>
+
+</body>
+</html>

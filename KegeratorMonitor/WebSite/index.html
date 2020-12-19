@@ -88,21 +88,8 @@
   }
 
   function drawKegLevel(keg_id, level_pct) {
-    canvas = document.getElementById('beer_level_keg_' + keg_id + '_back');
-    context = canvas.getContext('2d');
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.beginPath();
-    context.rect(280, 20, canvas.width, canvas.height);
-    context.fillStyle = 'lightgrey';
-    context.fill();
-    var zoom_factor = 1.75;
-    // bottom of barrel = 320 from top of canvas
-    // top of barrel = ~50 (full) from top of canvas
-    // full height of beer = 270
-    var height_of_beer = level_pct * 270;
-    var top_of_beer = 320 - height_of_beer;
-    context.drawImage(beer_img[keg_id], 280, top_of_beer, 150, height_of_beer);
-
+    document.getElementById('keg_' + keg_id + '_free_space').style.height = (350 * (1 - level_pct)).toString() + "px";
+    document.getElementById('keg_' + keg_id + '_level').style.height = (350 * level_pct).toString() + "px";
     if (keg_level_pct_prev[keg_id] != level_pct) {
       keg_animation_timer[keg_id] = 5;
       keg_level_pct_prev[keg_id] = level_pct;
@@ -145,73 +132,71 @@
   });
 </script>
 
-  <script type="text/javascript">
-        $(document).ready(function () {
-            var labels = { visible: true, position: 'inside' };
-
-            //Create jqxGauge
-            $('#gauge-temperature').jqxGauge({
-                ranges: [{ startValue: 0, endValue: 4, style: { fill: 'purple', stroke: 'purple' }, startDistance: '5%', endDistance: '5%', endWidth: 13, startWidth: 13 },
-                         { startValue: 4, endValue: 6, style: { fill: 'blue', stroke: 'blue' }, startDistance: '5%', endDistance: '5%', endWidth: 13, startWidth: 13 },
-                         { startValue: 6, endValue: 10, style: { fill: 'green', stroke: 'green' }, startDistance: '5%', endDistance: '5%', endWidth: 13, startWidth: 13 },
-                         { startValue: 10, endValue: 12, style: { fill: 'yellow', stroke: 'yellow' }, startDistance: '5%', endDistance: '5%', endWidth: 13, startWidth: 13 },
-                         { startValue: 12, endValue: 30, style: { fill: 'red', stroke: 'red' }, startDistance: '5%', endDistance: '5%', endWidth: 13, startWidth: 13 }
-                ],
-                cap: { radius: 0.04 },
-                caption: { offset: [0, -15], value: 'Temperature (\u00B0C)', position: 'bottom' },
-                value: 0,
-                min: 0,
-                max: 30,
-                style: { stroke: '#ffffff', 'stroke-width': '1px', fill: '#ffffff', opacity: '25%' },
-                animationDuration: 1500,
-                colorScheme: 'scheme04',
-                labels: labels,
-                niceInterval: true,
-                ticksMinor: { size: '5%' },
-                ticksMajor: { size: '10%' },
-                border: { style: { opacity: '50%' }}
-            });
-
+<script type="text/javascript">
+      $(document).ready(function () {
+          var labels = { visible: true, position: 'inside' };
 
           //Create jqxGauge
-            $('#gauge-co2').jqxGauge({
-              ranges: [{ startValue: 0, endValue: 15, style: { fill: 'red', stroke: 'red' }, startDistance: '5%', endDistance: '5%', endWidth: 13, startWidth: 13 },
-                       { startValue: 15, endValue: 40, style: { fill: 'yellow', stroke: 'yellow' }, startDistance: '5%', endDistance: '5%', endWidth: 13, startWidth: 13 },
-                       { startValue: 40, endValue: 100, style: { fill: 'green', stroke: 'green' }, startDistance: '5%', endDistance: '5%', endWidth: 13, startWidth: 13 }
+          $('#gauge-temperature').jqxGauge({
+              ranges: [{ startValue: 0, endValue: 4, style: { fill: 'purple', stroke: 'purple' }, startDistance: '5%', endDistance: '5%', endWidth: 13, startWidth: 13 },
+                        { startValue: 4, endValue: 6, style: { fill: 'blue', stroke: 'blue' }, startDistance: '5%', endDistance: '5%', endWidth: 13, startWidth: 13 },
+                        { startValue: 6, endValue: 10, style: { fill: 'green', stroke: 'green' }, startDistance: '5%', endDistance: '5%', endWidth: 13, startWidth: 13 },
+                        { startValue: 10, endValue: 12, style: { fill: 'yellow', stroke: 'yellow' }, startDistance: '5%', endDistance: '5%', endWidth: 13, startWidth: 13 },
+                        { startValue: 12, endValue: 30, style: { fill: 'red', stroke: 'red' }, startDistance: '5%', endDistance: '5%', endWidth: 13, startWidth: 13 }
               ],
               cap: { radius: 0.04 },
-              caption: { offset: [0, -15], value: 'CO2 Tank (%)', position: 'bottom' },
+              caption: { offset: [0, -15], value: 'Temperature (\u00B0C)', position: 'bottom' },
               value: 0,
               min: 0,
-              max: 100,
+              max: 30,
               style: { stroke: '#ffffff', 'stroke-width': '1px', fill: '#ffffff', opacity: '25%' },
-              animationDuration: 1500,
+              animationDuration: 0,
               colorScheme: 'scheme04',
               labels: labels,
               niceInterval: true,
               ticksMinor: { size: '5%' },
               ticksMajor: { size: '10%' },
               border: { style: { opacity: '50%' }}
-            });
-        });
-  </script>
+          });
 
-  <video autoplay muted loop id="backgroundVideo">
-    <source src="oculus_home.mp4" type="video/mp4">
-  </video>
 
-  <div id="connection_lost">CONNECTION LOST</div>
+        //Create jqxGauge
+          $('#gauge-co2').jqxGauge({
+            ranges: [{ startValue: 0, endValue: 15, style: { fill: 'red', stroke: 'red' }, startDistance: '5%', endDistance: '5%', endWidth: 13, startWidth: 13 },
+                      { startValue: 15, endValue: 40, style: { fill: 'yellow', stroke: 'yellow' }, startDistance: '5%', endDistance: '5%', endWidth: 13, startWidth: 13 },
+                      { startValue: 40, endValue: 100, style: { fill: 'green', stroke: 'green' }, startDistance: '5%', endDistance: '5%', endWidth: 13, startWidth: 13 }
+            ],
+            cap: { radius: 0.04 },
+            caption: { offset: [0, -15], value: 'CO2 Tank (%)', position: 'bottom' },
+            value: 0,
+            min: 0,
+            max: 100,
+            style: { stroke: '#ffffff', 'stroke-width': '1px', fill: '#ffffff', opacity: '25%' },
+            animationDuration: 0,
+            colorScheme: 'scheme04',
+            labels: labels,
+            niceInterval: true,
+            ticksMinor: { size: '5%' },
+            ticksMajor: { size: '10%' },
+            border: { style: { opacity: '50%' }}
+          });
+      });
+</script>
 
-  <div id="enter_keg_level">
-    <div id="enter_keg_level_input">
-      <input id="enter_keg_level_range" type="range" min="0" max="100" />
-      <input id="enter_keg_level_button_ok" type="button" value="OK" onclick="set_keg_level();" />
-      <input id="enter_keg_level_button_cancel" type="button" value="CANCEL" onclick="document.getElementById('enter_keg_level').style.display = 'none';" />
-    </div>
+<video autoplay muted loop id="backgroundVideo">
+  <source src="background-rendered.mp4" type="video/mp4">
+</video>
+
+<div id="connection_lost">CONNECTION LOST</div>
+
+<div id="enter_keg_level">
+  <div id="enter_keg_level_input">
+    <input id="enter_keg_level_range" type="range" min="0" max="100" />
+    <input id="enter_keg_level_button_ok" type="button" value="OK" onclick="set_keg_level();" />
+    <input id="enter_keg_level_button_cancel" type="button" value="CANCEL" onclick="document.getElementById('enter_keg_level').style.display = 'none';" />
   </div>
+</div>
 
-  <img id="beer_level_img_left" class="beer_level" src="beer_column_gold.jpg" style="display: none;" />
-  <img id="beer_level_img_right" class="beer_level" src="beer_column_dark.jpg" style="display: none;" />
 <table width="100%">
   <tr>
 
@@ -219,43 +204,19 @@
       <table class="keg_table">
         <tr>
           <td class="barrel_padding_top">
-            <div style="position: relative; height: 600px; opacity: 80%;">
-              <!--
-              <div class="keg_left_title" style="position: absolute; top: 0px;   left: 30px;">IMPENDING</div>
-              <div class="keg_left_title" style="position: absolute; top: 40px;  left: 190px;">DOOM</div>
-              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
-              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">5.5%</div>
-              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
-              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">22</div>
-              <img src='thb-139-impending-doom.jpg' width="350"/>
-              -->
-              <!-- div class="keg_right_title" style="position: absolute; top: 380px; left: 60px; font-size: 56px;">Alpine Moon</div -->
-              <!-- div class="main">
-                <span class="webdev" style="top: 380px; left: 20px; font-size: 80px;">Alpine Moon</span>
-                <span class="webdev" style="top: 20px;  left: 580px; font-size: 30px;">NEIPA</span>
-                <span class="socod" style="top: 510px; left: 20px; font-size: 60px;">ABV 7.6%</span>
-                <span class="socod" style="top: 510px; left: 480px; font-size: 60px;">IBU 60</span>
-              </div>
-              <img src='alpine_moon_crop.jpg' width='700'/ -->
-              
-              <div class="main">
-                <span class="webdev" style="top: 350px; left: 200px; font-size: 55px;">MASTER</span>
-                <span class="webdev" style="top: 420px; left: 200px; font-size: 55px;">OF THE FEAST</span>
-                <span class="webdev" style="top: 20px;  left: 425px; font-size: 30px;">ROBUST PORTER</span>
-                <span class="socod" style="top: 510px; left: 20px; font-size: 60px;">ABV 7.4%</span>
-                <span class="socod" style="top: 510px; left: 480px; font-size: 60px;">IBU 35</span>
-              </div>
-              <img src='jou-75-master-of-the-feast.jpg' width='700'/>
-
+            <div style="position: relative; height: 600px;">
+              <div style="width: 700px;"></div>
             </div>
           </td>
         </tr>
         <tr>
           <td align='center' class="barrel_padding_top">
-            <div class="parent">
-              <img src="Barrel.png" height="350" onclick="set_keg_level_dialog(0);" />
-              <!--div id="keg_0_pouring" class="loader"></div -->
-              <canvas id="beer_level_keg_0_back"  class="beer_level_back" height="330" width="410"></canvas>
+            <div class="parent" onclick="set_keg_level_dialog(0);">
+              <div style="width: 700px; height: 350px; border-style: solid; border-width: 5px; border-color: #2695ff; border-radius: 20px">
+                <div id="keg_0_free_space" style="width: 700px; height: 50px; background-color: grey; border-radius: 15px 15px 0px 0px; opacity: 50%"></div>
+                <div id="keg_0_level" style="width: 700px; height: 300px; background-color: black; border-radius: 0px 0px 15px 15px; opacity: 85%"></div>
+              </div>
+              <div id="keg_0_pouring" class="loader"></div>
             </div>
           </td>
         </tr>
@@ -282,51 +243,19 @@
       <table class="keg_table">
         <tr>
           <td class="barrel_padding_top">
-            <div style="position: relative; height: 600px; opacity: 80%;">
-              <!--
-              <div class="keg_right_title" style="position: absolute; top: 190px; left: 30px; font-size: 28px;">Blonde Facile</div>
-              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
-              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">6.4%</div>
-              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
-              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">25</div>
-              <img src='blonde_facile.jpg' width='350'/>
-	      --> 
-              <div class="main">
-                <span class="webdev" style="top: 400px; left: 20px; font-size: 67px;">Omen of the Hunt</span>
-                <span class="webdev" style="top: 20px;  left: 590px; font-size: 30px;">CIDER</span>
-                <span class="socod" style="top: 510px; left: 20px; font-size: 60px;">ABV 5.4%</span>
-                <span class="socod" style="top: 510px; left: 520px; font-size: 60px;">IBU 0</span>
-              </div>
-              <img src='omen_of_the_hunt.jpg' width='700'/>
- 	      <!--
-              <div class="keg_right_title" style="position: absolute; top: 190px; left: 30px; font-size: 28px;">Alpine Moon</div>
-              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
-              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">6.5%</div>
-              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
-              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">25</div>
-              <img src='alpine_moon_crop.jpg' width='350'/>
-              -->
-              <!--
-              <div class="keg_right_title" style="position: absolute; top: 0px; left: 30px;">RESTORATION</div>
-              <div class="keg_right_title" style="position: absolute; top: 40px; left: 190px;">LAGER</div>
-              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
-              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">5.7%</div>
-              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
-              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">20</div>
-              <img src='avr-32-restoration-angel.jpg' width='350'/>
-              -->
-			        <!--
-              <img src='DeemWorthy.png' width='350'/>
-			        -->
+            <div style="position: relative; height: 600px;">
+              <div style="width: 700px;"></div>
             </div>
           </td>
         </tr>
         <tr>
           <td align='center' class="barrel_padding_top">
-            <div class="parent">
-              <img src="Barrel.png" height="350" onclick="set_keg_level_dialog(1);" />
-              <!-- div id="keg_1_pouring" class="loader"></div -->
-              <canvas id="beer_level_keg_1_back"  class="beer_level_back" height="330" width="410"></canvas>
+            <div class="parent" onclick="set_keg_level_dialog(1);">
+              <div style="width: 700px; height: 350px; border-style: solid; border-width: 5px; border-color: #2695ff; border-radius: 20px">
+                <div id="keg_1_free_space" style="width: 700px; height: 50px; background-color: grey; border-radius: 15px 15px 0px 0px; opacity: 50%"></div>
+                <div id="keg_1_level" style="width: 700px; height: 300px; background-color: gold; border-radius: 0px 0px 15px 15px; opacity: 85%"></div>
+              </div>
+              <div id="keg_1_pouring" class="loader"></div>
             </div>
           </td>
         </tr>
