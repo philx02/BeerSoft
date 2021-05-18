@@ -21,11 +21,14 @@
 body, .input_temperature_command_button, .mode_button
 {
   font-family: "Droid Sans", "Trebuchet MS", "Source Sans Pro", "Arial";
+  color: white;
 }
 
 body
 {
+  padding-top: 30px;
   width: 950px;
+  background-color: #121212;
 }
 
 .top_table_th
@@ -78,6 +81,25 @@ body
   margin-left: 20px;
   width: 200px;
   height: 100px;
+}
+
+.menu_td {
+  background-color: #404040;
+  /*padding: 5px 0px 5px 0px;*/
+  font-size: 70px;
+  text-align: center;
+  border-top: 5px solid #202020;
+  border-left: 5px solid #202020;
+  border-right: 5px solid #202020;;
+  border-bottom: 5px solid #202020;
+  border-radius: 10%;
+  width: 33%;
+  cursor: default;
+}
+
+.menu_td_selected {
+  color: teal;
+  border-bottom-color: teal;
 }
 
 .mode_button

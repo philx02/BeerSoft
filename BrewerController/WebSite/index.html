@@ -4,13 +4,23 @@
 <title>Brewer Control</title>
 <link rel="manifest" href="webmanifest.json">
 <link rel="stylesheet" type="text/css" href="css/brewer.css"/>
+<link rel="stylesheet" type="text/css" href="css/ptr.css"/>
 </head>
  
 <body onload="connect()">
 
+<script src="pulltorefresh.js"></script>
 <script src="common.js"></script>
 
 <script>
+
+  /* global PullToRefresh */
+  const ptr = PullToRefresh.init({
+    mainElement: 'body',
+    onRefresh() {
+      window.location.reload();
+    }
+  });
 
   var wWebSocket;
   var wEditingVariableName;
@@ -55,60 +65,60 @@
     switch (Number(wSplit[3]))
     {
     case 0:
-      document.getElementById("heater_off_button").style.background = "red";
-      document.getElementById("heater_pwm_button").style.background = "grey";
-      document.getElementById("heater_always_on_button").style.background = "grey";
+      document.getElementById("heater_off_button").className = "menu_td menu_td_selected";
+      document.getElementById("heater_pwm_button").className = "menu_td";
+      document.getElementById("heater_always_on_button").className = "menu_td";
       break;
     case 1:
-      document.getElementById("heater_off_button").style.background = "grey";
-      document.getElementById("heater_pwm_button").style.background = "red";
-      document.getElementById("heater_always_on_button").style.background = "grey";
+      document.getElementById("heater_off_button").className = "menu_td";
+      document.getElementById("heater_pwm_button").className = "menu_td menu_td_selected";
+      document.getElementById("heater_always_on_button").className = "menu_td";
       break;
     case 2:
-      document.getElementById("heater_off_button").style.background = "grey";
-      document.getElementById("heater_pwm_button").style.background = "grey";
-      document.getElementById("heater_always_on_button").style.background = "red";
+      document.getElementById("heater_off_button").className = "menu_td";
+      document.getElementById("heater_pwm_button").className = "menu_td";
+      document.getElementById("heater_always_on_button").className = "menu_td menu_td_selected";
       break;
     }
 
     switch (Number(wSplit[4]))
     {
     case 0:
-      document.getElementById("pump_off_button").style.background = "red";
-      document.getElementById("pump_pwm_button").style.background = "grey";
-      document.getElementById("pump_always_on_button").style.background = "grey";
+      document.getElementById("pump_off_button").className = "menu_td menu_td_selected";
+      document.getElementById("pump_until_button").className = "menu_td";
+      document.getElementById("pump_always_on_button").className = "menu_td";
       break;
     case 1:
-      document.getElementById("pump_off_button").style.background = "grey";
-      document.getElementById("pump_pwm_button").style.background = "red";
-      document.getElementById("pump_always_on_button").style.background = "grey";
+      document.getElementById("pump_off_button").className = "menu_td";
+      document.getElementById("pump_until_button").className = "menu_td menu_td_selected";
+      document.getElementById("pump_always_on_button").className = "menu_td";
       break;
     case 2:
-      document.getElementById("pump_off_button").style.background = "grey";
-      document.getElementById("pump_pwm_button").style.background = "grey";
-      document.getElementById("pump_always_on_button").style.background = "red";
+      document.getElementById("pump_off_button").className = "menu_td";
+      document.getElementById("pump_until_button").className = "menu_td";
+      document.getElementById("pump_always_on_button").className = "menu_td menu_td_selected";
       break;
     }
 
     switch (Number(wSplit[6])) {
       case 0:
-        document.getElementById("temperature_command").style.color = "green";
-        document.getElementById("actual_duty_cycle").style.color = "black";
+        document.getElementById("temperature_command").style.color = "teal";
+        document.getElementById("actual_duty_cycle").style.color = "white";
         break;
       case 1:
         document.getElementById("temperature_command").style.color = "#d3d3d3";
-        document.getElementById("actual_duty_cycle").style.color = "green";
+        document.getElementById("actual_duty_cycle").style.color = "teal";
         break;
     }
 
     switch (Number(wSplit[7])) {
       case 0:
-        document.getElementById("sparge_heater_on_button").style.background = "grey";
-        document.getElementById("sparge_heater_off_button").style.background = "red";
+        document.getElementById("sparge_heater_on_button").className = "menu_td";
+        document.getElementById("sparge_heater_off_button").className = "menu_td menu_td_selected";
         break;
       case 1:
-        document.getElementById("sparge_heater_on_button").style.background = "red";
-        document.getElementById("sparge_heater_off_button").style.background = "gray";
+        document.getElementById("sparge_heater_on_button").className = "menu_td menu_td_selected";
+        document.getElementById("sparge_heater_off_button").className = "menu_td";
         break;
     }
   }
@@ -216,36 +226,36 @@
   </tr>
 </table>
 
-<table id="heater_buttons" class="bottom_buttons">
+<table id="heater_buttons">
   <tr>
     <th colspan="3" class="buttons_title">Main Heater Control</th>
   </tr>
   <tr>
-    <td class="mode_button_td"><input id="heater_always_on_button" class="mode_button" type="button" value="ALWAYS ON" onclick="setHeaterMode(2);" /></td>
-    <td class="mode_button_td"><input id="heater_pwm_button" class="mode_button" type="button" value="PWM" onclick="setHeaterMode(1);" /></td>
-    <td class="mode_button_td"><input id="heater_off_button" class="mode_button" type="button" value="OFF" onclick="setHeaterMode(0);" /></td>
+    <td class="menu_td" id="heater_always_on_button" onclick="setHeaterMode(2);">ALWAYS ON</td>
+    <td class="menu_td" id="heater_pwm_button" onclick="setHeaterMode(1);">PWM</td>
+    <td class="menu_td" id="heater_off_button" onclick="setHeaterMode(0);">OFF</td>
   </tr>
 </table>
 
-<table id="pump_buttons" class="bottom_buttons">
+<table id="pump_buttons">
   <tr>
     <th colspan="3" class="buttons_title">Pump Control</th>
   </tr>
   <tr>
-    <td class="mode_button_td"><input id="pump_always_on_button" class="mode_button" type="button" value="ALWAYS ON" onclick="setPumpMode(2);" /></td>
-    <td class="mode_button_td"><input id="pump_pwm_button" class="mode_button" type="button" value="UNTIL" onclick="setPumpMode(1);" /></td>
-    <td class="mode_button_td"><input id="pump_off_button" class="mode_button" type="button" value="OFF" onclick="setPumpMode(0);" /></td>
+    <td class="menu_td" id="pump_always_on_button" onclick="setPumpMode(2);">ALWAYS ON</td>
+    <td class="menu_td" id="pump_until_button" onclick="setPumpMode(1);">UNTIL</td>
+    <td class="menu_td" id="pump_off_button" onclick="setPumpMode(0);">OFF</td>
   </tr>
 </table>
 
-<table id="sparge_heater_buttons" class="bottom_buttons">
+<table id="sparge_heater_buttons">
   <tr>
     <th colspan="3" class="buttons_title">Sparge Heater Control</th>
   </tr>
   <tr>
-    <td class="mode_button_td"><input id="sparge_heater_on_button" class="mode_button" type="button" value="ALWAYS ON" onclick="setSpargeHeaterMode(1);" /></td>
-    <td class="mode_button_td"><div class="mode_button" /></td>
-    <td class="mode_button_td"><input id="sparge_heater_off_button" class="mode_button" type="button" value="OFF" onclick="setSpargeHeaterMode(0);" /></td>
+    <td class="menu_td" id="sparge_heater_on_button" onclick="setSpargeHeaterMode(1);">ALWAYS ON</td>
+    <td>&nbsp;</td>
+    <td class="menu_td" id="sparge_heater_off_button" onclick="setSpargeHeaterMode(0);">OFF</td>
   </tr>
 </table>
 
