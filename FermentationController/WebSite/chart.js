@@ -9,6 +9,8 @@
       grey: 'rgb(231,233,237)'
     };
 
+    Chart.defaults.global.defaultFontColor = 'white';
+
     datapointX = [];
     datapointWT = [];
     datapointAT = [];
@@ -50,6 +52,11 @@
                     display: true,
                     scaleLabel: {
                         display: true
+                    },
+                    gridLines: {
+                        display: true,
+                        color: 'rgba(255, 255, 255, 1)',
+                        zeroLineColor: 'rgba(255, 255, 255, 1)'
                     }
                 }],
                 yAxes: [{
@@ -57,6 +64,11 @@
                     scaleLabel: {
                         display: true,
                         labelString: "Temperature"
+                    },
+                    gridLines: {
+                        display: true,
+                        color: 'rgba(255, 255, 255, 1)',
+                        zeroLineColor: 'rgba(255, 255, 255, 1)'
                     }
                 }]
             }
