@@ -20,21 +20,14 @@ body {
     display: table-cell;
     vertical-align: middle;
 }
-
-body {
-  background-image: url("../background.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-}
 */
 
-/* Style the video: 100% width and height to cover the entire window */
-#backgroundVideo {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  min-width: 100%;
-  min-height: 100%;
+body {
+  -webkit-transition: background-image 1.5s ease-in-out;
+  transition: background-image 1.5s ease-in-out;
+  background-image: url("../backgrounds/swamp.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 #connection_lost {
@@ -91,10 +84,9 @@ body {
 
 .text_data {
   font-family: "Droid Sans", "Arial", "Trebuchet MS";
-  color: white;
 }
 .keg_left, .keg_right {
-  /*font-family: "Aniron", "Droid Sans", "Arial", "Trebuchet MS";*/
+  font-family: "Aniron", "Droid Sans", "Arial", "Trebuchet MS";
 }
 
 .keg_table {
