@@ -1,8 +1,15 @@
 """ BrewerControl """
 from enum import Enum
 import RPi.GPIO as GPIO
+import requests
 
 GPIO.setmode(GPIO.BOARD)
+
+def notify_sensor_fault(message_detail):
+    url = 'https://voip.ms/api/v1/rest.php'
+    message = 'Brewer Control Sensor Malfunction Detected: ' + message_detail
+    payload = {'api_username': 'pcayouette@spoluck.ca', 'api_password': '0TH7zRXKINXj7Exz8S0c', 'method': 'sendSMS', 'did': '4503141161', 'dst': '5144760655', 'message': message}
+    return requests.get(url, params=payload)
 
 class HeaterMode(Enum):
     OFF = 0
@@ -44,6 +51,8 @@ class BrewerControl:
         GPIO.output(11, GPIO.LOW)
         GPIO.setup(15, GPIO.OUT)
         GPIO.output(15, GPIO.LOW)
+        self.historical_temp = []
+        self.sensor_failure = False
 
     def __del__(self):
         self.heater_pwm.stop()
@@ -95,9 +104,26 @@ class BrewerControl:
         else:
             GPIO.output(15, GPIO.LOW)
         print("set_sparge_heater_mode " + str(sparge_heater_mode))
+    
+    def sensor_failure_detection(self, actual_temp):
+        self.historical_temp.append(actual_temp)
+        if len(self.historical_temp) >= 10:
+            derivative = abs(self.historical_temp[0] - self.historical_temp[-1])
+            if derivative >= 5:
+                notify_sensor_fault("Derivative exceed tolerance: " + str(derivative))
+                self.sensor_failure = True
+            if actual_temp > 107 or actual_temp < -1:
+                notify_sensor_fault("Absolute value exceed limit: " + str(actual_temp))
+                self.sensor_failure = True
+        return self.sensor_failure
 
     def tick(self, actual_temp):
         """ tick """
+        if self.sensor_failure_detection(actual_temp):
+            self.actual_temp = float('nan')
+            self.duty_cycle = 0
+            self.heater_pwm.ChangeDutyCycle(self.duty_cycle)
+            return
         self.actual_temp = actual_temp
         if self.heater_command_source == HeaterCommandSource.TEMPERATURE and self.heater_mode == HeaterMode.PWM:
             diff = self.target_temp - actual_temp
