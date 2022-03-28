@@ -107,7 +107,7 @@ class BrewerControl:
     
     def sensor_failure_detection(self, actual_temp):
         self.historical_temp.append(actual_temp)
-        if len(self.historical_temp) >= 10:
+        if not self.sensor_failure and len(self.historical_temp) >= 10:
             derivative = abs(self.historical_temp[0] - self.historical_temp[-1])
             if derivative >= 5:
                 notify_sensor_fault("Derivative exceed tolerance: " + str(derivative))
