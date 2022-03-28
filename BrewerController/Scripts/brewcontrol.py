@@ -107,6 +107,7 @@ class BrewerControl:
     
     def sensor_failure_detection(self, actual_temp):
         self.historical_temp.append(actual_temp)
+        print("temperature " + str(actual_temp))
         if not self.sensor_failure and len(self.historical_temp) >= 10:
             derivative = abs(self.historical_temp[0] - self.historical_temp[-1])
             if derivative >= 5:
@@ -115,6 +116,7 @@ class BrewerControl:
             if actual_temp > 107 or actual_temp < -1:
                 notify_sensor_fault("Absolute value exceed limit: " + str(actual_temp))
                 self.sensor_failure = True
+            self.historical_temp.pop(0)
         return self.sensor_failure
 
     def tick(self, actual_temp):
