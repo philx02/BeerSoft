@@ -110,6 +110,7 @@
     
     drawKegLevel(0, Number(wSplit[4]));
     //drawKegLevel(1, Number(wSplit[3]));
+    drawKegLevel(1, 0.8);
   }
 
   function drawKegLevel(keg_id, level_pct) {
@@ -230,7 +231,7 @@
   </div>
 
   <img id="beer_level_img_left" class="beer_level" src="beer_column_gold.jpg" style="display: none;" />
-  <img id="beer_level_img_right" class="beer_level" src="beer_column_gold.jpg" style="display: none;" />
+  <img id="beer_level_img_right" class="beer_level" src="beer_column_pink.jpg" style="display: none;" />
 <table width="100%">
   <tr>
 
@@ -240,30 +241,40 @@
           <td class="barrel_padding_top">
             <div style="background-color: black; opacity: 0.65; border-radius: 20px; border-width: 0px; border-style: solid; position: relative; height: 600px;">
 
-                <!--
-                <div class="keg_left_title" style="position: absolute; top: 0px;   left: 30px;">IMPENDING</div>
-                <div class="keg_left_title" style="position: absolute; top: 40px;  left: 190px;">DOOM</div>
-                <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
-                <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">5.5%</div>
-                <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
-                <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">22</div>
-                <img src='thb-139-impending-doom.jpg' width="350"/>
+              <!--
+              <div class="keg_left_title" style="position: absolute; top: 0px;   left: 30px;">IMPENDING</div>
+              <div class="keg_left_title" style="position: absolute; top: 40px;  left: 190px;">DOOM</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 105px; color: black; font-size: 38px;">5.5%</div>
+              <div class="beer_details" style="position: absolute; top: 255px; left: 215px;">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">22</div>
+              <img src='thb-139-impending-doom.jpg' width="350"/>
 
-                <div class="keg_right_title" style="position: absolute; top: 380px; left: 60px; font-size: 56px;">Alpine Moon</div>
-                <div class="beer_details" style="position: absolute; top: 510px; left: 20px; color: white;">ABV</div>
-                <div class="beer_details" style="position: absolute; top: 470px; left: 210px; color: white; font-size: 76px;">7.6%</div>
-                <div class="beer_details" style="position: absolute; top: 510px; left: 430px; color:white">IBU</div>
-                <div class="beer_details" style="position: absolute; top: 470px; left: 590px; font-size: 76px; color:white">60</div>
-                <img style="border-radius: 20px 20px 0px 0px;" src='alpine_moon_crop.jpg' width='700'/>
-                -->
-                
-                <div class="keg_right_title" style="position: absolute; top: 380px; left: 60px; font-size: 56px; color: white">Dragon's Rage</div>
-                <div class="keg_right_title" style="position: absolute; top: 10px; left: 380px; color: white;">SOUR WITBIER</div>
-                <div class="beer_details" style="position: absolute; top: 510px; left: 20px; color: white;">ABV</div>
-                <div class="beer_details" style="position: absolute; top: 470px; left: 210px; color: white; font-size: 76px;">5.3%</div>
-                <div class="beer_details" style="position: absolute; top: 510px; left: 430px; color:white">IBU</div>
-                <div class="beer_details" style="position: absolute; top: 470px; left: 590px; font-size: 76px; color:white">10</div>
-                <img style="border-radius: 20px 20px 0px 0px;" src='Dragons-Rage-Channeler-Modern-Horizons-2-MtG-Art.jpg' width='700'/>
+              <div class="keg_right_title" style="position: absolute; top: 380px; left: 60px; font-size: 56px;">Alpine Moon</div>
+              <div class="beer_details" style="position: absolute; top: 510px; left: 20px; color: white;">ABV</div>
+              <div class="beer_details" style="position: absolute; top: 470px; left: 210px; color: white; font-size: 76px;">7.6%</div>
+              <div class="beer_details" style="position: absolute; top: 510px; left: 430px; color:white">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 470px; left: 590px; font-size: 76px; color:white">60</div>
+              <img style="border-radius: 20px 20px 0px 0px;" src='alpine_moon_crop.jpg' width='700'/>
+            
+              <div class="keg_right_title" style="position: absolute; top: 390px; left: 15px; font-size: 50px;">Omen of the Hunt</div>
+              <div class="keg_right_title" style="position: absolute; top: 10px; left: 390px; color: white;">BLOND LAGER</div>
+              <div class="beer_details" style="position: absolute; top: 510px; left: 20px; color: white;">ABV</div>
+              <div class="beer_details" style="position: absolute; top: 470px; left: 210px; color: white; font-size: 76px;">6.0%</div>
+              <div class="beer_details" style="position: absolute; top: 510px; left: 430px; color: white;">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 470px; left: 590px; font-size: 76px; color: white;">25</div>
+              <img style="border-radius: 20px 20px 0px 0px;" src='omen_of_the_hunt.jpg' width='700'/>
+              -->
+              
+              <div class="keg_right_title" style="position: absolute; top: 320px; left: 115px; font-size: 50px;">Professional</div>
+              <div class="keg_right_title" style="position: absolute; top: 400px; left: 125px; font-size: 50px;">Face-Breaker</div>
+              <div class="keg_right_title" style="position: absolute; top: 10px; left: 430px; color: white;">RASPBERRY</div>
+              <div class="keg_right_title" style="position: absolute; top: 50px; left: 590px; color: white;">ALE</div>
+              <div class="beer_details" style="position: absolute; top: 510px; left: 20px; color: white;">ABV</div>
+              <div class="beer_details" style="position: absolute; top: 470px; left: 210px; color: white; font-size: 76px;">6.9%</div>
+              <div class="beer_details" style="position: absolute; top: 510px; left: 430px; color: white;">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 470px; left: 590px; font-size: 76px; color: white;">25</div>
+              <img style="border-radius: 20px 20px 0px 0px;" src='snc-116-professional-face-breaker.jpg' width='700'/>
                     
             </div>
           </td>
@@ -309,13 +320,14 @@
               <div class="beer_details" style="position: absolute; top: 235px; left: 295px; font-size: 38px;">25</div>
               <img src='blonde_facile.jpg' width='350'/>
 	      --> 
-              <div class="keg_right_title" style="position: absolute; top: 390px; left: 15px; font-size: 50px;">Omen of the Hunt</div>
-              <div class="keg_right_title" style="position: absolute; top: 10px; left: 390px; color: white;">BLOND LAGER</div>
+                
+              <div class="keg_right_title" style="position: absolute; top: 380px; left: 60px; font-size: 56px; color: white">Dragon's Rage</div>
+              <div class="keg_right_title" style="position: absolute; top: 10px; left: 380px; color: white;">SOUR WITBIER</div>
               <div class="beer_details" style="position: absolute; top: 510px; left: 20px; color: white;">ABV</div>
-              <div class="beer_details" style="position: absolute; top: 470px; left: 210px; color: white; font-size: 76px;">6.0%</div>
-              <div class="beer_details" style="position: absolute; top: 510px; left: 430px; color: white;">IBU</div>
-              <div class="beer_details" style="position: absolute; top: 470px; left: 590px; font-size: 76px; color: white;">25</div>
-              <img style="border-radius: 20px 20px 0px 0px;" src='omen_of_the_hunt.jpg' width='700'/>
+              <div class="beer_details" style="position: absolute; top: 470px; left: 210px; color: white; font-size: 76px;">6.5%</div>
+              <div class="beer_details" style="position: absolute; top: 510px; left: 430px; color:white">IBU</div>
+              <div class="beer_details" style="position: absolute; top: 470px; left: 590px; font-size: 76px; color:white">10</div>
+              <img style="border-radius: 20px 20px 0px 0px;" src='Dragons-Rage-Channeler-Modern-Horizons-2-MtG-Art.jpg' width='700'/>
  	      <!--
               <div class="keg_right_title" style="position: absolute; top: 190px; left: 30px; font-size: 28px;">Alpine Moon</div>
               <div class="beer_details" style="position: absolute; top: 255px; left: 10px; color: black;">ABV</div>
