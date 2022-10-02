@@ -43,8 +43,8 @@ class CtrlServer:
             if sensor_fault:
                 notify_sensor_fault(error_msg)
                 self.sensor_fault = True
-            else:
-                self.temp_ctrl.update(self.ferm_data.wort_temperature.get_mean())
+                self.temp_ctrl.disable()
+        self.temp_ctrl.update(self.ferm_data.wort_temperature.get_mean())
 
     @asyncio.coroutine
     def init(self, websocket):

@@ -19,6 +19,7 @@ class TemperatureControl:
         self.udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.MCAST_GRP = "224.0.0.2"
         self.MCAST_PORT = 10003
+        self.enabled = True
         
         GPIO.setup(self.gpio, GPIO.OUT, initial=GPIO.HIGH)
         #self.__set_output(GPIO.HIGH)
@@ -29,11 +30,22 @@ class TemperatureControl:
     def set_high_threshold(self, high_threshold):
         self.high_threshold = high_threshold
 
+    def enable(self):
+        self.enable = True
+
+    def disable(self):
+        self.enabled = False
+        self.cooling_command = False
+        self.__update_cooling()
+
     def update(self, temp):
         self.actual_temperature.add(temp)
 
         #debug
-        print(str(self.actual_temperature.get_mean()) + ", " + str(self.run_period) + ", " + str(self.cooldown_period) + ", " + str(self.cooling_command) + ", " + str(self.start_time) + ", " + str(self.stop_time))
+        print(str(self.actual_temperature.get_mean()) + ", " + str(self.run_period) + ", " + str(self.cooldown_period) + ", " + str(self.cooling_command) + ", " + str(self.start_time) + ", " + str(self.stop_time) + ", " + str(self.enabled))
+
+        if not self.enabled:
+            return
 
         #the algorithm could have 2 variables, target temp and a delta, with a proper model of the
         #freezer/wort bucket, compute time_on = [model stuff that predicts time required to get target - delta/2]
