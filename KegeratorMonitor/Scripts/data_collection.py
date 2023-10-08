@@ -7,6 +7,8 @@ THERMOMETER_PORT = 10000
 LOAD_CELL_PORT = 10001
 KEG0_LEVEL_PORT = 10002
 KEG1_LEVEL_PORT = 10003
+ML_PER_TICKS = 12
+TICKS_PER_KEG = 19000 / ML_PER_TICKS
 
 class KegLevel:
     def __init__(self, id):
@@ -16,7 +18,7 @@ class KegLevel:
         self.init = False
     
     def set_level_pct(self, value):
-        self.level = value * 126
+        self.level = value * TICKS_PER_KEG / 100
         open(self.level_file, "w").write(str(self.level))
 
 class KegeratorData:
@@ -27,8 +29,8 @@ class KegeratorData:
     
     def serialize(self):
         co2_level = (self.co2_level.get_mean() - 102) / 60
-        keg0_level = (self.kegs[0].level / 12600)
-        keg1_level = (self.kegs[1].level / 12600)
+        keg0_level = (self.kegs[0].level / TICKS_PER_KEG)
+        keg1_level = (self.kegs[1].level / TICKS_PER_KEG)
         return "%.2f" % self.temperature.get_mean() + ",0,%.2f" % co2_level + "," + str(keg0_level) + "," + str(keg1_level)
         
 class GenericProtocol(asyncio.DatagramProtocol):
