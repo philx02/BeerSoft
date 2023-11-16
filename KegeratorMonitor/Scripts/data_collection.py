@@ -7,7 +7,7 @@ THERMOMETER_PORT = 10000
 LOAD_CELL_PORT = 10001
 KEG0_LEVEL_PORT = 10002
 KEG1_LEVEL_PORT = 10003
-ML_PER_TICKS = 12
+ML_PER_TICKS = 1.2
 TICKS_PER_KEG = 19000 / ML_PER_TICKS
 PCT_TO_TICKS = round(TICKS_PER_KEG / 100)
 
@@ -29,7 +29,7 @@ class KegeratorData:
         self.kegs = [KegLevel(0), KegLevel(1)]
     
     def serialize(self):
-        co2_level = (self.co2_level.get_mean() - 52) / 60
+        co2_level = self.co2_level.get_mean() * 0.869565217 + 47.82608696
         keg0_level = (self.kegs[0].level / TICKS_PER_KEG)
         keg1_level = (self.kegs[1].level / TICKS_PER_KEG)
         return "%.2f" % self.temperature.get_mean() + ",0,%.2f" % co2_level + "," + str(keg0_level) + "," + str(keg1_level)
