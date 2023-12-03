@@ -5,11 +5,11 @@ import os
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
+    print('Connected with result code '+str(rc))
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe("home/basement/light_switch")
+    client.subscribe('home/basement/kegerator/display_command')
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
@@ -17,15 +17,17 @@ def on_message(client, userdata, msg):
     print(status)
     if status == 'ON':
         os.system('vcgencmd display_power 1')
+        client.publish('home/basement/kegerator/display', 'ON', 2, True)
     elif status == 'OFF':
         os.system('vcgencmd display_power 0')
+        client.publish('home/basement/kegerator/display', 'OFF', 2, True)
 
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
 client.username_pw_set('philx02', 'orbitxxx')
-client.connect("192.168.3.103", 1883, 60)
+client.connect('192.168.3.103', 1883, 60)
 
 # Blocking call that processes network traffic, dispatches callbacks and
 # handles reconnecting.
